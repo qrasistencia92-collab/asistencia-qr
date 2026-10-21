@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Escáner de Asistencia QR</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { background-color: #0b1120; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; }
+    #reader { width: 100%; max-width: 450px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 3px solid #38bdf8; }
+    .box-estado { min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: bold; border-radius: 12px; }
+  </style>
+</head>
+<body class="p-3">
+
+<div class="container" style="max-width: 500px;">
+  <h4 class="fw-bold text-info mt-2">📷 Escáner en Vivo</h4>
+  <p class="text-secondary small">Control de Asistencia Estudiantil</p>
+
+  <!-- Visor de la cámara -->
+  <div id="reader" class="shadow"></div>
+
+  <!-- Cuadro de estado dinámico -->
+  <div id="estado" class="box-estado mt-3 p-3 bg-dark border border-secondary text-warning">
+    Iniciando cámara...
+  </div>
+
+  <!-- Configuración de URL -->
+  <div class="mt-4 text-start">
+    <button class="btn btn-sm btn-outline-secondary w-100 mb-2" onclick="toggleConfig()">⚙️ Configurar URL de Google Sheets</button>
+    <div id="panelConfig" style="display:none;" class="p-3 bg-dark border border-secondary rounded">
+      <label class="small text-light mb-1">URL de tu Web App de Apps Script (/exec):</label>
+      <input type="text" id="urlApi" class="form-control form-control-sm mb-2" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="btn btn-sm btn-primary w-100" onclick="guardarUrl()">Guardar URL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sonido BIP al escanear
+  function sonarBip() {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    } catch(e) {}
+  }
+
+  // URL del backend guardada
+  let API_URL = localStorage.getItem("asistencia_api_url") || "";
+
+  function toggleConfig() {
+    const p = document.getElementById("panelConfig");
+    p.style.display = p.style.display === "none" ? "block" : "none";
+    document.getElementById("urlApi").value = API_URL;
+  }
+
+  function guardarUrl() {
+    const val = document.getElementById("urlApi").value.trim();
+    if(!val) return alert("Pega la URL de Apps Script");
+    localStorage.setItem("asistencia_api_url", val);
+    API_URL = val;
+    alert("URL guardada correctamente");
+    toggleConfig();
+  }
+
+  let ultimoCodigo = "";
+  let tiempoUltimo = 0;
+
+  function alEscanear(codigo) {
+    const ahora = Date.now();
+    // Evitar leer el mismo carnet 2 veces en 4 segundos
+    if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) {
+      return;
+    }
+    ultimoCodigo = codigo;
+    tiempoUltimo = ahora;
+
+    sonarBip();
+    const div = document.getElementById("estado");
+
+    if (!API_URL) {
+      div.className = "box-estado mt-3 p-3 bg-danger text-white";
+      div.innerHTML = "⚠️ Configura la URL de Google Sheets abajo";
+      return;
+    }
+
+    div.className = "box-estado mt-3 p-3 bg-primary text-white";
+    div.innerHTML = "⏳ Registrando: " + codigo + "...";
+
+    // Enviar código a Google Sheets en segundo plano
+    fetch(`${API_URL}?id=${encodeURIComponent(codigo)}`)
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          div.className = "box-estado mt-3 p-3 bg-success text-white";
+          div.innerHTML = "✅ " + data.mensaje;
+        } else {
+          div.className = "box-estado mt-3 p-3 bg-warning text-dark";
+          div.innerHTML = "⚠️ " + data.mensaje;
+        }
+      })
+      .catch(err => {
+        div.className = "box-estado mt-3 p-3 bg-danger text-white";
+        div.innerHTML = "Error al conectar con Google Sheets";
+      });
+  }
+
+  // Iniciar la cámara en vivo
+  const html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 15, qrbox: { width: 250, height: 250 } },
+    alEscanear,
+    () => {} // Ignorar cuadros sin QR
+  ).then(() => {
+    document.getElementById("estado").innerHTML = "Apunta al código QR del carnet...";
+  }).catch(err => {
+    document.getElementById("estado").className = "box-estado mt-3 p-3 bg-danger text-white";
+    document.getElementById("estado").innerHTML = "Error al abrir cámara: " + err;
+  });
+</script>
+
+</body>
+</html>
