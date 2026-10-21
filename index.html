@@ -18,15 +18,12 @@
   <h4 class="fw-bold text-info mt-2">📷 Escáner en Vivo</h4>
   <p class="text-secondary small">Control de Asistencia Estudiantil</p>
 
-  <!-- Visor de la cámara -->
   <div id="reader" class="shadow"></div>
 
-  <!-- Cuadro de estado -->
   <div id="estado" class="box-estado mt-3 p-3 bg-dark border border-secondary text-warning">
     Apunta al código QR...
   </div>
 
-  <!-- Botón de configuración -->
   <div class="mt-4 text-start">
     <button class="btn btn-sm btn-outline-secondary w-100 mb-2" onclick="toggleConfig()">⚙️ Configurar URL de Google Sheets</button>
     <div id="panelConfig" style="display:none;" class="p-3 bg-dark border border-secondary rounded">
@@ -67,12 +64,23 @@
     toggleConfig();
   }
 
+  // Respuesta enviada desde Google Sheets
+  window.respuestaGoogle = function(data) {
+    const div = document.getElementById("estado");
+    if(data.success) {
+      div.className = "box-estado mt-3 p-3 bg-success text-white";
+      div.innerHTML = "✅ " + data.mensaje;
+    } else {
+      div.className = "box-estado mt-3 p-3 bg-warning text-dark";
+      div.innerHTML = "⚠️ " + data.mensaje;
+    }
+  };
+
   let ultimoCodigo = "";
   let tiempoUltimo = 0;
 
   function alEscanear(codigo) {
     const ahora = Date.now();
-    // Evitar lecturas repetidas en menos de 4 segundos
     if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) return;
     ultimoCodigo = codigo;
     tiempoUltimo = ahora;
@@ -89,24 +97,18 @@
     div.className = "box-estado mt-3 p-3 bg-primary text-white";
     div.innerHTML = "⏳ Registrando: " + codigo + "...";
 
-    fetch(`${API_URL}?id=${encodeURIComponent(codigo)}`, {
-      method: "GET",
-      mode: "cors"
-    })
-      .then(res => res.json())
-      .then(data => {
-        if(data.success) {
-          div.className = "box-estado mt-3 p-3 bg-success text-white";
-          div.innerHTML = "✅ " + data.mensaje;
-        } else {
-          div.className = "box-estado mt-3 p-3 bg-warning text-dark";
-          div.innerHTML = "⚠️ " + data.mensaje;
-        }
-      })
-      .catch(err => {
-        div.className = "box-estado mt-3 p-3 bg-danger text-white";
-        div.innerHTML = "Error: " + err.message;
-      });
+    // Conexión por Script (JSONP): Inmune a bloqueos de CORS o de redirección
+    const viejoScript = document.getElementById("script-jsonp");
+    if (viejoScript) viejoScript.remove();
+
+    const script = document.createElement("script");
+    script.id = "script-jsonp";
+    script.src = `${API_URL}?id=${encodeURIComponent(codigo)}&callback=respuestaGoogle&t=${Date.now()}`;
+    script.onerror = function() {
+      div.className = "box-estado mt-3 p-3 bg-danger text-white";
+      div.innerHTML = "No se pudo conectar. Verifica la URL de Google Sheets.";
+    };
+    document.body.appendChild(script);
   }
 
   const html5QrCode = new Html5Qrcode("reader");
