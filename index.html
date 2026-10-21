@@ -8,7 +8,7 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body { background-color: #0b1120; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; }
-    #reader { width: 100%; max-width: 450px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 3px solid #38bdf8; }
+    #reader { width: 100%; max-width: 420px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 3px solid #38bdf8; }
     .box-estado { min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: bold; border-radius: 12px; }
   </style>
 </head>
@@ -21,12 +21,12 @@
   <!-- Visor de la cámara -->
   <div id="reader" class="shadow"></div>
 
-  <!-- Cuadro de estado dinámico -->
+  <!-- Cuadro de estado -->
   <div id="estado" class="box-estado mt-3 p-3 bg-dark border border-secondary text-warning">
-    Iniciando cámara...
+    Apunta al código QR...
   </div>
 
-  <!-- Configuración de URL -->
+  <!-- Botón de configuración -->
   <div class="mt-4 text-start">
     <button class="btn btn-sm btn-outline-secondary w-100 mb-2" onclick="toggleConfig()">⚙️ Configurar URL de Google Sheets</button>
     <div id="panelConfig" style="display:none;" class="p-3 bg-dark border border-secondary rounded">
@@ -38,7 +38,6 @@
 </div>
 
 <script>
-  // Sonido BIP al escanear
   function sonarBip() {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -51,7 +50,6 @@
     } catch(e) {}
   }
 
-  // URL del backend guardada
   let API_URL = localStorage.getItem("asistencia_api_url") || "";
 
   function toggleConfig() {
@@ -74,10 +72,8 @@
 
   function alEscanear(codigo) {
     const ahora = Date.now();
-    // Evitar leer el mismo carnet 2 veces en 4 segundos
-    if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) {
-      return;
-    }
+    // Evitar lecturas repetidas en menos de 4 segundos
+    if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) return;
     ultimoCodigo = codigo;
     tiempoUltimo = ahora;
 
@@ -93,8 +89,10 @@
     div.className = "box-estado mt-3 p-3 bg-primary text-white";
     div.innerHTML = "⏳ Registrando: " + codigo + "...";
 
-    // Enviar código a Google Sheets en segundo plano
-    fetch(`${API_URL}?id=${encodeURIComponent(codigo)}`)
+    fetch(`${API_URL}?id=${encodeURIComponent(codigo)}`, {
+      method: "GET",
+      mode: "cors"
+    })
       .then(res => res.json())
       .then(data => {
         if(data.success) {
@@ -107,22 +105,19 @@
       })
       .catch(err => {
         div.className = "box-estado mt-3 p-3 bg-danger text-white";
-        div.innerHTML = "Error al conectar con Google Sheets";
+        div.innerHTML = "Error: " + err.message;
       });
   }
 
-  // Iniciar la cámara en vivo
   const html5QrCode = new Html5Qrcode("reader");
   html5QrCode.start(
     { facingMode: "environment" },
     { fps: 15, qrbox: { width: 250, height: 250 } },
     alEscanear,
-    () => {} // Ignorar cuadros sin QR
-  ).then(() => {
-    document.getElementById("estado").innerHTML = "Apunta al código QR del carnet...";
-  }).catch(err => {
+    () => {}
+  ).catch(err => {
     document.getElementById("estado").className = "box-estado mt-3 p-3 bg-danger text-white";
-    document.getElementById("estado").innerHTML = "Error al abrir cámara: " + err;
+    document.getElementById("estado").innerHTML = "Error cámara: " + err;
   });
 </script>
 
