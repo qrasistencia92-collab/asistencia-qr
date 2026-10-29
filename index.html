@@ -18,23 +18,19 @@
   <h4 class="fw-bold text-info mt-2">📷 Escáner en Vivo</h4>
   <p class="text-secondary small">Control de Asistencia Estudiantil</p>
 
+  <!-- Visor de la cámara -->
   <div id="reader" class="shadow"></div>
 
+  <!-- Cuadro de estado -->
   <div id="estado" class="box-estado mt-3 p-3 bg-dark border border-secondary text-warning">
-    Apunta al código QR...
-  </div>
-
-  <div class="mt-4 text-start">
-    <button class="btn btn-sm btn-outline-secondary w-100 mb-2" onclick="toggleConfig()">⚙️ Configurar URL de Google Sheets</button>
-    <div id="panelConfig" style="display:none;" class="p-3 bg-dark border border-secondary rounded">
-      <label class="small text-light mb-1">URL de tu Web App de Apps Script (/exec):</label>
-      <input type="text" id="urlApi" class="form-control form-control-sm mb-2" placeholder="https://script.google.com/macros/s/.../exec">
-      <button class="btn btn-sm btn-primary w-100" onclick="guardarUrl()">Guardar URL</button>
-    </div>
+    Iniciando cámara...
   </div>
 </div>
 
 <script>
+  // Tu URL oficial de Google Apps Script ya integrada para cualquier dispositivo
+  const API_URL = "https://script.google.com/macros/s/AKfycbyV16aq3IGB3JrnHeEx6F_wU0Ro71a2Djik-CuXSDBosMcr1Tg5anmBBGuEB5xqnsYm/exec";
+
   function sonarBip() {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -47,24 +43,7 @@
     } catch(e) {}
   }
 
-  let API_URL = localStorage.getItem("asistencia_api_url") || "";
-
-  function toggleConfig() {
-    const p = document.getElementById("panelConfig");
-    p.style.display = p.style.display === "none" ? "block" : "none";
-    document.getElementById("urlApi").value = API_URL;
-  }
-
-  function guardarUrl() {
-    const val = document.getElementById("urlApi").value.trim();
-    if(!val) return alert("Pega la URL de Apps Script");
-    localStorage.setItem("asistencia_api_url", val);
-    API_URL = val;
-    alert("URL guardada correctamente");
-    toggleConfig();
-  }
-
-  // Respuesta enviada desde Google Sheets
+  // Función global para recibir la respuesta de Google
   window.respuestaGoogle = function(data) {
     const div = document.getElementById("estado");
     if(data.success) {
@@ -81,23 +60,17 @@
 
   function alEscanear(codigo) {
     const ahora = Date.now();
+    // Evitar lecturas repetidas en menos de 4 segundos
     if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) return;
     ultimoCodigo = codigo;
     tiempoUltimo = ahora;
 
     sonarBip();
     const div = document.getElementById("estado");
-
-    if (!API_URL) {
-      div.className = "box-estado mt-3 p-3 bg-danger text-white";
-      div.innerHTML = "⚠️ Configura la URL de Google Sheets abajo";
-      return;
-    }
-
     div.className = "box-estado mt-3 p-3 bg-primary text-white";
     div.innerHTML = "⏳ Registrando: " + codigo + "...";
 
-    // Conexión por Script (JSONP): Inmune a bloqueos de CORS o de redirección
+    // Enviar a Google Sheets mediante JSONP
     const viejoScript = document.getElementById("script-jsonp");
     if (viejoScript) viejoScript.remove();
 
@@ -106,20 +79,23 @@
     script.src = `${API_URL}?id=${encodeURIComponent(codigo)}&callback=respuestaGoogle&t=${Date.now()}`;
     script.onerror = function() {
       div.className = "box-estado mt-3 p-3 bg-danger text-white";
-      div.innerHTML = "No se pudo conectar. Verifica la URL de Google Sheets.";
+      div.innerHTML = "Error al conectar con Google Sheets";
     };
     document.body.appendChild(script);
   }
 
+  // Encender cámara trasera
   const html5QrCode = new Html5Qrcode("reader");
   html5QrCode.start(
     { facingMode: "environment" },
     { fps: 15, qrbox: { width: 250, height: 250 } },
     alEscanear,
     () => {}
-  ).catch(err => {
+  ).then(() => {
+    document.getElementById("estado").innerHTML = "Apunta al código QR del carnet...";
+  }).catch(err => {
     document.getElementById("estado").className = "box-estado mt-3 p-3 bg-danger text-white";
-    document.getElementById("estado").innerHTML = "Error cámara: " + err;
+    document.getElementById("estado").innerHTML = "Error al abrir cámara: Asegúrate de dar permisos en el navegador.";
   });
 </script>
 
