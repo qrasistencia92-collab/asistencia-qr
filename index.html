@@ -84,7 +84,7 @@
       <div class="tab-pane fade show active card card-custom p-3 text-center" id="tab-escaner">
         <div class="d-flex justify-content-between small text-secondary mb-2">
           <span>🟢 Puntual: Hasta 07:20</span>
-          <span>🟠 Tarde: 07:21 - 12:00</span>
+          <span>🟠 Tarde (Límite 3): 07:21 - 12:00</span>
         </div>
 
         <div id="reader" class="shadow"></div>
@@ -100,9 +100,12 @@
         </div>
       </div>
 
-      <!-- TAB 2: REPORTES MENSUALES POR CURSO -->
+      <!-- TAB 2: REPORTES Y CITACIONES -->
       <div class="tab-pane fade card card-custom p-3" id="tab-reportes">
-        <h5 class="fw-bold text-info mb-3">📊 Asistencia Mensual por Curso</h5>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-info m-0">📊 Reportes y Citaciones</h5>
+          <button class="btn btn-sm btn-outline-warning" onclick="cargarCitaciones()">🚨 Ver Citaciones</button>
+        </div>
         
         <div class="row g-2 mb-3">
           <div class="col-6">
@@ -150,11 +153,11 @@
         </div>
 
         <button class="btn btn-info btn-sm w-100 fw-bold py-2 mb-3 shadow" onclick="cargarReporteMensual()">
-          🔍 Consultar Asistencias
+          🔍 Consultar Asistencias del Mes
         </button>
 
         <div id="repResultado">
-          <p class="text-center text-secondary small">Selecciona un curso y un mes para consultar el reporte.</p>
+          <p class="text-center text-secondary small">Selecciona un curso y mes para consultar o pulsa "Ver Citaciones".</p>
         </div>
       </div>
 
@@ -301,16 +304,16 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- CÁMARA & ESCÁNER ---
-  function sonarBip() {
+  // --- CÁMARA & ESCÁNER CON ALERTA DE SANCIONES ---
+  function sonarBip(esAlerta) {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.type = esAlerta ? "sawtooth" : "sine";
+      osc.frequency.setValueAtTime(esAlerta ? 400 : 880, audioCtx.currentTime);
       osc.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.15);
+      osc.stop(audioCtx.currentTime + (esAlerta ? 0.4 : 0.15));
     } catch(e) {}
   }
 
@@ -348,19 +351,25 @@
     ultimoCodigo = codigo;
     tiempoUltimo = ahora;
 
-    sonarBip();
     const div = document.getElementById("estado-escaneo");
     div.className = "box-estado mt-3 p-2 bg-primary text-white";
     div.innerHTML = "⏳ Registrando: " + codigo + "...";
 
     llamarAPI({ action: "asistencia", id: codigo }, function(res) {
       if(res.success) {
-        if(res.estado === "P") {
+        if(res.alertaCitacion) {
+          sonarBip(true); // Tono de alerta grave
+          div.className = "box-estado mt-3 p-2 bg-danger text-white border border-warning shadow";
+          div.innerHTML = `<div class="p-1"><strong>🚨 ¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
+        } else if(res.estado === "P") {
+          sonarBip(false);
           div.className = "box-estado mt-3 p-2 bg-success text-white";
+          div.innerHTML = res.mensaje;
         } else {
+          sonarBip(false);
           div.className = "box-estado mt-3 p-2 bg-warning text-dark";
+          div.innerHTML = res.mensaje;
         }
-        div.innerHTML = res.mensaje;
       } else {
         div.className = "box-estado mt-3 p-2 bg-danger text-white";
         div.innerHTML = "⚠️ " + res.mensaje;
@@ -368,7 +377,6 @@
     });
   }
 
-  // --- CERRAR ASISTENCIA DEL DÍA ---
   function cerrarAsistenciaDia() {
     if (!confirm("¿Deseas cerrar la asistencia de hoy y poner FALTA (F) a todos los alumnos ausentes?")) return;
 
@@ -387,13 +395,54 @@
     });
   }
 
-  // --- REPORTES MENSUALES ---
+  // --- REPORTES Y CITACIONES ---
+  function cargarCitaciones() {
+    const cont = document.getElementById("repResultado");
+    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Consultando citaciones emitidas...</div>';
+
+    llamarAPI({ action: "obtenerCitaciones" }, function(res) {
+      if(!res.success) {
+        cont.innerHTML = `<div class="alert alert-secondary text-center">${res.mensaje}</div>`;
+        return;
+      }
+
+      let html = `
+        <h6 class="fw-bold text-danger mb-2">🚨 Citaciones por 4+ Retrasos</h6>
+        <div class="table-responsive">
+          <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.8rem;">
+            <thead>
+              <tr class="table-danger text-dark">
+                <th>Fecha</th>
+                <th class="text-start">Estudiante</th>
+                <th>Curso</th>
+                <th>Retrasos</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      res.citaciones.forEach(c => {
+        html += `
+          <tr>
+            <td>${c.fecha}<br><small class="text-secondary">${c.hora}</small></td>
+            <td class="text-start fw-bold text-truncate" style="max-width: 140px;">${c.estudiante}</td>
+            <td>${c.curso}</td>
+            <td><span class="badge bg-danger">${c.retrasos}</span></td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      cont.innerHTML = html;
+    });
+  }
+
   function cargarReporteMensual() {
     const curso = document.getElementById("repCurso").value;
     const mes = document.getElementById("repMes").value;
     const cont = document.getElementById("repResultado");
 
-    cont.innerHTML = '<div class="text-center text-info py-3">⏳ Cargando reporte mensual desde Google Sheets...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-3">⏳ Cargando reporte mensual...</div>';
 
     llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
       if(!res.success) {
@@ -404,17 +453,17 @@
       let html = `
         <div class="d-flex justify-content-between align-items-center mb-2 px-1">
           <span class="fw-bold text-info">${res.curso} - ${res.mesNombre}</span>
-          <span class="badge bg-secondary">${res.totalDiasClase} días hábiles</span>
+          <span class="badge bg-secondary">${res.totalDiasClase} días</span>
         </div>
         <div class="table-responsive">
           <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.85rem;">
             <thead>
               <tr class="table-secondary text-dark">
-                <th style="width: 10%;">N°</th>
-                <th class="text-start" style="width: 45%;">Estudiante</th>
-                <th style="width: 15%;">P</th>
-                <th style="width: 15%;">T</th>
-                <th style="width: 15%;">F</th>
+                <th>N°</th>
+                <th class="text-start">Estudiante</th>
+                <th>P</th>
+                <th>T</th>
+                <th>F</th>
               </tr>
             </thead>
             <tbody>
@@ -424,7 +473,7 @@
         html += `
           <tr>
             <td>${al.nro}</td>
-            <td class="text-start text-truncate" style="max-width: 140px;" title="${al.nombreCompleto}">
+            <td class="text-start text-truncate" style="max-width: 140px;">
               <div class="fw-bold">${al.nombreCompleto}</div>
               <small class="text-secondary">% Asist: ${al.porcentaje}</small>
             </td>
@@ -435,17 +484,11 @@
         `;
       });
 
-      html += `
-            </tbody>
-          </table>
-        </div>
-      `;
-
+      html += `</tbody></table></div>`;
       cont.innerHTML = html;
     });
   }
 
-  // --- REGISTRO DE ALUMNOS ---
   function guardarEstudiante() {
     const datos = {
       action: "guardarEstudiante",
@@ -475,10 +518,9 @@
     });
   }
 
-  // --- CAMBIO DE CONTRASEÑA ---
   function actualizarContrasena() {
     const pass = document.getElementById("nuevaPass").value.trim();
-    if(pass.length < 4) return alert("La contraseña debe tener al menos 4 caracteres");
+    if(pass.length < 4) return alert("Mínimo 4 caracteres");
 
     llamarAPI({ action: "cambiarPass", usuario: usuarioActual, nuevaPass: pass }, function(res) {
       const msg = document.getElementById("perfil-msg");
