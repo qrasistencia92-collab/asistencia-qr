@@ -16,16 +16,31 @@
     .badge-t { background-color: #c2410c; color: #fed7aa; font-size: 0.85rem; }
     .badge-f { background-color: #b91c1c; color: #fecaca; font-size: 0.85rem; }
     .logo-colegio { max-width: 130px; height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+    .alumno-link { color: #38bdf8; cursor: pointer; text-decoration: underline; }
+    .alumno-link:hover { color: #7dd3fc; }
+
+    /* ESTILO PARA IMPRIMIR SOLO LA CREDENCIAL */
+    @media print {
+      body * { visibility: hidden; }
+      #carnet-credencial, #carnet-credencial * { visibility: visible; }
+      #carnet-credencial {
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        transform: translateX(-50%);
+        width: 320px !important;
+        box-shadow: none !important;
+        border: 2px solid #0284c7 !important;
+      }
+    }
   </style>
 </head>
 <body class="p-3">
 
 <div class="container" style="max-width: 600px;">
 
-  <!-- PANTALLA 1: LOGIN INSTITUCIONAL -->
+  <!-- PANTALLA 1: LOGIN -->
   <div id="vista-login" class="card card-custom p-4 mt-2 text-center">
-    
-    <!-- TÍTULO Y ESCUDO CENTRADO -->
     <h5 class="text-info fw-bold mb-1">ASISTENCIA ESCOLAR</h5>
     <h6 class="text-light fw-bold mb-2">UNIDAD EDUCATIVA PAULO FREIRE</h6>
     <div class="my-2">
@@ -42,7 +57,7 @@
       <label class="btn btn-outline-info" for="rolEstudiante">Estudiante</label>
     </div>
 
-    <!-- Formulario Regente -->
+    <!-- Login Regente -->
     <div id="form-regente" class="text-start">
       <div class="mb-3">
         <label class="form-label text-light small">Usuario</label>
@@ -55,7 +70,7 @@
       <button class="btn btn-primary w-100 py-2 fw-bold shadow mt-2" onclick="iniciarSesion()">Ingresar al Panel</button>
     </div>
 
-    <!-- Formulario Estudiante -->
+    <!-- Login Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-center py-3">
       <p class="text-secondary small">Próximamente: Ingreso de estudiantes para consultar carnet y asistencias.</p>
     </div>
@@ -65,8 +80,6 @@
 
   <!-- PANTALLA 2: PANEL DEL REGENTE -->
   <div id="vista-panel" style="display:none;">
-    
-    <!-- ENCABEZADO CON MINI-LOGO -->
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
       <div class="d-flex align-items-center">
         <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 10px;">
@@ -78,7 +91,7 @@
       <button class="btn btn-sm btn-outline-danger" onclick="cerrarSesion()">Salir</button>
     </div>
 
-    <!-- Pestañas de Navegación -->
+    <!-- Pestañas -->
     <ul class="nav nav-pills mb-3 nav-justified" id="pills-tab" role="tablist">
       <li class="nav-item">
         <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-escaner" onclick="iniciarCamara()">📷 Escáner</button>
@@ -177,7 +190,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: GESTIÓN DE ALUMNOS (INSCRIBIR Y ELIMINAR) -->
+      <!-- TAB 3: GESTIÓN DE ALUMNOS (INSCRIBIR, VER CREDENCIAL Y ELIMINAR) -->
       <div class="tab-pane fade card card-custom p-3" id="tab-gestion">
         
         <ul class="nav nav-tabs nav-fill mb-3 border-secondary" id="subTabGestion" role="tablist">
@@ -185,7 +198,7 @@
             <button class="nav-link active text-info" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">➕ Inscribir</button>
           </li>
           <li class="nav-item">
-            <button class="nav-link text-secondary" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">🗑️ Dar de Baja / Eliminar</button>
+            <button class="nav-link text-secondary" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">🪪 Lista & Credenciales</button>
           </li>
         </ul>
 
@@ -250,9 +263,9 @@
           <div id="gestion-msg" class="mt-3 text-center"></div>
         </div>
 
-        <!-- SECCIÓN 2: ELIMINAR ESTUDIANTE -->
+        <!-- SECCIÓN 2: LISTA DE ALUMNOS CON CREDENCIALES -->
         <div id="sec-eliminar" style="display:none;">
-          <label class="form-label text-light small">Selecciona el curso para buscar:</label>
+          <label class="form-label text-light small">Selecciona el curso para ver alumnos:</label>
           <div class="input-group mb-3">
             <select id="delCurso" class="form-select bg-dark text-white border-secondary">
               <option value='1 "A"'>1 "A"</option>
@@ -277,11 +290,11 @@
               <option value='6 "B"'>6 "B"</option>
               <option value='6 "C"'>6 "C"</option>
             </select>
-            <button class="btn btn-warning fw-bold" onclick="cargarEstudiantesEliminar()">Listar Alumnos</button>
+            <button class="btn btn-info fw-bold" onclick="cargarEstudiantesEliminar()">Listar Alumnos</button>
           </div>
 
           <div id="lista-eliminar-resultado">
-            <p class="text-center text-secondary small">Selecciona un curso y toca "Listar Alumnos" para ver a los estudiantes inscritos.</p>
+            <p class="text-center text-secondary small">Selecciona un curso para ver alumnos y generar sus credenciales.</p>
           </div>
         </div>
 
@@ -301,6 +314,60 @@
     </div>
   </div>
 
+</div>
+
+<!-- VENTANA MODAL: CREDENCIAL ESTUDIANTIL OFICIAL -->
+<div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0">
+        
+        <!-- DISEÑO CARNET FÍSICO / CREDENCIAL -->
+        <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 18px; background: #ffffff;">
+          
+          <!-- Encabezado Institucional -->
+          <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #0284c7, #1e3a8a);">
+            <img src="logo.png" alt="Escudo" style="max-height: 55px;" class="mb-1">
+            <h6 class="fw-bold m-0" style="font-size: 0.88rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
+            <small style="font-size: 0.7rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</small>
+            <div class="badge bg-warning text-dark mt-1 px-3 py-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">CREDENCIAL ESTUDIANTIL</div>
+          </div>
+
+          <!-- Cuerpo con QR y Datos -->
+          <div class="p-3 text-center">
+            <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
+              <img id="credQrImg" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
+            </div>
+
+            <h5 class="fw-bold text-dark mb-1 text-uppercase" id="credNombre">NOMBRE ALUMNO</h5>
+            
+            <div class="row g-1 mt-2 text-start bg-light p-2 rounded border">
+              <div class="col-6">
+                <small class="text-muted d-block" style="font-size: 0.7rem;">CURSO:</small>
+                <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="credCurso">-</span>
+              </div>
+              <div class="col-6 text-end">
+                <small class="text-muted d-block" style="font-size: 0.7rem;">CÓDIGO / ID:</small>
+                <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="credId">-</span>
+              </div>
+            </div>
+
+            <div class="mt-2 text-muted" style="font-size: 0.65rem;">
+              Control Automatizado de Asistencia Estudiantil QR
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0">
+        <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sm btn-info text-white fw-bold px-3 shadow" onclick="window.print()">🖨️ Imprimir Credencial</button>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <!-- Bootstrap Bundle -->
@@ -367,7 +434,18 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- SUB-GESTIÓN: INSCRIBIR O ELIMINAR ---
+  // --- FUNCIÓN PARA ABRIR LA CREDENCIAL AL TOCAR EL NOMBRE ---
+  function abrirCredencial(id, nombre, curso) {
+    document.getElementById("credNombre").innerText = nombre;
+    document.getElementById("credCurso").innerText = curso;
+    document.getElementById("credId").innerText = id;
+    document.getElementById("credQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(id)}`;
+
+    const modal = new bootstrap.Modal(document.getElementById('modalCredencial'));
+    modal.show();
+  }
+
+  // --- SUB-GESTIÓN: INSCRIBIR O LISTA Y CREDENCIALES ---
   function mostrarSubGestion(modo) {
     const btnIns = document.getElementById("btnSubInscribir");
     const btnDel = document.getElementById("btnSubEliminar");
@@ -380,7 +458,7 @@
       secIns.style.display = "block";
       secDel.style.display = "none";
     } else {
-      btnDel.className = "nav-link active text-danger";
+      btnDel.className = "nav-link active text-info";
       btnIns.className = "nav-link text-secondary";
       secIns.style.display = "none";
       secDel.style.display = "block";
@@ -405,7 +483,7 @@
             <thead>
               <tr class="table-secondary text-dark">
                 <th>N°</th>
-                <th class="text-start">Alumno</th>
+                <th class="text-start">Alumno (Toca para ver credencial)</th>
                 <th>Acción</th>
               </tr>
             </thead>
@@ -417,11 +495,13 @@
           <tr>
             <td>${e.nro}</td>
             <td class="text-start">
-              <div class="fw-bold text-truncate" style="max-width: 150px;">${e.nombreCompleto}</div>
+              <div class="fw-bold alumno-link text-truncate" style="max-width: 160px;" onclick="abrirCredencial('${e.id}', '${e.nombreCompleto}', '${curso}')" title="Ver credencial">
+                🪪 ${e.nombreCompleto}
+              </div>
               <small class="text-secondary">ID: ${e.id}</small>
             </td>
             <td>
-              <button class="btn btn-sm btn-danger py-1 px-2" onclick="confirmarEliminar('${e.id}', '${e.nombreCompleto}')">
+              <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="confirmarEliminar('${e.id}', '${e.nombreCompleto}')" title="Eliminar alumno">
                 🗑️
               </button>
             </td>
@@ -602,7 +682,7 @@
             <thead>
               <tr class="table-secondary text-dark">
                 <th>N°</th>
-                <th class="text-start">Estudiante</th>
+                <th class="text-start">Estudiante (Toca para ver credencial)</th>
                 <th>P</th>
                 <th>T</th>
                 <th>F</th>
@@ -615,8 +695,10 @@
         html += `
           <tr>
             <td>${al.nro}</td>
-            <td class="text-start text-truncate" style="max-width: 140px;">
-              <div class="fw-bold">${al.nombreCompleto}</div>
+            <td class="text-start text-truncate" style="max-width: 150px;">
+              <div class="fw-bold alumno-link" onclick="abrirCredencial('${al.id}', '${al.nombreCompleto}', '${res.curso}')" title="Ver credencial">
+                🪪 ${al.nombreCompleto}
+              </div>
               <small class="text-secondary">% Asist: ${al.porcentaje}</small>
             </td>
             <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
