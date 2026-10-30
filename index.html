@@ -10,7 +10,7 @@
     body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .card-custom { background-color: #1e293b; border: 1px solid #334155; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     #reader { width: 100%; max-width: 400px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 2px solid #38bdf8; }
-    .box-estado { min-height: 55px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; border-radius: 12px; }
+    .box-estado { min-height: 55px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: bold; border-radius: 12px; }
   </style>
 </head>
 <body class="p-3">
@@ -43,7 +43,7 @@
       <button class="btn btn-primary w-100 py-2 fw-bold shadow" onclick="iniciarSesion()">Ingresar al Panel</button>
     </div>
 
-    <!-- Vista Estudiante (Próxima fase) -->
+    <!-- Vista Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-center py-3">
       <p class="text-secondary">Próximamente: Consulta de asistencias y carnet del estudiante.</p>
     </div>
@@ -64,7 +64,7 @@
         <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-escaner" onclick="iniciarCamara()">📷 Escáner</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">👨‍🎓 Registrar Alumno</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">👨‍🎓 Inscribir</button>
       </li>
       <li class="nav-item">
         <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-perfil" onclick="detenerCamara()">⚙️ Ajustes</button>
@@ -75,14 +75,26 @@
       
       <!-- TAB 1: ESCÁNER EN VIVO -->
       <div class="tab-pane fade show active card card-custom p-3 text-center" id="tab-escaner">
-        <h6 class="text-secondary mb-2">Apunta la cámara al carnet QR</h6>
+        <div class="d-flex justify-content-between small text-secondary mb-2">
+          <span>🟢 Puntual: Hasta 07:20</span>
+          <span>🟠 Tarde: 07:21 - 12:00</span>
+        </div>
+
         <div id="reader" class="shadow"></div>
+
         <div id="estado-escaneo" class="box-estado mt-3 p-2 bg-dark border border-secondary text-warning">
-          Esperando código QR...
+          Apunta la cámara al carnet QR...
+        </div>
+
+        <!-- Botón de Cierre de Asistencia a las 12:00 PM -->
+        <div class="mt-3 pt-2 border-top border-secondary">
+          <button class="btn btn-outline-danger btn-sm w-100 py-2" onclick="cerrarAsistenciaDia()">
+            🔒 Marcar Faltas de Hoy (Cierre 12:00 PM)
+          </button>
         </div>
       </div>
 
-      <!-- TAB 2: REGISTRO DE ESTUDIANTES CON CURSOS PREDEFINIDOS -->
+      <!-- TAB 2: REGISTRO DE ALUMNOS -->
       <div class="tab-pane fade card card-custom p-4" id="tab-gestion">
         <h5 class="fw-bold text-info mb-3">Inscribir Nuevo Estudiante</h5>
         
@@ -145,7 +157,7 @@
         <div id="gestion-msg" class="mt-3 text-center"></div>
       </div>
 
-      <!-- TAB 3: CAMBIO DE CONTRASEÑA -->
+      <!-- TAB 3: AJUSTES -->
       <div class="tab-pane fade card card-custom p-4" id="tab-perfil">
         <h5 class="fw-bold text-info mb-3">Cambiar Mi Contraseña</h5>
         <div class="mb-3">
@@ -169,7 +181,6 @@
   let usuarioActual = "";
   let html5QrCode = null;
 
-  // Comunicación con Google Sheets (JSONP)
   function llamarAPI(params, callback) {
     const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
     window[cbName] = function(res) {
@@ -188,7 +199,7 @@
     script.id = cbName;
     script.src = `${API_URL}?${query}`;
     script.onerror = function() {
-      callback({ success: false, mensaje: "Error de red con Google Sheets" });
+      callback({ success: false, mensaje: "Error de conexión con Google Sheets" });
     };
     document.body.appendChild(script);
   }
@@ -280,16 +291,39 @@
 
     llamarAPI({ action: "asistencia", id: codigo }, function(res) {
       if(res.success) {
-        div.className = "box-estado mt-3 p-2 bg-success text-white";
-        div.innerHTML = "✅ " + res.mensaje;
+        if(res.estado === "P") {
+          div.className = "box-estado mt-3 p-2 bg-success text-white"; // Verde para puntual
+        } else {
+          div.className = "box-estado mt-3 p-2 bg-warning text-dark"; // Naranja para tarde
+        }
+        div.innerHTML = res.mensaje;
       } else {
-        div.className = "box-estado mt-3 p-2 bg-warning text-dark";
+        div.className = "box-estado mt-3 p-2 bg-danger text-white";
         div.innerHTML = "⚠️ " + res.mensaje;
       }
     });
   }
 
-  // --- REGISTRO DE ESTUDIANTES ---
+  // --- CERRAR ASISTENCIA Y MARCAR FALTAS (12:00 PM) ---
+  function cerrarAsistenciaDia() {
+    if (!confirm("¿Deseas cerrar la asistencia de hoy y poner FALTA (F) a todos los alumnos que no vinieron?")) return;
+
+    const div = document.getElementById("estado-escaneo");
+    div.className = "box-estado mt-3 p-2 bg-info text-dark";
+    div.innerHTML = "⏳ Procesando faltas en todos los cursos...";
+
+    llamarAPI({ action: "marcarFaltas" }, function(res) {
+      if(res.success) {
+        alert(res.mensaje);
+        div.className = "box-estado mt-3 p-2 bg-secondary text-white";
+        div.innerHTML = "Asistencia del día cerrada.";
+      } else {
+        alert("Error: " + res.mensaje);
+      }
+    });
+  }
+
+  // --- REGISTRO DE ALUMNOS ---
   function guardarEstudiante() {
     const datos = {
       action: "guardarEstudiante",
@@ -300,7 +334,7 @@
     };
 
     if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) {
-      return alert("Por favor completa todos los campos (incluyendo la selección de curso)");
+      return alert("Por favor completa todos los campos");
     }
 
     const msg = document.getElementById("gestion-msg");
