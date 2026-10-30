@@ -16,8 +16,10 @@
     .badge-t { background-color: #c2410c; color: #fed7aa; font-size: 0.85rem; }
     .badge-f { background-color: #b91c1c; color: #fecaca; font-size: 0.85rem; }
     .logo-colegio { max-width: 130px; height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
-    .alumno-link { color: #38bdf8; cursor: pointer; text-decoration: underline; }
-    .alumno-link:hover { color: #7dd3fc; }
+    
+    /* ENLACE CLICKEABLE DE ALUMNOS */
+    .alumno-link { color: #38bdf8 !important; cursor: pointer; text-decoration: underline; font-weight: bold; display: inline-block; padding: 2px 0; }
+    .alumno-link:active { color: #fed7aa !important; }
 
     /* ESTILO PARA IMPRIMIR SOLO LA CREDENCIAL */
     @media print {
@@ -26,7 +28,7 @@
       #carnet-credencial {
         position: absolute;
         left: 50%;
-        top: 30px;
+        top: 20px;
         transform: translateX(-50%);
         width: 320px !important;
         box-shadow: none !important;
@@ -378,6 +380,12 @@
   let usuarioActual = "";
   let html5QrCode = null;
 
+  // Variables globales seguras para almacenar alumnos en memoria
+  let alumnosListaMemoria = [];
+  let cursoListaActual = "";
+  let alumnosReporteMemoria = [];
+  let cursoReporteActual = "";
+
   function llamarAPI(params, callback) {
     const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
     window[cbName] = function(res) {
@@ -434,15 +442,32 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- FUNCIÓN PARA ABRIR LA CREDENCIAL AL TOCAR EL NOMBRE ---
+  // --- ABRIR LA CREDENCIAL DE MANERA 100% SEGURA ---
   function abrirCredencial(id, nombre, curso) {
     document.getElementById("credNombre").innerText = nombre;
     document.getElementById("credCurso").innerText = curso;
     document.getElementById("credId").innerText = id;
     document.getElementById("credQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(id)}`;
 
-    const modal = new bootstrap.Modal(document.getElementById('modalCredencial'));
-    modal.show();
+    const modalEl = document.getElementById('modalCredencial');
+    const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modalObj.show();
+  }
+
+  // Tocar alumno en la lista de gestión
+  function clickAlumnoLista(index) {
+    const alumno = alumnosListaMemoria[index];
+    if (alumno) {
+      abrirCredencial(alumno.id, alumno.nombreCompleto, cursoListaActual);
+    }
+  }
+
+  // Tocar alumno en la lista de reportes
+  function clickAlumnoReporte(index) {
+    const alumno = alumnosReporteMemoria[index];
+    if (alumno) {
+      abrirCredencial(alumno.id, alumno.nombreCompleto, cursoReporteActual);
+    }
   }
 
   // --- SUB-GESTIÓN: INSCRIBIR O LISTA Y CREDENCIALES ---
@@ -468,6 +493,7 @@
 
   function cargarEstudiantesEliminar() {
     const curso = document.getElementById("delCurso").value;
+    cursoListaActual = curso;
     const cont = document.getElementById("lista-eliminar-resultado");
     cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Cargando alumnos de ' + curso + '...</div>';
 
@@ -476,6 +502,8 @@
         cont.innerHTML = `<div class="alert alert-secondary text-center small">No hay alumnos inscritos en ${curso}.</div>`;
         return;
       }
+
+      alumnosListaMemoria = res.estudiantes; // Guardar en memoria segura
 
       let html = `
         <div class="table-responsive">
@@ -490,18 +518,18 @@
             <tbody>
       `;
 
-      res.estudiantes.forEach(e => {
+      alumnosListaMemoria.forEach((e, idx) => {
         html += `
           <tr>
             <td>${e.nro}</td>
             <td class="text-start">
-              <div class="fw-bold alumno-link text-truncate" style="max-width: 160px;" onclick="abrirCredencial('${e.id}', '${e.nombreCompleto}', '${curso}')" title="Ver credencial">
+              <span class="alumno-link text-truncate" style="max-width: 160px;" onclick="clickAlumnoLista(${idx})">
                 🪪 ${e.nombreCompleto}
-              </div>
-              <small class="text-secondary">ID: ${e.id}</small>
+              </span>
+              <br><small class="text-secondary">ID: ${e.id}</small>
             </td>
             <td>
-              <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="confirmarEliminar('${e.id}', '${e.nombreCompleto}')" title="Eliminar alumno">
+              <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="confirmarEliminarIdx(${idx})" title="Eliminar alumno">
                 🗑️
               </button>
             </td>
@@ -514,13 +542,15 @@
     });
   }
 
-  function confirmarEliminar(id, nombre) {
-    if (!confirm(`¿Estás seguro de eliminar a ${nombre}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
+  function confirmarEliminarIdx(idx) {
+    const e = alumnosListaMemoria[idx];
+    if (!e) return;
+    if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
 
     const cont = document.getElementById("lista-eliminar-resultado");
     cont.innerHTML = '<div class="text-center text-danger py-3">⏳ Eliminando estudiante...</div>';
 
-    llamarAPI({ action: "eliminarEstudiante", id: id }, function(res) {
+    llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
       alert(res.mensaje);
       cargarEstudiantesEliminar();
     });
@@ -662,6 +692,7 @@
   function cargarReporteMensual() {
     const curso = document.getElementById("repCurso").value;
     const mes = document.getElementById("repMes").value;
+    cursoReporteActual = curso;
     const cont = document.getElementById("repResultado");
 
     cont.innerHTML = '<div class="text-center text-info py-3">⏳ Cargando reporte mensual...</div>';
@@ -671,6 +702,8 @@
         cont.innerHTML = `<div class="alert alert-warning text-center">${res.mensaje}</div>`;
         return;
       }
+
+      alumnosReporteMemoria = res.alumnos; // Guardar en memoria segura
 
       let html = `
         <div class="d-flex justify-content-between align-items-center mb-2 px-1">
@@ -691,15 +724,15 @@
             <tbody>
       `;
 
-      res.alumnos.forEach(al => {
+      alumnosReporteMemoria.forEach((al, idx) => {
         html += `
           <tr>
             <td>${al.nro}</td>
             <td class="text-start text-truncate" style="max-width: 150px;">
-              <div class="fw-bold alumno-link" onclick="abrirCredencial('${al.id}', '${al.nombreCompleto}', '${res.curso}')" title="Ver credencial">
+              <span class="alumno-link" onclick="clickAlumnoReporte(${idx})" title="Ver credencial">
                 🪪 ${al.nombreCompleto}
-              </div>
-              <small class="text-secondary">% Asist: ${al.porcentaje}</small>
+              </span>
+              <br><small class="text-secondary">% Asist: ${al.porcentaje}</small>
             </td>
             <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
             <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
