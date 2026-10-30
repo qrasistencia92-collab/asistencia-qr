@@ -71,7 +71,7 @@
         <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-reportes" onclick="detenerCamara()">📊 Reportes</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">👨‍🎓 Inscribir</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">👨‍🎓 Alumnos</button>
       </li>
       <li class="nav-item">
         <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-perfil" onclick="detenerCamara()">⚙️ Ajustes</button>
@@ -161,67 +161,115 @@
         </div>
       </div>
 
-      <!-- TAB 3: REGISTRO DE ALUMNOS -->
-      <div class="tab-pane fade card card-custom p-4" id="tab-gestion">
-        <h5 class="fw-bold text-info mb-3">Inscribir Nuevo Estudiante</h5>
+      <!-- TAB 3: GESTIÓN DE ALUMNOS (INSCRIBIR Y ELIMINAR) -->
+      <div class="tab-pane fade card card-custom p-3" id="tab-gestion">
         
-        <div class="mb-3">
-          <label class="form-label text-light small">Código de Carnet / QR (único)</label>
-          <input type="text" id="estId" class="form-control bg-dark text-white border-secondary" placeholder="Ej: 58634568">
+        <!-- Sub-navegación entre Inscribir y Eliminar -->
+        <ul class="nav nav-tabs nav-fill mb-3 border-secondary" id="subTabGestion" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active text-info" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">➕ Inscribir</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link text-secondary" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">🗑️ Dar de Baja / Eliminar</button>
+          </li>
+        </ul>
+
+        <!-- SECCIÓN 1: FORMULARIO DE INSCRIPCIÓN -->
+        <div id="sec-inscribir">
+          <div class="mb-3">
+            <label class="form-label text-light small">Código de Carnet / QR (único)</label>
+            <input type="text" id="estId" class="form-control bg-dark text-white border-secondary" placeholder="Ej: 58634568">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label text-light small">Nombres</label>
+            <input type="text" id="estNombres" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Diego">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label text-light small">Apellidos</label>
+            <input type="text" id="estApellidos" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Valeriano">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label text-light small">Curso</label>
+            <select id="selectCurso" class="form-select bg-dark text-white border-secondary">
+              <option value="">Seleccione el curso...</option>
+              <optgroup label="1ros de Secundaria">
+                <option value='1 "A"'>1 "A"</option>
+                <option value='1 "B"'>1 "B"</option>
+                <option value='1 "C"'>1 "C"</option>
+                <option value='1 "D"'>1 "D"</option>
+              </optgroup>
+              <optgroup label="2dos de Secundaria">
+                <option value='2 "A"'>2 "A"</option>
+                <option value='2 "B"'>2 "B"</option>
+                <option value='2 "C"'>2 "C"</option>
+                <option value='2 "D"'>2 "D"</option>
+              </optgroup>
+              <optgroup label="3ros de Secundaria">
+                <option value='3 "A"'>3 "A"</option>
+                <option value='3 "B"'>3 "B"</option>
+                <option value='3 "C"'>3 "C"</option>
+                <option value='3 "D"'>3 "D"</option>
+              </optgroup>
+              <optgroup label="4tos de Secundaria">
+                <option value='4 "A"'>4 "A"</option>
+                <option value='4 "B"'>4 "B"</option>
+                <option value='4 "C"'>4 "C"</option>
+              </optgroup>
+              <optgroup label="5tos de Secundaria">
+                <option value='5 "A"'>5 "A"</option>
+                <option value='5 "B"'>5 "B"</option>
+                <option value='5 "C"'>5 "C"</option>
+              </optgroup>
+              <optgroup label="6tos de Secundaria">
+                <option value='6 "A"'>6 "A"</option>
+                <option value='6 "B"'>6 "B"</option>
+                <option value='6 "C"'>6 "C"</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 fw-bold shadow" onclick="guardarEstudiante()">Guardar Estudiante</button>
+          <div id="gestion-msg" class="mt-3 text-center"></div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label text-light small">Nombres</label>
-          <input type="text" id="estNombres" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Diego">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label text-light small">Apellidos</label>
-          <input type="text" id="estApellidos" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Valeriano">
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label text-light small">Curso</label>
-          <select id="selectCurso" class="form-select bg-dark text-white border-secondary">
-            <option value="">Seleccione el curso...</option>
-            <optgroup label="1ros de Secundaria">
+        <!-- SECCIÓN 2: ELIMINAR ESTUDIANTE -->
+        <div id="sec-eliminar" style="display:none;">
+          <label class="form-label text-light small">Selecciona el curso para buscar:</label>
+          <div class="input-group mb-3">
+            <select id="delCurso" class="form-select bg-dark text-white border-secondary">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
               <option value='1 "C"'>1 "C"</option>
               <option value='1 "D"'>1 "D"</option>
-            </optgroup>
-            <optgroup label="2dos de Secundaria">
               <option value='2 "A"'>2 "A"</option>
               <option value='2 "B"'>2 "B"</option>
               <option value='2 "C"'>2 "C"</option>
               <option value='2 "D"'>2 "D"</option>
-            </optgroup>
-            <optgroup label="3ros de Secundaria">
               <option value='3 "A"'>3 "A"</option>
               <option value='3 "B"'>3 "B"</option>
               <option value='3 "C"'>3 "C"</option>
               <option value='3 "D"'>3 "D"</option>
-            </optgroup>
-            <optgroup label="4tos de Secundaria">
               <option value='4 "A"'>4 "A"</option>
               <option value='4 "B"'>4 "B"</option>
               <option value='4 "C"'>4 "C"</option>
-            </optgroup>
-            <optgroup label="5tos de Secundaria">
               <option value='5 "A"'>5 "A"</option>
               <option value='5 "B"'>5 "B"</option>
               <option value='5 "C"'>5 "C"</option>
-            </optgroup>
-            <optgroup label="6tos de Secundaria">
               <option value='6 "A"'>6 "A"</option>
               <option value='6 "B"'>6 "B"</option>
               <option value='6 "C"'>6 "C"</option>
-            </optgroup>
-          </select>
+            </select>
+            <button class="btn btn-warning fw-bold" onclick="cargarEstudiantesEliminar()">Listar Alumnos</button>
+          </div>
+
+          <div id="lista-eliminar-resultado">
+            <p class="text-center text-secondary small">Selecciona un curso y toca "Listar Alumnos" para ver a los estudiantes inscritos.</p>
+          </div>
         </div>
 
-        <button class="btn btn-primary w-100 py-2 fw-bold shadow" onclick="guardarEstudiante()">Guardar Estudiante</button>
-        <div id="gestion-msg" class="mt-3 text-center"></div>
       </div>
 
       <!-- TAB 4: AJUSTES -->
@@ -304,7 +352,86 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- CÁMARA & ESCÁNER CON ALERTA DE SANCIONES ---
+  // --- SUB-GESTIÓN: INSCRIBIR O ELIMINAR ---
+  function mostrarSubGestion(modo) {
+    const btnIns = document.getElementById("btnSubInscribir");
+    const btnDel = document.getElementById("btnSubEliminar");
+    const secIns = document.getElementById("sec-inscribir");
+    const secDel = document.getElementById("sec-eliminar");
+
+    if (modo === 'inscribir') {
+      btnIns.className = "nav-link active text-info";
+      btnDel.className = "nav-link text-secondary";
+      secIns.style.display = "block";
+      secDel.style.display = "none";
+    } else {
+      btnDel.className = "nav-link active text-danger";
+      btnIns.className = "nav-link text-secondary";
+      secIns.style.display = "none";
+      secDel.style.display = "block";
+      cargarEstudiantesEliminar();
+    }
+  }
+
+  function cargarEstudiantesEliminar() {
+    const curso = document.getElementById("delCurso").value;
+    const cont = document.getElementById("lista-eliminar-resultado");
+    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Cargando alumnos de ' + curso + '...</div>';
+
+    llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
+      if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
+        cont.innerHTML = `<div class="alert alert-secondary text-center small">No hay alumnos inscritos en ${curso}.</div>`;
+        return;
+      }
+
+      let html = `
+        <div class="table-responsive">
+          <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.85rem;">
+            <thead>
+              <tr class="table-secondary text-dark">
+                <th>N°</th>
+                <th class="text-start">Alumno</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      res.estudiantes.forEach(e => {
+        html += `
+          <tr>
+            <td>${e.nro}</td>
+            <td class="text-start">
+              <div class="fw-bold text-truncate" style="max-width: 150px;">${e.nombreCompleto}</div>
+              <small class="text-secondary">ID: ${e.id}</small>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-danger py-1 px-2" onclick="confirmarEliminar('${e.id}', '${e.nombreCompleto}')">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      cont.innerHTML = html;
+    });
+  }
+
+  function confirmarEliminar(id, nombre) {
+    if (!confirm(`¿Estás seguro de eliminar a ${nombre}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
+
+    const cont = document.getElementById("lista-eliminar-resultado");
+    cont.innerHTML = '<div class="text-center text-danger py-3">⏳ Eliminando estudiante...</div>';
+
+    llamarAPI({ action: "eliminarEstudiante", id: id }, function(res) {
+      alert(res.mensaje);
+      cargarEstudiantesEliminar();
+    });
+  }
+
+  // --- CÁMARA & ESCÁNER ---
   function sonarBip(esAlerta) {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -358,7 +485,7 @@
     llamarAPI({ action: "asistencia", id: codigo }, function(res) {
       if(res.success) {
         if(res.alertaCitacion) {
-          sonarBip(true); // Tono de alerta grave
+          sonarBip(true);
           div.className = "box-estado mt-3 p-2 bg-danger text-white border border-warning shadow";
           div.innerHTML = `<div class="p-1"><strong>🚨 ¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
         } else if(res.estado === "P") {
