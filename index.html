@@ -15,7 +15,7 @@
     .badge-p { background-color: #15803d; color: #bbf7d0; font-size: 0.85rem; }
     .badge-t { background-color: #c2410c; color: #fed7aa; font-size: 0.85rem; }
     .badge-f { background-color: #b91c1c; color: #fecaca; font-size: 0.85rem; }
-    .logo-colegio { max-width: 120px; height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+    .logo-colegio { max-width: 120px; height: auto; filter: drop-shadow(0 4px 12px rgba(56, 189, 248, 0.25)); }
     .alumno-link { color: #38bdf8 !important; cursor: pointer; text-decoration: underline; font-weight: bold; display: inline-block; padding: 2px 0; }
     .alumno-link:active { color: #fed7aa !important; }
     .metric-card { border-radius: 12px; padding: 10px; text-align: center; font-weight: bold; }
@@ -44,6 +44,7 @@
     <h5 class="text-info fw-bold mb-1">ASISTENCIA ESCOLAR</h5>
     <h6 class="text-light fw-bold mb-2">UNIDAD EDUCATIVA PAULO FREIRE</h6>
     <div class="my-2">
+      <!-- ESCUDO OFICIAL -->
       <img src="logo.png" alt="Escudo Paulo Freire" class="logo-colegio img-fluid">
     </div>
     <p class="text-secondary small mb-3">Sacaba - Cochabamba</p>
@@ -89,6 +90,7 @@
   <div id="vista-panel" style="display:none;">
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
       <div class="d-flex align-items-center">
+        <!-- ESCUDO EN MINIATURA -->
         <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 10px;">
         <div>
           <h6 class="m-0 text-info fw-bold" id="saludoRegente">Panel del Regente</h6>
@@ -329,6 +331,7 @@
         
         <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 18px; background: #ffffff;">
           <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #0284c7, #1e3a8a);">
+            <!-- ESCUDO EN EL CARNET -->
             <img src="logo.png" alt="Escudo" style="max-height: 55px;" class="mb-1">
             <h6 class="fw-bold m-0" style="font-size: 0.88rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
             <small style="font-size: 0.7rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</small>
@@ -412,7 +415,6 @@
     document.getElementById("form-estudiante").style.display = (rol === 'estudiante') ? 'block' : 'none';
   }
 
-  // --- CONSULTA DEL ESTUDIANTE POR CARNET ---
   function consultarEstudiante() {
     const ci = document.getElementById("ciEstudiante").value.trim();
     const cont = document.getElementById("estudiante-resultado");
@@ -464,7 +466,6 @@
       let html = `
         ${avisoCitacion}
         
-        <!-- Ficha Alumno -->
         <div class="p-3 bg-dark border border-secondary rounded mb-3">
           <div class="d-flex justify-content-between align-items-start">
             <div>
@@ -478,7 +479,6 @@
           </div>
         </div>
 
-        <!-- Métricas Resumen -->
         <div class="row g-2 text-center mb-3">
           <div class="col-4">
             <div class="metric-card bg-success bg-opacity-25 border border-success">
@@ -505,7 +505,6 @@
           <span class="badge bg-secondary">% Asistencia: ${r.porcentaje}</span>
         </div>
 
-        <!-- Tabla Historial -->
         <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
           <table class="table table-dark table-striped table-bordered text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
