@@ -18,8 +18,6 @@
     .logo-colegio { max-width: 120px; height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
     .alumno-link { color: #38bdf8 !important; cursor: pointer; text-decoration: underline; font-weight: bold; display: inline-block; padding: 2px 0; }
     .alumno-link:active { color: #fed7aa !important; }
-
-    /* Tarjetas de resumen del estudiante */
     .metric-card { border-radius: 12px; padding: 10px; text-align: center; font-weight: bold; }
 
     @media print {
@@ -201,7 +199,6 @@
 
       <!-- TAB 3: GESTIÓN DE ALUMNOS -->
       <div class="tab-pane fade card card-custom p-3" id="tab-gestion">
-        
         <ul class="nav nav-tabs nav-fill mb-3 border-secondary" id="subTabGestion" role="tablist">
           <li class="nav-item">
             <button class="nav-link active text-info" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">➕ Inscribir</button>
@@ -306,7 +303,6 @@
             <p class="text-center text-secondary small">Selecciona un curso para ver alumnos y generar sus credenciales.</p>
           </div>
         </div>
-
       </div>
 
       <!-- TAB 4: AJUSTES -->
@@ -386,7 +382,7 @@
   let cursoListaActual = "";
   let alumnosReporteMemoria = [];
   let cursoReporteActual = "";
-  let estudianteConsultaActual = null;
+  let estudianteConsultaActual = null; // Almacén seguro del estudiante buscado
 
   function llamarAPI(params, callback) {
     const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
@@ -430,7 +426,7 @@
         return;
       }
 
-      estudianteConsultaActual = res.estudiante;
+      estudianteConsultaActual = res.estudiante; // Guardar objeto en memoria
       const est = res.estudiante;
       const r = res.resumen;
 
@@ -468,7 +464,8 @@
               <div class="text-light small mt-1">Curso: <strong class="text-warning">${est.curso}</strong></div>
               <div class="text-secondary small">C.I. / Código: <strong>${est.id}</strong></div>
             </div>
-            <button class="btn btn-sm btn-outline-info" onclick="abrirCredencial('${est.id}', '${est.nombreCompleto}', '${est.curso}')">
+            <!-- BOTÓN QUE ABRE EL CARNET DIRECTAMENTE -->
+            <button class="btn btn-sm btn-info text-dark fw-bold shadow-sm" onclick="verCarnetEstudianteActual()">
               🪪 Ver Carnet QR
             </button>
           </div>
@@ -521,6 +518,16 @@
     });
   }
 
+  // Función directa para el botón del estudiante
+  function verCarnetEstudianteActual() {
+    if (!estudianteConsultaActual) return;
+    abrirCredencial(
+      estudianteConsultaActual.id,
+      estudianteConsultaActual.nombreCompleto,
+      estudianteConsultaActual.curso
+    );
+  }
+
   function iniciarSesion() {
     const user = document.getElementById("logUsuario").value.trim();
     const pass = document.getElementById("logPass").value.trim();
@@ -549,6 +556,7 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
+  // --- ABRIR LA CREDENCIAL DE MANERA 100% SEGURA ---
   function abrirCredencial(id, nombre, curso) {
     document.getElementById("credNombre").innerText = nombre;
     document.getElementById("credCurso").innerText = curso;
