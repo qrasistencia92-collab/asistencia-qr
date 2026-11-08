@@ -382,7 +382,7 @@
   let cursoListaActual = "";
   let alumnosReporteMemoria = [];
   let cursoReporteActual = "";
-  let estudianteConsultaActual = null; // Almacén seguro del estudiante buscado
+  let estudianteConsultaActual = null;
 
   function llamarAPI(params, callback) {
     const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
@@ -426,15 +426,23 @@
         return;
       }
 
-      estudianteConsultaActual = res.estudiante; // Guardar objeto en memoria
+      estudianteConsultaActual = res.estudiante;
       const est = res.estudiante;
       const r = res.resumen;
 
       let avisoCitacion = "";
-      if (r.citacion) {
+      if (res.citaciones && res.citaciones.length > 0) {
+        let motivosHtml = "";
+        res.citaciones.forEach(c => {
+          motivosHtml += `<div>• <strong>${c.motivo}</strong> (${c.fecha}) - ${c.estado}</div>`;
+        });
+
         avisoCitacion = `
-          <div class="alert alert-danger text-center small mb-3 p-2 fw-bold">
-            🚨 ¡Atención! Has acumulado 4 o más retrasos. Tienes una citación emitida para tus padres.
+          <div class="alert alert-danger text-start small mb-3 p-3 border border-warning shadow">
+            <h6 class="fw-bold text-danger mb-1">🚨 CITACIÓN OFICIAL A DIRECCIÓN</h6>
+            <p class="mb-2">Has superado el límite permitido de faltas o retrasos:</p>
+            ${motivosHtml}
+            <small class="text-warning mt-2 d-block">Debes presentarte con tu Padre/Madre o Tutor a Regencia.</small>
           </div>
         `;
       }
@@ -464,7 +472,6 @@
               <div class="text-light small mt-1">Curso: <strong class="text-warning">${est.curso}</strong></div>
               <div class="text-secondary small">C.I. / Código: <strong>${est.id}</strong></div>
             </div>
-            <!-- BOTÓN QUE ABRE EL CARNET DIRECTAMENTE -->
             <button class="btn btn-sm btn-info text-dark fw-bold shadow-sm" onclick="verCarnetEstudianteActual()">
               🪪 Ver Carnet QR
             </button>
@@ -518,7 +525,6 @@
     });
   }
 
-  // Función directa para el botón del estudiante
   function verCarnetEstudianteActual() {
     if (!estudianteConsultaActual) return;
     abrirCredencial(
@@ -556,7 +562,6 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- ABRIR LA CREDENCIAL DE MANERA 100% SEGURA ---
   function abrirCredencial(id, nombre, curso) {
     document.getElementById("credNombre").innerText = nombre;
     document.getElementById("credCurso").innerText = curso;
@@ -759,7 +764,7 @@
 
   function cargarCitaciones() {
     const cont = document.getElementById("repResultado");
-    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Consultando citaciones emitidas...</div>';
+    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Auditando y consultando citaciones...</div>';
 
     llamarAPI({ action: "obtenerCitaciones" }, function(res) {
       if(!res.success) {
@@ -768,15 +773,15 @@
       }
 
       let html = `
-        <h6 class="fw-bold text-danger mb-2">🚨 Citaciones por 4+ Retrasos</h6>
+        <h6 class="fw-bold text-danger mb-2">🚨 Citaciones por 4+ Retrasos o Faltas</h6>
         <div class="table-responsive">
           <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.8rem;">
             <thead>
               <tr class="table-danger text-dark">
-                <th>Fecha</th>
+                <th>N°</th>
                 <th class="text-start">Estudiante</th>
                 <th>Curso</th>
-                <th>Retrasos</th>
+                <th>Motivo</th>
               </tr>
             </thead>
             <tbody>
@@ -785,10 +790,10 @@
       res.citaciones.forEach(c => {
         html += `
           <tr>
-            <td>${c.fecha}<br><small class="text-secondary">${c.hora}</small></td>
-            <td class="text-start fw-bold text-truncate" style="max-width: 140px;">${c.estudiante}</td>
+            <td><small>${c.nro}</small><br><span class="text-secondary" style="font-size: 0.7rem;">${c.fecha}</span></td>
+            <td class="text-start fw-bold text-truncate" style="max-width: 130px;">${c.estudiante}</td>
             <td>${c.curso}</td>
-            <td><span class="badge bg-danger">${c.retrasos}</span></td>
+            <td><span class="badge bg-danger text-wrap" style="font-size: 0.75rem;">${c.motivo}</span></td>
           </tr>
         `;
       });
