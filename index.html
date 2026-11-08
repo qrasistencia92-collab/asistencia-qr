@@ -4,22 +4,200 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Control de Asistencia - U.E. Paulo Freire</title>
+  
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons (Librería de Iconos Profesionales) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Librería QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
-  <style>
-    body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .card-custom { background-color: #1e293b; border: 1px solid #334155; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    #reader { width: 100%; max-width: 400px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 2px solid #38bdf8; }
-    .box-estado { min-height: 55px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: bold; border-radius: 12px; }
-    .nav-pills .nav-link { font-size: 0.85rem; padding: 8px 6px; }
-    .badge-p { background-color: #15803d; color: #bbf7d0; font-size: 0.85rem; }
-    .badge-t { background-color: #c2410c; color: #fed7aa; font-size: 0.85rem; }
-    .badge-f { background-color: #b91c1c; color: #fecaca; font-size: 0.85rem; }
-    .logo-colegio { max-width: 120px; height: auto; filter: drop-shadow(0 4px 12px rgba(56, 189, 248, 0.25)); }
-    .alumno-link { color: #38bdf8 !important; cursor: pointer; text-decoration: underline; font-weight: bold; display: inline-block; padding: 2px 0; }
-    .alumno-link:active { color: #fed7aa !important; }
-    .metric-card { border-radius: 12px; padding: 10px; text-align: center; font-weight: bold; }
 
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.2) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: #f8fafc;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Tarjetas Glassmorphism */
+    .card-modern {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Pestañas de Navegación */
+    .nav-modern .nav-link {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-radius: 12px;
+      padding: 10px 8px;
+      margin: 0 3px;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-modern .nav-link i {
+      font-size: 1.15rem;
+    }
+    .nav-modern .nav-link.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Inputs y Selects */
+    .form-control-modern, .form-select-modern {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: #f8fafc !important;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .form-control-modern:focus, .form-select-modern:focus {
+      border-color: var(--accent-cyan) !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
+    }
+
+    /* Botones Modernos */
+    .btn-gradient-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 11px 18px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-gradient-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-gradient-danger {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+    }
+
+    /* Escáner */
+    #reader {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
+    }
+    .box-estado {
+      min-height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    /* Badges de Asistencia */
+    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); font-weight: 700; border-radius: 8px; }
+    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-weight: 700; border-radius: 8px; }
+    .badge-f { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); font-weight: 700; border-radius: 8px; }
+
+    /* Alumno clickeable */
+    .alumno-link {
+      color: var(--accent-cyan) !important;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .alumno-link:hover {
+      color: #bae6fd !important;
+      text-decoration: underline;
+    }
+
+    .logo-hero {
+      max-width: 110px;
+      height: auto;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+      transition: transform 0.3s ease;
+    }
+    .logo-hero:hover {
+      transform: scale(1.05);
+    }
+
+    /* Selector de Rol Moderno */
+    .role-toggle {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 14px;
+      padding: 4px;
+      border: 1px solid var(--card-border);
+      display: flex;
+    }
+    .role-toggle .btn {
+      border: none;
+      border-radius: 10px;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      flex: 1;
+      transition: all 0.25s ease;
+    }
+    .role-toggle .btn-check:checked + .btn {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+
+    /* Tarjetas de métricas */
+    .metric-card-modern {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    /* Impresión de Credencial */
     @media print {
       body * { visibility: hidden; }
       #carnet-credencial, #carnet-credencial * { visibility: visible; }
@@ -35,120 +213,176 @@
     }
   </style>
 </head>
-<body class="p-3">
+<body class="p-3 p-md-4">
 
-<div class="container" style="max-width: 600px;">
+<div class="container" style="max-width: 580px;">
 
-  <!-- PANTALLA 1: ENTRADA / CONSULTA ESTUDIANTE / LOGIN REGENTE -->
-  <div id="vista-login" class="card card-custom p-4 mt-2 text-center">
-    <h5 class="text-info fw-bold mb-1">ASISTENCIA ESCOLAR</h5>
-    <h6 class="text-light fw-bold mb-2">UNIDAD EDUCATIVA PAULO FREIRE</h6>
-    <div class="my-2">
-      <!-- ESCUDO OFICIAL -->
-      <img src="logo.png" alt="Escudo Paulo Freire" class="logo-colegio img-fluid">
-    </div>
-    <p class="text-secondary small mb-3">Sacaba - Cochabamba</p>
-    <p class="text-muted small mb-3">Seleccione su rol para continuar</p>
+  <!-- ========================================== -->
+  <!-- PANTALLA 1: INICIO (LOGIN / ESTUDIANTE)   -->
+  <!-- ========================================== -->
+  <div id="vista-login" class="card card-modern p-4 text-center mt-2">
     
-    <div class="btn-group w-100 mb-4" role="group">
+    <!-- Encabezado Institucional -->
+    <div class="mb-3">
+      <span class="badge bg-primary bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-1 rounded-pill mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+        GESTIÓN ESCOLAR OFICIAL
+      </span>
+      <h5 class="fw-bold text-white mb-0" style="letter-spacing: -0.5px;">CONTROL DE ASISTENCIA</h5>
+      <div class="text-secondary small fw-medium">U.E. PAULO FREIRE</div>
+    </div>
+
+    <!-- Escudo del Colegio -->
+    <div class="my-2">
+      <img src="logo.png" alt="Escudo Paulo Freire" class="logo-hero">
+    </div>
+    <div class="text-secondary small mb-4" style="font-size: 0.8rem;">Sacaba — Cochabamba</div>
+
+    <!-- Selector de Rol (Segmented Control) -->
+    <div class="role-toggle mb-4">
       <input type="radio" class="btn-check" name="btnRol" id="rolRegente" checked onclick="toggleRol('regente')">
-      <label class="btn btn-outline-info" for="rolRegente">Regente</label>
+      <label class="btn" for="rolRegente"><i class="bi bi-shield-lock me-1"></i> Regente</label>
 
       <input type="radio" class="btn-check" name="btnRol" id="rolEstudiante" onclick="toggleRol('estudiante')">
-      <label class="btn btn-outline-info" for="rolEstudiante">Estudiante</label>
+      <label class="btn" for="rolEstudiante"><i class="bi bi-mortarboard me-1"></i> Estudiante</label>
     </div>
 
-    <!-- Login Regente -->
+    <!-- Formulario Regente -->
     <div id="form-regente" class="text-start">
       <div class="mb-3">
-        <label class="form-label text-light small">Usuario</label>
-        <input type="text" id="logUsuario" class="form-control bg-dark text-white border-secondary" placeholder="Ej: regente1">
+        <label class="form-label text-secondary small fw-semibold">Usuario de Acceso</label>
+        <div class="input-group">
+          <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-person"></i></span>
+          <input type="text" id="logUsuario" class="form-control form-control-modern" placeholder="Ej: regente1">
+        </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label text-light small">Contraseña</label>
-        <input type="password" id="logPass" class="form-control bg-dark text-white border-secondary" placeholder="••••••••">
+      <div class="mb-4">
+        <label class="form-label text-secondary small fw-semibold">Contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-key"></i></span>
+          <input type="password" id="logPass" class="form-control form-control-modern" placeholder="••••••••">
+        </div>
       </div>
-      <button class="btn btn-primary w-100 py-2 fw-bold shadow mt-2" onclick="iniciarSesion()">Ingresar al Panel</button>
+      <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="iniciarSesion()">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Panel
+      </button>
       <div id="login-msg" class="mt-3 text-center"></div>
     </div>
 
-    <!-- BUSCADOR PARA ESTUDIANTES -->
+    <!-- Formulario / Buscador Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-start">
-      <label class="form-label text-light small fw-bold">Consulta de Asistencia Estudiantil:</label>
+      <label class="form-label text-light small fw-bold"><i class="bi bi-search me-1 text-info"></i> Buscar Estudiante por Carnet / C.I.:</label>
       <div class="input-group mb-3">
-        <input type="text" id="ciEstudiante" class="form-control bg-dark text-white border-secondary" placeholder="Ingresa tu C.I. o Código (Ej: 58634568)">
-        <button class="btn btn-info fw-bold" onclick="consultarEstudiante()">🔍 Buscar</button>
+        <input type="text" id="ciEstudiante" class="form-control form-control-modern" placeholder="Ingresa tu C.I. (Ej: 58634568)">
+        <button class="btn btn-gradient-primary px-3" onclick="consultarEstudiante()">
+          <i class="bi bi-search"></i>
+        </button>
       </div>
 
       <div id="estudiante-resultado" class="mt-3">
-        <p class="text-secondary text-center small">Escribe tu número de carnet y toca "Buscar" para ver tus asistencias, faltas y carnet QR.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- PANTALLA 2: PANEL DEL REGENTE -->
-  <div id="vista-panel" style="display:none;">
-    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-      <div class="d-flex align-items-center">
-        <!-- ESCUDO EN MINIATURA -->
-        <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 10px;">
-        <div>
-          <h6 class="m-0 text-info fw-bold" id="saludoRegente">Panel del Regente</h6>
-          <small class="text-secondary" style="font-size: 0.75rem;">U.E. Paulo Freire</small>
+        <div class="p-4 rounded-3 border border-secondary border-opacity-25 text-center text-secondary small bg-dark bg-opacity-25">
+          <i class="bi bi-card-text fs-3 d-block text-secondary mb-2 opacity-50"></i>
+          Ingresa tu número de carnet de identidad para consultar tus asistencias, faltas acumuladas y carnet digital QR.
         </div>
       </div>
-      <button class="btn btn-sm btn-outline-danger" onclick="cerrarSesion()">Salir</button>
     </div>
 
-    <!-- Pestañas -->
-    <ul class="nav nav-pills mb-3 nav-justified" id="pills-tab" role="tablist">
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PANTALLA 2: PANEL DE ADMINISTRACIÓN REGENTE-->
+  <!-- ========================================== -->
+  <div id="vista-panel" style="display:none;">
+    
+    <!-- Barra Superior -->
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
+      <div class="d-flex align-items-center">
+        <img src="logo.png" alt="Escudo" style="max-height: 42px; margin-right: 12px;">
+        <div>
+          <h6 class="m-0 text-white fw-bold" id="saludoRegente">Panel del Regente</h6>
+          <small class="text-info fw-semibold" style="font-size: 0.75rem;"><i class="bi bi-patch-check-fill me-1"></i>U.E. Paulo Freire</small>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3" onclick="cerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </button>
+    </div>
+
+    <!-- Pestañas Modernas -->
+    <ul class="nav nav-pills nav-modern mb-3 nav-justified" id="pills-tab" role="tablist">
       <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-escaner" onclick="iniciarCamara()">📷 Escáner</button>
+        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-escaner" onclick="iniciarCamara()">
+          <i class="bi bi-qr-code-scan"></i>
+          <span>Escáner</span>
+        </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-reportes" onclick="detenerCamara()">📊 Reportes</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-reportes" onclick="detenerCamara()">
+          <i class="bi bi-bar-chart-line"></i>
+          <span>Reportes</span>
+        </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">👨‍🎓 Alumnos</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">
+          <i class="bi bi-people"></i>
+          <span>Alumnos</span>
+        </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-perfil" onclick="detenerCamara()">⚙️ Ajustes</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-perfil" onclick="detenerCamara()">
+          <i class="bi bi-gear"></i>
+          <span>Ajustes</span>
+        </button>
       </li>
     </ul>
 
     <div class="tab-content">
       
       <!-- TAB 1: ESCÁNER EN VIVO -->
-      <div class="tab-pane fade show active card card-custom p-3 text-center" id="tab-escaner">
-        <div class="d-flex justify-content-between small text-secondary mb-2">
-          <span>🟢 Puntual: Hasta 07:20</span>
-          <span>🟠 Tarde (Límite 3): 07:21 - 12:00</span>
+      <div class="tab-pane fade show active card card-modern p-3 text-center" id="tab-escaner">
+        
+        <!-- Reloj Digital y Estado del Horario (Nueva Función) -->
+        <div class="d-flex justify-content-between align-items-center mb-3 px-2 py-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-clock text-info me-2"></i>
+            <span id="reloj-vivo" class="fw-bold font-monospace text-light" style="font-size: 0.95rem;">00:00:00</span>
+          </div>
+          <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">
+            Puntual
+          </div>
+          <button id="btn-audio-mute" class="btn btn-sm btn-outline-secondary border-0 p-1 text-light" onclick="toggleMute()" title="Silenciar / Activar sonido">
+            <i class="bi bi-volume-up-fill" id="icono-audio"></i>
+          </button>
         </div>
 
-        <div id="reader" class="shadow"></div>
+        <!-- Visor de Cámara -->
+        <div id="reader"></div>
 
-        <div id="estado-escaneo" class="box-estado mt-3 p-2 bg-dark border border-secondary text-warning">
-          Apunta la cámara al carnet QR...
+        <!-- Estado de Escaneo -->
+        <div id="estado-escaneo" class="box-estado mt-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-info">
+          <i class="bi bi-camera me-2"></i> Apunta la cámara al carnet QR...
         </div>
 
-        <div class="mt-3 pt-2 border-top border-secondary">
-          <button class="btn btn-outline-danger btn-sm w-100 py-2" onclick="cerrarAsistenciaDia()">
-            🔒 Marcar Faltas de Hoy (Cierre 12:00 PM)
+        <!-- Cierre de asistencia -->
+        <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
+          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3 border-opacity-50" onclick="cerrarAsistenciaDia()">
+            <i class="bi bi-lock-fill me-1"></i> Cerrar Asistencia de Hoy (Marcar Faltas)
           </button>
         </div>
       </div>
 
       <!-- TAB 2: REPORTES Y CITACIONES -->
-      <div class="tab-pane fade card card-custom p-3" id="tab-reportes">
+      <div class="tab-pane fade card card-modern p-3" id="tab-reportes">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="fw-bold text-info m-0">📊 Reportes y Citaciones</h5>
-          <button class="btn btn-sm btn-outline-warning" onclick="cargarCitaciones()">🚨 Ver Citaciones</button>
+          <h6 class="fw-bold text-white m-0"><i class="bi bi-calendar3 me-1 text-info"></i> Asistencia Mensual</h6>
+          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3" onclick="cargarCitaciones()">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i> Citaciones
+          </button>
         </div>
         
         <div class="row g-2 mb-3">
           <div class="col-6">
-            <label class="form-label text-light small">Curso:</label>
-            <select id="repCurso" class="form-select form-select-sm bg-dark text-white border-secondary">
+            <label class="form-label text-secondary small fw-medium">Curso:</label>
+            <select id="repCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
               <option value='1 "C"'>1 "C"</option>
@@ -173,8 +407,8 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label text-light small">Mes:</label>
-            <select id="repMes" class="form-select form-select-sm bg-dark text-white border-secondary">
+            <label class="form-label text-secondary small fw-medium">Mes:</label>
+            <select id="repMes" class="form-select form-select-modern">
               <option value="2">Febrero</option>
               <option value="3">Marzo</option>
               <option value="4">Abril</option>
@@ -183,53 +417,58 @@
               <option value="7">Julio</option>
               <option value="8">Agosto</option>
               <option value="9">Septiembre</option>
-              <option value="10" selected>Octubre</option>
-              <option value="11">Noviembre</option>
+              <option value="10">Octubre</option>
+              <option value="11" selected>Noviembre</option>
               <option value="12">Diciembre</option>
             </select>
           </div>
         </div>
 
-        <button class="btn btn-info btn-sm w-100 fw-bold py-2 mb-3 shadow" onclick="cargarReporteMensual()">
-          🔍 Consultar Asistencias del Mes
+        <button class="btn btn-gradient-primary w-100 py-2 mb-3" onclick="cargarReporteMensual()">
+          <i class="bi bi-search me-1"></i> Consultar Asistencias del Mes
         </button>
 
         <div id="repResultado">
-          <p class="text-center text-secondary small">Selecciona un curso y mes para consultar o pulsa "Ver Citaciones".</p>
+          <p class="text-center text-secondary small py-4">Selecciona un curso y mes para consultar o pulsa "Citaciones".</p>
         </div>
       </div>
 
       <!-- TAB 3: GESTIÓN DE ALUMNOS -->
-      <div class="tab-pane fade card card-custom p-3" id="tab-gestion">
-        <ul class="nav nav-tabs nav-fill mb-3 border-secondary" id="subTabGestion" role="tablist">
+      <div class="tab-pane fade card card-modern p-3" id="tab-gestion">
+        <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25" id="subTabGestion" role="tablist">
           <li class="nav-item">
-            <button class="nav-link active text-info" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">➕ Inscribir</button>
+            <button class="nav-link active rounded-2 text-white py-2" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
+              <i class="bi bi-person-plus me-1"></i> Inscribir
+            </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link text-secondary" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">🪪 Lista & Credenciales</button>
+            <button class="nav-link rounded-2 text-secondary py-2" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">
+              <i class="bi bi-person-badge me-1"></i> Lista & Credenciales
+            </button>
           </li>
         </ul>
 
         <!-- SECCIÓN 1: FORMULARIO DE INSCRIPCIÓN -->
         <div id="sec-inscribir">
           <div class="mb-3">
-            <label class="form-label text-light small">Código de Carnet / C.I. (único)</label>
-            <input type="text" id="estId" class="form-control bg-dark text-white border-secondary" placeholder="Ej: 58634568">
+            <label class="form-label text-secondary small fw-semibold">Código de Carnet / C.I. (único)</label>
+            <input type="text" id="estId" class="form-control form-control-modern" placeholder="Ej: 58634568">
           </div>
 
-          <div class="mb-3">
-            <label class="form-label text-light small">Nombres</label>
-            <input type="text" id="estNombres" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Diego">
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label text-light small">Apellidos</label>
-            <input type="text" id="estApellidos" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Valeriano">
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label text-secondary small fw-semibold">Nombres</label>
+              <input type="text" id="estNombres" class="form-control form-control-modern" placeholder="Ej: Diego">
+            </div>
+            <div class="col-6">
+              <label class="form-label text-secondary small fw-semibold">Apellidos</label>
+              <input type="text" id="estApellidos" class="form-control form-control-modern" placeholder="Ej: Valeriano">
+            </div>
           </div>
 
           <div class="mb-4">
-            <label class="form-label text-light small">Curso</label>
-            <select id="selectCurso" class="form-select bg-dark text-white border-secondary">
+            <label class="form-label text-secondary small fw-semibold">Curso</label>
+            <select id="selectCurso" class="form-select form-select-modern">
               <option value="">Seleccione el curso...</option>
               <optgroup label="1ros de Secundaria">
                 <option value='1 "A"'>1 "A"</option>
@@ -267,15 +506,17 @@
             </select>
           </div>
 
-          <button class="btn btn-primary w-100 py-2 fw-bold shadow" onclick="guardarEstudiante()">Guardar Estudiante</button>
+          <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="guardarEstudiante()">
+            <i class="bi bi-check-circle me-1"></i> Registrar Estudiante
+          </button>
           <div id="gestion-msg" class="mt-3 text-center"></div>
         </div>
 
-        <!-- SECCIÓN 2: LISTA DE ALUMNOS CON CREDENCIALES -->
+        <!-- SECCIÓN 2: LISTA DE ALUMNOS CON CREDENCIALES Y FILTRO EN VIVO -->
         <div id="sec-eliminar" style="display:none;">
-          <label class="form-label text-light small">Selecciona el curso para ver alumnos:</label>
+          <label class="form-label text-secondary small fw-semibold">Selecciona el curso para ver alumnos:</label>
           <div class="input-group mb-3">
-            <select id="delCurso" class="form-select bg-dark text-white border-secondary">
+            <select id="delCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
               <option value='1 "C"'>1 "C"</option>
@@ -298,23 +539,35 @@
               <option value='6 "B"'>6 "B"</option>
               <option value='6 "C"'>6 "C"</option>
             </select>
-            <button class="btn btn-info fw-bold" onclick="cargarEstudiantesEliminar()">Listar Alumnos</button>
+            <button class="btn btn-gradient-primary px-3" onclick="cargarEstudiantesEliminar()">
+              <i class="bi bi-arrow-clockwise me-1"></i> Listar
+            </button>
+          </div>
+
+          <!-- Buscador / Filtro Rápido en Vivo (Nueva Función) -->
+          <div id="contenedor-filtro" class="mb-3" style="display:none;">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-funnel"></i></span>
+              <input type="text" id="filtroRapido" class="form-control form-control-modern" placeholder="Filtrar por nombre o C.I..." onkeyup="filtrarAlumnosTabla()">
+            </div>
           </div>
 
           <div id="lista-eliminar-resultado">
-            <p class="text-center text-secondary small">Selecciona un curso para ver alumnos y generar sus credenciales.</p>
+            <p class="text-center text-secondary small py-4">Selecciona un curso para ver a los alumnos y abrir sus credenciales.</p>
           </div>
         </div>
       </div>
 
       <!-- TAB 4: AJUSTES -->
-      <div class="tab-pane fade card card-custom p-4" id="tab-perfil">
-        <h5 class="fw-bold text-info mb-3">Cambiar Mi Contraseña</h5>
+      <div class="tab-pane fade card card-modern p-4" id="tab-perfil">
+        <h6 class="fw-bold text-white mb-3"><i class="bi bi-shield-lock me-1 text-info"></i> Seguridad de la Cuenta</h6>
         <div class="mb-3">
-          <label class="form-label text-light small">Nueva Contraseña</label>
-          <input type="password" id="nuevaPass" class="form-control bg-dark text-white border-secondary" placeholder="Mínimo 4 caracteres">
+          <label class="form-label text-secondary small fw-semibold">Nueva Contraseña</label>
+          <input type="password" id="nuevaPass" class="form-control form-control-modern" placeholder="Mínimo 4 caracteres">
         </div>
-        <button class="btn btn-warning w-100 fw-bold py-2" onclick="actualizarContrasena()">Actualizar Contraseña</button>
+        <button class="btn btn-gradient-primary w-100 py-3" onclick="actualizarContrasena()">
+          <i class="bi bi-key me-1"></i> Actualizar Contraseña
+        </button>
         <div id="perfil-msg" class="mt-3 text-center"></div>
       </div>
 
@@ -323,40 +576,47 @@
 
 </div>
 
-<!-- VENTANA MODAL: CREDENCIAL ESTUDIANTIL OFICIAL -->
+<!-- ========================================== -->
+<!-- MODAL: CREDENCIAL ESTUDIANTIL OFICIAL PVC  -->
+<!-- ========================================== -->
 <div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
     <div class="modal-content bg-transparent border-0">
       <div class="modal-body p-0">
         
-        <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 18px; background: #ffffff;">
-          <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #0284c7, #1e3a8a);">
-            <!-- ESCUDO EN EL CARNET -->
-            <img src="logo.png" alt="Escudo" style="max-height: 55px;" class="mb-1">
+        <!-- DISEÑO CREDENCIAL MODERNA -->
+        <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 20px; background: #ffffff;">
+          
+          <!-- Encabezado Institucional -->
+          <div class="p-3 text-center text-white position-relative" style="background: linear-gradient(135deg, #0284c7, #1e3a8a);">
+            <img src="logo.png" alt="Escudo" style="max-height: 52px;" class="mb-1">
             <h6 class="fw-bold m-0" style="font-size: 0.88rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
-            <small style="font-size: 0.7rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</small>
-            <div class="badge bg-warning text-dark mt-1 px-3 py-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">CREDENCIAL ESTUDIANTIL</div>
+            <div style="font-size: 0.68rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
+            <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+              CREDENCIAL ESTUDIANTIL
+            </div>
           </div>
 
+          <!-- Cuerpo con QR y Datos -->
           <div class="p-3 text-center">
             <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
               <img id="credQrImg" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
             </div>
 
-            <h5 class="fw-bold text-dark mb-1 text-uppercase" id="credNombre">NOMBRE ALUMNO</h5>
+            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="credNombre">NOMBRE ALUMNO</h6>
             
-            <div class="row g-1 mt-2 text-start bg-light p-2 rounded border">
+            <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
               <div class="col-6">
-                <small class="text-muted d-block" style="font-size: 0.7rem;">CURSO:</small>
+                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
                 <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="credCurso">-</span>
               </div>
               <div class="col-6 text-end">
-                <small class="text-muted d-block" style="font-size: 0.7rem;">CÓDIGO / C.I.:</small>
+                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CÓDIGO / C.I.:</div>
                 <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="credId">-</span>
               </div>
             </div>
 
-            <div class="mt-2 text-muted" style="font-size: 0.65rem;">
+            <div class="mt-2 text-muted" style="font-size: 0.62rem;">
               Control Automatizado de Asistencia Estudiantil QR
             </div>
           </div>
@@ -364,9 +624,14 @@
 
       </div>
 
-      <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0">
-        <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-sm btn-info text-white fw-bold px-3 shadow" onclick="window.print()">🖨️ Imprimir Credencial</button>
+      <!-- Botones de Acción -->
+      <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0 gap-2">
+        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i> Cerrar
+        </button>
+        <button type="button" class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="window.print()">
+          <i class="bi bi-printer me-1"></i> Imprimir
+        </button>
       </div>
 
     </div>
@@ -380,6 +645,7 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbyV16aq3IGB3JrnHeEx6F_wU0Ro71a2Djik-CuXSDBosMcr1Tg5anmBBGuEB5xqnsYm/exec";
   let usuarioActual = "";
   let html5QrCode = null;
+  let audioSilenciado = false;
 
   let alumnosListaMemoria = [];
   let cursoListaActual = "";
@@ -387,6 +653,44 @@
   let cursoReporteActual = "";
   let estudianteConsultaActual = null;
 
+  // --- RELOJ EN VIVO Y HORARIO INTELIGENTE ---
+  function actualizarReloj() {
+    const ahora = new Date();
+    const h = String(ahora.getHours()).padStart(2, '0');
+    const m = String(ahora.getMinutes()).padStart(2, '0');
+    const s = String(ahora.getSeconds()).padStart(2, '0');
+    
+    const relojEl = document.getElementById("reloj-vivo");
+    if (relojEl) relojEl.innerText = `${h}:${m}:${s}`;
+
+    const horaMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+    const badgeHorario = document.getElementById("badge-horario");
+    
+    if (badgeHorario) {
+      if (horaMinutos <= 440) { // Hasta 07:20
+        badgeHorario.className = "badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Puntual (hasta 07:20)';
+      } else if (horaMinutos <= 720) { // 07:21 a 12:00
+        badgeHorario.className = "badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-clock-history me-1"></i> Tolerancia / Retraso';
+      } else {
+        badgeHorario.className = "badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-x-circle me-1"></i> Horario Cerrado';
+      }
+    }
+  }
+  setInterval(actualizarReloj, 1000);
+  actualizarReloj();
+
+  function toggleMute() {
+    audioSilenciado = !audioSilenciado;
+    const icono = document.getElementById("icono-audio");
+    if (icono) {
+      icono.className = audioSilenciado ? "bi bi-volume-mute-fill text-danger" : "bi bi-volume-up-fill text-light";
+    }
+  }
+
+  // --- COMUNICACIÓN CON GOOGLE SHEETS (JSONP) ---
   function llamarAPI(params, callback) {
     const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
     window[cbName] = function(res) {
@@ -415,16 +719,27 @@
     document.getElementById("form-estudiante").style.display = (rol === 'estudiante') ? 'block' : 'none';
   }
 
+  // --- CONSULTA DEL ESTUDIANTE POR CARNET ---
   function consultarEstudiante() {
     const ci = document.getElementById("ciEstudiante").value.trim();
     const cont = document.getElementById("estudiante-resultado");
 
     if (!ci) return alert("Por favor ingresa tu número de Carnet / Código");
-    cont.innerHTML = '<div class="text-center text-info py-3">⏳ Buscando información del estudiante...</div>';
+    cont.innerHTML = `
+      <div class="text-center text-info py-4">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        Buscando ficha del estudiante...
+      </div>
+    `;
 
     llamarAPI({ action: "buscarEstudiante", ci: ci }, function(res) {
       if (!res.success) {
-        cont.innerHTML = `<div class="alert alert-warning text-center small">${res.mensaje}</div>`;
+        cont.innerHTML = `
+          <div class="alert alert-warning border-0 text-center small p-3 bg-warning bg-opacity-10 text-warning">
+            <i class="bi bi-exclamation-triangle fs-5 d-block mb-1"></i>
+            ${res.mensaje}
+          </div>
+        `;
         return;
       }
 
@@ -436,27 +751,30 @@
       if (res.citaciones && res.citaciones.length > 0) {
         let motivosHtml = "";
         res.citaciones.forEach(c => {
-          motivosHtml += `<div>• <strong>${c.motivo}</strong> (${c.fecha}) - ${c.estado}</div>`;
+          motivosHtml += `<div class="mb-1">• <strong>${c.motivo}</strong> (${c.fecha}) — ${c.estado}</div>`;
         });
 
         avisoCitacion = `
-          <div class="alert alert-danger text-start small mb-3 p-3 border border-warning shadow">
-            <h6 class="fw-bold text-danger mb-1">🚨 CITACIÓN OFICIAL A DIRECCIÓN</h6>
-            <p class="mb-2">Has superado el límite permitido de faltas o retrasos:</p>
-            ${motivosHtml}
-            <small class="text-warning mt-2 d-block">Debes presentarte con tu Padre/Madre o Tutor a Regencia.</small>
+          <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
+            <div class="d-flex align-items-center text-danger fw-bold mb-2">
+              <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i>
+              CITACIÓN OFICIAL A DIRECCIÓN
+            </div>
+            <div class="small text-light mb-2">Has superado el límite permitido de faltas o retrasos:</div>
+            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded">${motivosHtml}</div>
+            <small class="text-warning mt-2 d-block"><i class="bi bi-info-circle me-1"></i>Presentarse con su Padre/Madre de Familia a Regencia.</small>
           </div>
         `;
       }
 
       let filasHistorial = "";
       if (res.historial.length === 0) {
-        filasHistorial = '<tr><td colspan="2" class="text-secondary small">Aún no tienes registros de asistencia en el sistema.</td></tr>';
+        filasHistorial = '<tr><td colspan="2" class="text-secondary small py-3">Aún no registras asistencias en la gestión.</td></tr>';
       } else {
         res.historial.forEach(h => {
           filasHistorial += `
             <tr>
-              <td><strong>${h.fecha}</strong></td>
+              <td class="text-light fw-medium">${h.fecha}</td>
               <td><span class="badge ${h.badge} px-2 py-1">${h.estadoTexto} (${h.estado})</span></td>
             </tr>
           `;
@@ -466,51 +784,55 @@
       let html = `
         ${avisoCitacion}
         
-        <div class="p-3 bg-dark border border-secondary rounded mb-3">
-          <div class="d-flex justify-content-between align-items-start">
+        <!-- Ficha de Perfil -->
+        <div class="p-3 card-modern mb-3">
+          <div class="d-flex justify-content-between align-items-center">
             <div>
-              <h5 class="fw-bold text-info mb-0 text-uppercase">${est.nombreCompleto}</h5>
-              <div class="text-light small mt-1">Curso: <strong class="text-warning">${est.curso}</strong></div>
-              <div class="text-secondary small">C.I. / Código: <strong>${est.id}</strong></div>
+              <div class="text-secondary small" style="font-size: 0.7rem; font-weight: 600;">ESTUDIANTE REGISTRADO</div>
+              <h6 class="fw-bold text-info mb-1 text-uppercase">${est.nombreCompleto}</h6>
+              <div class="text-light small">Curso: <strong class="text-warning">${est.curso}</strong></div>
+              <div class="text-secondary small">C.I.: <strong class="text-light font-monospace">${est.id}</strong></div>
             </div>
-            <button class="btn btn-sm btn-info text-dark fw-bold shadow-sm" onclick="verCarnetEstudianteActual()">
-              🪪 Ver Carnet QR
+            <button class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="verCarnetEstudianteActual()">
+              <i class="bi bi-qr-code me-1"></i> Mi QR
             </button>
           </div>
         </div>
 
+        <!-- Tarjetas de Métricas -->
         <div class="row g-2 text-center mb-3">
           <div class="col-4">
-            <div class="metric-card bg-success bg-opacity-25 border border-success">
-              <span class="d-block text-success" style="font-size: 1.3rem;">${r.p}</span>
-              <small class="text-light" style="font-size: 0.7rem;">ASISTENCIAS</small>
+            <div class="metric-card-modern border-success border-opacity-25 bg-success bg-opacity-10">
+              <span class="d-block text-success fw-bold" style="font-size: 1.35rem;">${r.p}</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">ASISTENCIAS</small>
             </div>
           </div>
           <div class="col-4">
-            <div class="metric-card bg-warning bg-opacity-25 border border-warning">
-              <span class="d-block text-warning" style="font-size: 1.3rem;">${r.t}</span>
-              <small class="text-light" style="font-size: 0.7rem;">RETRASOS</small>
+            <div class="metric-card-modern border-warning border-opacity-25 bg-warning bg-opacity-10">
+              <span class="d-block text-warning fw-bold" style="font-size: 1.35rem;">${r.t}</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">RETRASOS</small>
             </div>
           </div>
           <div class="col-4">
-            <div class="metric-card bg-danger bg-opacity-25 border border-danger">
-              <span class="d-block text-danger" style="font-size: 1.3rem;">${r.f}</span>
-              <small class="text-light" style="font-size: 0.7rem;">FALTAS</small>
+            <div class="metric-card-modern border-danger border-opacity-25 bg-danger bg-opacity-10">
+              <span class="d-block text-danger fw-bold" style="font-size: 1.35rem;">${r.f}</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">FALTAS</small>
             </div>
           </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-light small">📋 Historial de Asistencia:</span>
-          <span class="badge bg-secondary">% Asistencia: ${r.porcentaje}</span>
+          <span class="fw-bold text-light small"><i class="bi bi-clock-history me-1 text-info"></i> Historial Reciente:</span>
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-info">% Asistencia: ${r.porcentaje}</span>
         </div>
 
-        <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
-          <table class="table table-dark table-striped table-bordered text-center align-middle mb-0" style="font-size: 0.85rem;">
+        <!-- Tabla Historial -->
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25" style="max-height: 250px; overflow-y: auto;">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
-              <tr class="table-secondary text-dark">
-                <th>Fecha</th>
-                <th>Estado</th>
+              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+                <th>FECHA</th>
+                <th>ESTADO</th>
               </tr>
             </thead>
             <tbody>
@@ -538,8 +860,8 @@
     const pass = document.getElementById("logPass").value.trim();
     const msg = document.getElementById("login-msg");
 
-    if(!user || !pass) return msg.innerHTML = '<span class="text-danger">Completa todos los campos</span>';
-    msg.innerHTML = '<span class="text-info">Validando credenciales...</span>';
+    if(!user || !pass) return msg.innerHTML = '<span class="text-danger small">Completa todos los campos</span>';
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Validando...</span>';
 
     llamarAPI({ action: "login", usuario: user, password: pass }, function(res) {
       if(res.success) {
@@ -549,7 +871,7 @@
         document.getElementById("vista-panel").style.display = "block";
         setTimeout(iniciarCamara, 300);
       } else {
-        msg.innerHTML = `<span class="text-danger">${res.mensaje}</span>`;
+        msg.innerHTML = `<span class="text-danger small">${res.mensaje}</span>`;
       }
     });
   }
@@ -593,13 +915,13 @@
     const secDel = document.getElementById("sec-eliminar");
 
     if (modo === 'inscribir') {
-      btnIns.className = "nav-link active text-info";
-      btnDel.className = "nav-link text-secondary";
+      btnIns.className = "nav-link active rounded-2 text-white py-2";
+      btnDel.className = "nav-link rounded-2 text-secondary py-2";
       secIns.style.display = "block";
       secDel.style.display = "none";
     } else {
-      btnDel.className = "nav-link active text-info";
-      btnIns.className = "nav-link text-secondary";
+      btnDel.className = "nav-link active rounded-2 text-white py-2";
+      btnIns.className = "nav-link rounded-2 text-secondary py-2";
       secIns.style.display = "none";
       secDel.style.display = "block";
       cargarEstudiantesEliminar();
@@ -610,24 +932,33 @@
     const curso = document.getElementById("delCurso").value;
     cursoListaActual = curso;
     const cont = document.getElementById("lista-eliminar-resultado");
-    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Cargando alumnos de ' + curso + '...</div>';
+    const filtroCont = document.getElementById("contenedor-filtro");
+
+    cont.innerHTML = `
+      <div class="text-center text-info py-4">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        Cargando alumnos de ${curso}...
+      </div>
+    `;
 
     llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
       if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
-        cont.innerHTML = `<div class="alert alert-secondary text-center small">No hay alumnos inscritos en ${curso}.</div>`;
+        if (filtroCont) filtroCont.style.display = "none";
+        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay alumnos inscritos en ${curso}.</div>`;
         return;
       }
 
       alumnosListaMemoria = res.estudiantes;
+      if (filtroCont) filtroCont.style.display = "block";
 
       let html = `
-        <div class="table-responsive">
-          <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.85rem;">
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table id="tablaAlumnosGestion" class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
-              <tr class="table-secondary text-dark">
-                <th>N°</th>
-                <th class="text-start">Alumno (Toca para ver credencial)</th>
-                <th>Acción</th>
+              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+                <th style="width: 12%;">N°</th>
+                <th class="text-start">ESTUDIANTE</th>
+                <th style="width: 20%;">ACCIÓN</th>
               </tr>
             </thead>
             <tbody>
@@ -635,17 +966,17 @@
 
       alumnosListaMemoria.forEach((e, idx) => {
         html += `
-          <tr>
-            <td>${e.nro}</td>
+          <tr class="fila-alumno-item">
+            <td class="text-secondary">${e.nro}</td>
             <td class="text-start">
-              <span class="alumno-link text-truncate" style="max-width: 160px;" onclick="clickAlumnoLista(${idx})">
-                🪪 ${e.nombreCompleto}
+              <span class="alumno-link text-truncate d-block" style="max-width: 170px;" onclick="clickAlumnoLista(${idx})">
+                <i class="bi bi-person-badge me-1"></i>${e.nombreCompleto}
               </span>
-              <br><small class="text-secondary">ID: ${e.id}</small>
+              <small class="text-secondary font-monospace" style="font-size: 0.72rem;">C.I.: ${e.id}</small>
             </td>
             <td>
-              <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="confirmarEliminarIdx(${idx})" title="Eliminar alumno">
-                🗑️
+              <button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="confirmarEliminarIdx(${idx})" title="Eliminar alumno">
+                <i class="bi bi-trash3-fill"></i>
               </button>
             </td>
           </tr>
@@ -657,13 +988,24 @@
     });
   }
 
+  // --- FILTRO EN VIVO PARA ALUMNOS ---
+  function filtrarAlumnosTabla() {
+    const input = document.getElementById("filtroRapido").value.toLowerCase();
+    const filas = document.querySelectorAll(".fila-alumno-item");
+
+    filas.forEach(f => {
+      const texto = f.innerText.toLowerCase();
+      f.style.display = texto.includes(input) ? "" : "none";
+    });
+  }
+
   function confirmarEliminarIdx(idx) {
     const e = alumnosListaMemoria[idx];
     if (!e) return;
     if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
 
     const cont = document.getElementById("lista-eliminar-resultado");
-    cont.innerHTML = '<div class="text-center text-danger py-3">⏳ Eliminando estudiante...</div>';
+    cont.innerHTML = '<div class="text-center text-danger py-3"><div class="spinner-border spinner-border-sm me-2"></div>Eliminando estudiante...</div>';
 
     llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
       alert(res.mensaje);
@@ -672,6 +1014,7 @@
   }
 
   function sonarBip(esAlerta) {
+    if (audioSilenciado) return;
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.createOscillator();
@@ -695,10 +1038,10 @@
       alDetectarQR,
       () => {}
     ).then(() => {
-      document.getElementById("estado-escaneo").innerHTML = "Apunta al código QR del carnet...";
+      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-camera me-1"></i> Apunta la cámara al carnet QR...';
     }).catch(err => {
-      document.getElementById("estado-escaneo").className = "box-estado mt-3 p-2 bg-danger text-white";
-      document.getElementById("estado-escaneo").innerHTML = "Permite el acceso a la cámara en el navegador.";
+      document.getElementById("estado-escaneo").className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
+      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> Permite el acceso a la cámara en el navegador.';
     });
   }
 
@@ -718,27 +1061,27 @@
     tiempoUltimo = ahora;
 
     const div = document.getElementById("estado-escaneo");
-    div.className = "box-estado mt-3 p-2 bg-primary text-white";
-    div.innerHTML = "⏳ Registrando: " + codigo + "...";
+    div.className = "box-estado mt-3 bg-primary bg-opacity-25 border border-primary text-info";
+    div.innerHTML = `<div class="spinner-border spinner-border-sm me-2"></div> Registrando: ${codigo}...`;
 
     llamarAPI({ action: "asistencia", id: codigo }, function(res) {
       if(res.success) {
         if(res.alertaCitacion) {
           sonarBip(true);
-          div.className = "box-estado mt-3 p-2 bg-danger text-white border border-warning shadow";
-          div.innerHTML = `<div class="p-1"><strong>🚨 ¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
+          div.className = "box-estado mt-3 bg-danger bg-opacity-25 text-white border border-danger shadow";
+          div.innerHTML = `<div><i class="bi bi-exclamation-octagon-fill me-1 text-danger"></i> <strong>¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
         } else if(res.estado === "P") {
           sonarBip(false);
-          div.className = "box-estado mt-3 p-2 bg-success text-white";
-          div.innerHTML = res.mensaje;
+          div.className = "box-estado mt-3 bg-success bg-opacity-25 border border-success text-success";
+          div.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${res.mensaje}`;
         } else {
           sonarBip(false);
-          div.className = "box-estado mt-3 p-2 bg-warning text-dark";
-          div.innerHTML = res.mensaje;
+          div.className = "box-estado mt-3 bg-warning bg-opacity-25 border border-warning text-warning";
+          div.innerHTML = `<i class="bi bi-clock-history me-1"></i> ${res.mensaje}`;
         }
       } else {
-        div.className = "box-estado mt-3 p-2 bg-danger text-white";
-        div.innerHTML = "⚠️ " + res.mensaje;
+        div.className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
+        div.innerHTML = `<i class="bi bi-x-circle-fill me-1 text-danger"></i> ${res.mensaje}`;
       }
     });
   }
@@ -747,14 +1090,14 @@
     if (!confirm("¿Deseas cerrar la asistencia de hoy y poner FALTA (F) a todos los alumnos ausentes?")) return;
 
     const div = document.getElementById("estado-escaneo");
-    div.className = "box-estado mt-3 p-2 bg-info text-dark";
-    div.innerHTML = "⏳ Procesando faltas en todos los cursos...";
+    div.className = "box-estado mt-3 bg-info bg-opacity-25 border border-info text-info";
+    div.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Procesando faltas en todos los cursos...';
 
     llamarAPI({ action: "marcarFaltas" }, function(res) {
       if(res.success) {
         alert(res.mensaje);
-        div.className = "box-estado mt-3 p-2 bg-secondary text-white";
-        div.innerHTML = "Asistencia del día cerrada.";
+        div.className = "box-estado mt-3 bg-secondary bg-opacity-25 border border-secondary text-secondary";
+        div.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Asistencia del día cerrada.';
       } else {
         alert("Error: " + res.mensaje);
       }
@@ -763,24 +1106,24 @@
 
   function cargarCitaciones() {
     const cont = document.getElementById("repResultado");
-    cont.innerHTML = '<div class="text-center text-warning py-3">⏳ Auditando y consultando citaciones...</div>';
+    cont.innerHTML = '<div class="text-center text-warning py-4"><div class="spinner-border spinner-border-sm me-2"></div>Auditando y consultando citaciones...</div>';
 
     llamarAPI({ action: "obtenerCitaciones" }, function(res) {
       if(!res.success) {
-        cont.innerHTML = `<div class="alert alert-secondary text-center">${res.mensaje}</div>`;
+        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">${res.mensaje}</div>`;
         return;
       }
 
       let html = `
-        <h6 class="fw-bold text-danger mb-2">🚨 Citaciones por 4+ Retrasos o Faltas</h6>
-        <div class="table-responsive">
-          <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.8rem;">
+        <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Citaciones por 4+ Retrasos o Faltas</h6>
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.8rem;">
             <thead>
-              <tr class="table-danger text-dark">
-                <th>N°</th>
-                <th class="text-start">Estudiante</th>
-                <th>Curso</th>
-                <th>Motivo</th>
+              <tr class="table-danger text-dark" style="font-size: 0.72rem;">
+                <th>REPORTE</th>
+                <th class="text-start">ESTUDIANTE</th>
+                <th>CURSO</th>
+                <th>MOTIVO</th>
               </tr>
             </thead>
             <tbody>
@@ -789,10 +1132,10 @@
       res.citaciones.forEach(c => {
         html += `
           <tr>
-            <td><small>${c.nro}</small><br><span class="text-secondary" style="font-size: 0.7rem;">${c.fecha}</span></td>
+            <td><small class="fw-bold">${c.nro}</small><br><span class="text-secondary" style="font-size: 0.7rem;">${c.fecha}</span></td>
             <td class="text-start fw-bold text-truncate" style="max-width: 130px;">${c.estudiante}</td>
             <td>${c.curso}</td>
-            <td><span class="badge bg-danger text-wrap" style="font-size: 0.75rem;">${c.motivo}</span></td>
+            <td><span class="badge bg-danger text-wrap" style="font-size: 0.72rem;">${c.motivo}</span></td>
           </tr>
         `;
       });
@@ -808,11 +1151,11 @@
     cursoReporteActual = curso;
     const cont = document.getElementById("repResultado");
 
-    cont.innerHTML = '<div class="text-center text-info py-3">⏳ Cargando reporte mensual...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-4"><div class="spinner-border spinner-border-sm me-2"></div>Cargando reporte mensual...</div>';
 
     llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
       if(!res.success) {
-        cont.innerHTML = `<div class="alert alert-warning text-center">${res.mensaje}</div>`;
+        cont.innerHTML = `<div class="p-3 text-center text-warning small bg-warning bg-opacity-10 rounded-3">${res.mensaje}</div>`;
         return;
       }
 
@@ -820,15 +1163,15 @@
 
       let html = `
         <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-info">${res.curso} - ${res.mesNombre}</span>
-          <span class="badge bg-secondary">${res.totalDiasClase} días</span>
+          <span class="fw-bold text-info small">${res.curso} — ${res.mesNombre}</span>
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary">${res.totalDiasClase} días hábiles</span>
         </div>
-        <div class="table-responsive">
-          <table class="table table-dark table-striped table-bordered text-center align-middle" style="font-size: 0.85rem;">
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
-              <tr class="table-secondary text-dark">
-                <th>N°</th>
-                <th class="text-start">Estudiante (Toca para ver credencial)</th>
+              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+                <th style="width: 10%;">N°</th>
+                <th class="text-start">ESTUDIANTE</th>
                 <th>P</th>
                 <th>T</th>
                 <th>F</th>
@@ -840,12 +1183,12 @@
       alumnosReporteMemoria.forEach((al, idx) => {
         html += `
           <tr>
-            <td>${al.nro}</td>
+            <td class="text-secondary">${al.nro}</td>
             <td class="text-start text-truncate" style="max-width: 150px;">
               <span class="alumno-link" onclick="clickAlumnoReporte(${idx})" title="Ver credencial">
-                🪪 ${al.nombreCompleto}
+                <i class="bi bi-person-badge me-1"></i>${al.nombreCompleto}
               </span>
-              <br><small class="text-secondary">% Asist: ${al.porcentaje}</small>
+              <br><small class="text-secondary" style="font-size: 0.72rem;">% Asist: ${al.porcentaje}</small>
             </td>
             <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
             <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
@@ -869,32 +1212,32 @@
     };
 
     if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) {
-      return alert("Por favor completa todos los campos");
+      return alert("Por favor completa todos los campos requeridos");
     }
 
     const msg = document.getElementById("gestion-msg");
-    msg.innerHTML = '<span class="text-info">Guardando en Google Sheets...</span>';
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Guardando en Google Sheets...</span>';
 
     llamarAPI(datos, function(res) {
       if(res.success) {
-        msg.innerHTML = `<div class="alert alert-success m-0">✅ ${res.mensaje}</div>`;
+        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success"><i class="bi bi-check-circle me-1"></i> ${res.mensaje}</div>`;
         document.getElementById("estId").value = "";
         document.getElementById("estNombres").value = "";
         document.getElementById("estApellidos").value = "";
         document.getElementById("selectCurso").value = "";
       } else {
-        msg.innerHTML = `<div class="alert alert-danger m-0">⚠️ ${res.mensaje}</div>`;
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger"><i class="bi bi-exclamation-triangle me-1"></i> ${res.mensaje}</div>`;
       }
     });
   }
 
   function actualizarContrasena() {
     const pass = document.getElementById("nuevaPass").value.trim();
-    if(pass.length < 4) return alert("Mínimo 4 caracteres");
+    if(pass.length < 4) return alert("La contraseña debe tener al menos 4 caracteres");
 
     llamarAPI({ action: "cambiarPass", usuario: usuarioActual, nuevaPass: pass }, function(res) {
       const msg = document.getElementById("perfil-msg");
-      msg.innerHTML = `<div class="${res.success ? 'alert alert-success' : 'alert alert-danger'} m-0">${res.mensaje}</div>`;
+      msg.innerHTML = `<div class="${res.success ? 'alert alert-success bg-success bg-opacity-25 text-success' : 'alert alert-danger bg-danger bg-opacity-25 text-danger'} border-0 small m-0">${res.mensaje}</div>`;
       document.getElementById("nuevaPass").value = "";
     });
   }
