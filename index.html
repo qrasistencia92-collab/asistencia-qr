@@ -7,167 +7,160 @@
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons Premium -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Librería QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
     :root {
-      --pf-navy: #060e20;
-      --pf-surface: rgba(12, 24, 52, 0.78);
-      --pf-border: rgba(56, 189, 248, 0.16);
-      --pf-blue: #1d4ed8;
-      --pf-cyan: #38bdf8;
-      --pf-gold: #f59e0b;
-      --pf-green: #10b981;
-      --pf-red: #ef4444;
+      --navy-bg: #060d1f;
+      --card-surface: rgba(11, 22, 48, 0.85);
+      --card-border: rgba(56, 189, 248, 0.18);
+      --royal-blue: #1d4ed8;
+      --cyan-accent: #38bdf8;
+      --gold-solar: #f59e0b;
+      --shield-green: #10b981;
+      --crimson-red: #ef4444;
     }
 
     body {
-      background-color: var(--pf-navy);
+      background-color: var(--navy-bg);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(29, 78, 216, 0.25) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.18) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(29, 78, 216, 0.28) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.2) 0px, transparent 50%);
       background-attachment: fixed;
-      color: #f8fafc;
-      font-family: 'Inter', sans-serif;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, sans-serif;
       min-height: 100vh;
-      padding-bottom: 95px; /* Espacio libre para la barra inferior */
+      padding-bottom: 95px;
     }
 
-    /* Tarjetas Glassmorphism */
     .card-modern {
-      background: var(--pf-surface);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--pf-border);
+      background: var(--card-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
       border-radius: 24px;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
     }
 
-    /* BARRA INFERIOR DE NAVEGACIÓN FIJA (BOTTOM DOCK) */
+    /* BARRAS DE NAVEGACIÓN INFERIORES SIN ICONOS */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 74px;
-      background: rgba(8, 17, 38, 0.94);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      height: 68px;
+      background: rgba(7, 15, 34, 0.95);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-top: 1px solid rgba(56, 189, 248, 0.22);
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 1040;
-      padding: 0 8px;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+      padding: 0 6px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .bottom-nav-item {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #94a3b8;
       text-decoration: none;
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 14px;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 10px 4px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
       cursor: pointer;
-      border: none;
+      border: 1px solid transparent;
       background: transparent;
       flex: 1;
-    }
-
-    .bottom-nav-item i {
-      font-size: 1.35rem;
-      margin-bottom: 3px;
-      transition: transform 0.2s ease;
+      text-align: center;
     }
 
     .bottom-nav-item.active {
-      color: var(--pf-cyan);
+      color: #ffffff;
+      background: rgba(29, 78, 216, 0.35);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 2px 12px rgba(29, 78, 216, 0.4);
     }
 
-    .bottom-nav-item.active i {
-      transform: translateY(-2px);
-      color: var(--pf-cyan);
-      filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.6));
-    }
-
-    /* Botones de acción */
-    .btn-gradient-primary {
+    /* BOTONES TIPOGRÁFICOS */
+    .btn-solid-blue {
       background: linear-gradient(135deg, #1d4ed8, #0284c7);
       border: none;
       color: #fff;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       border-radius: 14px;
-      padding: 12px 20px;
-      transition: all 0.25s ease;
+      padding: 13px 20px;
+      transition: all 0.2s ease;
       box-shadow: 0 4px 16px rgba(29, 78, 216, 0.35);
     }
-    .btn-gradient-primary:hover {
+    .btn-solid-blue:hover {
       background: linear-gradient(135deg, #1e40af, #0369a1);
       color: #fff;
       transform: translateY(-1px);
     }
 
-    .btn-carnet-action {
+    .btn-action-carnet {
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid rgba(56, 189, 248, 0.4);
-      color: var(--pf-cyan);
+      color: var(--cyan-accent);
       font-size: 0.75rem;
       font-weight: 700;
+      letter-spacing: 0.5px;
       border-radius: 10px;
-      padding: 5px 10px;
+      padding: 6px 12px;
       transition: all 0.2s ease;
     }
-    .btn-carnet-action:hover {
-      background: var(--pf-cyan);
-      color: #060e20;
+    .btn-action-carnet:hover {
+      background: var(--cyan-accent);
+      color: #060d1f;
     }
 
-    .btn-del-action {
+    .btn-action-del {
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.4);
-      color: var(--pf-red);
+      color: #f87171;
       font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       border-radius: 10px;
-      padding: 5px 9px;
+      padding: 6px 12px;
       transition: all 0.2s ease;
     }
-    .btn-del-action:hover {
-      background: var(--pf-red);
+    .btn-action-del:hover {
+      background: var(--crimson-red);
       color: #fff;
     }
 
     /* Inputs */
     .form-control-modern, .form-select-modern {
-      background: rgba(8, 17, 38, 0.85) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      color: #f8fafc !important;
+      background: rgba(7, 15, 34, 0.88) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      color: #ffffff !important;
       border-radius: 14px;
       padding: 12px 14px;
       font-size: 0.9rem;
     }
     .form-control-modern:focus, .form-select-modern:focus {
-      border-color: var(--pf-cyan) !important;
+      border-color: var(--cyan-accent) !important;
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
     }
 
-    /* GRÁFICO CIRCULAR EN SVG (GAUGE MODERNO) */
+    /* GRÁFICO CIRCULAR EN SVG */
     .circle-chart-container {
       position: relative;
-      width: 110px;
-      height: 110px;
+      width: 112px;
+      height: 112px;
       margin: 0 auto;
     }
     .circle-chart-svg {
@@ -184,7 +177,7 @@
       fill: none;
       stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 251.2; /* 2 * pi * 40 */
+      stroke-dasharray: 251.2;
       stroke-dashoffset: 251.2;
       transition: stroke-dashoffset 1s ease-in-out;
     }
@@ -193,14 +186,15 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-weight: 800;
-      font-size: 1.15rem;
+      font-weight: 900;
+      font-size: 1.25rem;
       letter-spacing: -0.5px;
     }
 
-    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); font-weight: 700; border-radius: 8px; }
-    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-weight: 700; border-radius: 8px; }
-    .badge-f { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); font-weight: 700; border-radius: 8px; }
+    /* Badges */
+    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35); font-weight: 700; border-radius: 8px; }
+    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); font-weight: 700; border-radius: 8px; }
+    .badge-f { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35); font-weight: 700; border-radius: 8px; }
 
     #reader {
       width: 100%;
@@ -225,7 +219,7 @@
     .logo-hero {
       max-width: 110px;
       height: auto;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.65));
     }
 
     @media print {
@@ -245,7 +239,7 @@
 </head>
 <body class="p-3">
 
-<div class="container" style="max-width: 600px;">
+<div class="container" style="max-width: 580px;">
 
   <!-- ========================================== -->
   <!-- 1. PANTALLA PRINCIPAL DE LOGIN             -->
@@ -267,48 +261,31 @@
     <!-- Selector de Rol -->
     <div class="btn-group w-100 p-1 rounded-3 bg-dark bg-opacity-75 border border-secondary border-opacity-25 mb-4" role="group">
       <input type="radio" class="btn-check" name="btnRol" id="rolRegente" checked onclick="toggleRol('regente')">
-      <label class="btn btn-sm rounded-2 text-white py-2 fw-bold" for="rolRegente" id="lbl-rol-regente">
-        <i class="bi bi-shield-lock-fill me-1"></i> Regente
-      </label>
+      <label class="btn btn-sm rounded-2 text-white py-2 fw-bold" for="rolRegente" id="lbl-rol-regente">REGENTE</label>
 
       <input type="radio" class="btn-check" name="btnRol" id="rolEstudiante" onclick="toggleRol('estudiante')">
-      <label class="btn btn-sm rounded-2 text-secondary py-2 fw-bold" for="rolEstudiante" id="lbl-rol-estudiante">
-        <i class="bi bi-mortarboard-fill me-1"></i> Estudiante
-      </label>
+      <label class="btn btn-sm rounded-2 text-secondary py-2 fw-bold" for="rolEstudiante" id="lbl-rol-estudiante">ESTUDIANTE</label>
     </div>
 
     <!-- Formulario Regente -->
     <div id="form-regente" class="text-start">
       <div class="mb-3">
-        <label class="form-label text-secondary small fw-semibold">Usuario</label>
-        <div class="input-group">
-          <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-person-fill"></i></span>
-          <input type="text" id="logUsuario" class="form-control form-control-modern" placeholder="Ej: regente1">
-        </div>
+        <label class="form-label text-secondary small fw-semibold">Usuario del Regente</label>
+        <input type="text" id="logUsuario" class="form-control form-control-modern" placeholder="Ej: regente1">
       </div>
       <div class="mb-4">
         <label class="form-label text-secondary small fw-semibold">Contraseña</label>
-        <div class="input-group">
-          <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-key-fill"></i></span>
-          <input type="password" id="logPass" class="form-control form-control-modern" placeholder="••••••••">
-        </div>
+        <input type="password" id="logPass" class="form-control form-control-modern" placeholder="••••••••">
       </div>
-      <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="iniciarSesion()">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Sistema
-      </button>
+      <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
       <div id="login-msg" class="mt-3 text-center"></div>
     </div>
 
     <!-- Formulario Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-start">
-      <label class="form-label text-secondary small fw-semibold">Ingresa tu Carnet de Identidad (C.I.):</label>
-      <div class="input-group mb-4">
-        <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-card-text"></i></span>
-        <input type="text" id="ciEstudiante" class="form-control form-control-modern" placeholder="Ej: 58634568">
-      </div>
-      <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="ingresarPortalEstudiante()">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar a Mi Portal
-      </button>
+      <label class="form-label text-secondary small fw-semibold">Número de Carnet de Identidad (C.I.):</label>
+      <input type="text" id="ciEstudiante" class="form-control form-control-modern mb-4" placeholder="Ej: 58634568">
+      <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="ingresarPortalEstudiante()">INGRESAR A MI PORTAL</button>
       <div id="est-login-msg" class="mt-3 text-center"></div>
     </div>
   </div>
@@ -327,9 +304,7 @@
           <small class="text-info fw-semibold" style="font-size: 0.72rem;">U.E. Paulo Freire</small>
         </div>
       </div>
-      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3" onclick="cerrarSesion()">
-        <i class="bi bi-power"></i>
-      </button>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" onclick="cerrarSesion()">SALIR</button>
     </div>
 
     <!-- SECCIONES DEL REGENTE -->
@@ -340,16 +315,13 @@
         
         <!-- Reloj y Estado -->
         <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-clock-history text-info me-2"></i>
-            <span id="reloj-vivo" class="fw-bold font-monospace text-light" style="font-size: 0.95rem;">00:00:00</span>
-          </div>
-          <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">
-            Puntual
+          <span id="reloj-vivo" class="fw-bold font-monospace text-light px-2" style="font-size: 0.95rem;">00:00:00</span>
+          <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-1">
+            PUNTUAL
           </div>
         </div>
 
-        <h6 class="fw-bold text-white mb-3"><i class="bi bi-pie-chart-fill text-info me-1"></i> Asistencia Global de la Unidad</h6>
+        <div class="small fw-bold text-info mb-3 text-uppercase" style="letter-spacing: 0.5px;">Asistencia Global de la Unidad</div>
 
         <!-- GRÁFICOS CIRCULARES DINÁMICOS -->
         <div class="row g-2 mb-3 text-center">
@@ -364,8 +336,8 @@
                 </svg>
                 <div class="circle-chart-text text-success" id="gauge-asistencia-texto">0%</div>
               </div>
-              <div class="small fw-bold text-light mt-2" style="font-size: 0.75rem;">% ASISTENCIA</div>
-              <small class="text-secondary" style="font-size: 0.65rem;">Presentes y retrasos</small>
+              <div class="small fw-bold text-light mt-2" style="font-size: 0.72rem;">ASISTENCIA GLOBAL</div>
+              <small class="text-secondary" style="font-size: 0.65rem;">Alumnos presentes</small>
             </div>
           </div>
 
@@ -379,8 +351,8 @@
                 </svg>
                 <div class="circle-chart-text text-danger" id="gauge-faltas-texto">0%</div>
               </div>
-              <div class="small fw-bold text-light mt-2" style="font-size: 0.75rem;">% FALTAS</div>
-              <small class="text-secondary" style="font-size: 0.65rem;">Inasistencias del colegio</small>
+              <div class="small fw-bold text-light mt-2" style="font-size: 0.72rem;">FALTAS GLOBALES</div>
+              <small class="text-secondary" style="font-size: 0.65rem;">Alumnos ausentes</small>
             </div>
           </div>
         </div>
@@ -389,30 +361,27 @@
         <div class="row g-2 mb-3">
           <div class="col-6">
             <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
-              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">MATRICULADOS</div>
+              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">ALUMNOS MATRICULADOS</div>
               <h4 class="fw-bold text-info my-1" id="dash-alumnos">0</h4>
-              <small class="text-secondary" style="font-size: 0.65rem;">En los 21 cursos</small>
+              <small class="text-secondary" style="font-size: 0.65rem;">Total en los 21 cursos</small>
             </div>
           </div>
           <div class="col-6">
             <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
-              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">CITACIONES</div>
+              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">CITACIONES ACTIVAS</div>
               <h4 class="fw-bold text-warning my-1" id="dash-citaciones">0</h4>
-              <small class="text-secondary" style="font-size: 0.65rem;">Por 4+ faltas/retrasos</small>
+              <small class="text-secondary" style="font-size: 0.65rem;">Por 4+ faltas o retrasos</small>
             </div>
           </div>
         </div>
 
-        <!-- Acciones Rápidas -->
-        <h6 class="fw-bold text-white mb-2" style="font-size: 0.85rem;"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Acciones Directas</h6>
+        <!-- Acciones Directas -->
         <div class="d-grid gap-2">
-          <button class="btn btn-gradient-primary text-start py-3" onclick="cambiarSeccionRegente('escaner')">
-            <i class="bi bi-qr-code-scan me-2 fs-5 align-middle"></i>
-            <span class="align-middle fw-bold">Abrir Escáner de Asistencia</span>
+          <button class="btn btn-solid-blue text-center py-3" onclick="cambiarSeccionRegente('escaner')">
+            ABRIR ESCÁNER DE ASISTENCIA
           </button>
-          <button class="btn btn-dark border border-secondary border-opacity-25 text-start py-2 text-light" onclick="cambiarSeccionRegente('alumnos')">
-            <i class="bi bi-person-plus-fill text-info me-2 fs-5 align-middle"></i>
-            <span class="align-middle">Inscribir Nuevo Alumno</span>
+          <button class="btn btn-dark border border-secondary border-opacity-25 text-center py-2 text-light fw-bold" onclick="cambiarSeccionRegente('alumnos')">
+            INSCRIBIR NUEVO ALUMNO
           </button>
         </div>
       </div>
@@ -420,21 +389,21 @@
       <!-- SECCIÓN 2: ESCÁNER QR -->
       <div id="tab-regente-escaner" class="card card-modern p-3 text-center" style="display:none;">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold text-white m-0"><i class="bi bi-qr-code-scan text-info me-1"></i> Escáner Continuo</h6>
-          <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0" onclick="toggleMute()">
-            <i class="bi bi-volume-up-fill fs-5" id="icono-audio"></i>
+          <span class="fw-bold text-info small text-uppercase">Escáner Continuo en Vivo</span>
+          <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0 fw-bold" id="btn-audio-mute" onclick="toggleMute()">
+            [ SONIDO: ON ]
           </button>
         </div>
 
         <div id="reader"></div>
 
         <div id="estado-escaneo" class="box-estado mt-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-info">
-          <i class="bi bi-camera me-2"></i> Apunta la cámara al carnet QR...
+          Apunta la cámara al carnet QR del estudiante...
         </div>
 
         <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
-          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3" onclick="cerrarAsistenciaDia()">
-            <i class="bi bi-lock-fill me-1"></i> Cerrar Asistencia de Hoy (Poner Faltas)
+          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3 fw-bold" onclick="cerrarAsistenciaDia()">
+            CERRAR ASISTENCIA DE HOY (MARCAR FALTAS)
           </button>
         </div>
       </div>
@@ -442,15 +411,15 @@
       <!-- SECCIÓN 3: REPORTES Y CITACIONES -->
       <div id="tab-regente-reportes" class="card card-modern p-3" style="display:none;">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold text-white m-0"><i class="bi bi-bar-chart-fill text-info me-1"></i> Asistencia por Curso</h6>
-          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3" onclick="cargarCitaciones()">
-            <i class="bi bi-exclamation-octagon-fill me-1"></i> Ver Citaciones
+          <span class="fw-bold text-white small text-uppercase">Reportes por Curso</span>
+          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3 fw-bold" onclick="cargarCitaciones()">
+            CITACIONES
           </button>
         </div>
 
         <div class="row g-2 mb-3">
           <div class="col-6">
-            <label class="form-label text-secondary small fw-medium">Curso:</label>
+            <label class="form-label text-secondary small fw-semibold">Curso:</label>
             <select id="repCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
@@ -476,7 +445,7 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label text-secondary small fw-medium">Mes:</label>
+            <label class="form-label text-secondary small fw-semibold">Mes:</label>
             <select id="repMes" class="form-select form-select-modern">
               <option value="2">Febrero</option>
               <option value="3">Marzo</option>
@@ -493,8 +462,8 @@
           </div>
         </div>
 
-        <button class="btn btn-gradient-primary w-100 py-2 mb-3" onclick="cargarReporteMensual()">
-          <i class="bi bi-search me-1"></i> Consultar Asistencias
+        <button class="btn btn-solid-blue w-100 py-2 mb-3" onclick="cargarReporteMensual()">
+          CONSULTAR ASISTENCIAS
         </button>
 
         <div id="repResultado">
@@ -506,13 +475,13 @@
       <div id="tab-regente-alumnos" class="card card-modern p-3" style="display:none;">
         <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <li class="nav-item">
-            <button class="nav-link active rounded-2 text-white py-2" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
-              <i class="bi bi-person-plus-fill me-1"></i> Inscribir
+            <button class="nav-link active rounded-2 text-white py-2 fw-bold" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
+              INSCRIBIR
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link rounded-2 text-secondary py-2" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">
-              <i class="bi bi-people-fill me-1"></i> Lista & Carnets
+            <button class="nav-link rounded-2 text-secondary py-2 fw-bold" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">
+              LISTA Y CARNETS
             </button>
           </li>
         </ul>
@@ -520,7 +489,7 @@
         <!-- Formulario Inscribir -->
         <div id="sec-inscribir">
           <div class="mb-3">
-            <label class="form-label text-secondary small fw-semibold">C.I. / Carnet (único)</label>
+            <label class="form-label text-secondary small fw-semibold">Número de Carnet / C.I. (único)</label>
             <input type="text" id="estId" class="form-control form-control-modern" placeholder="Ej: 58634568">
           </div>
           <div class="row g-2 mb-3">
@@ -534,7 +503,7 @@
             </div>
           </div>
           <div class="mb-4">
-            <label class="form-label text-secondary small fw-semibold">Curso</label>
+            <label class="form-label text-secondary small fw-semibold">Curso Oficial</label>
             <select id="selectCurso" class="form-select form-select-modern">
               <option value="">Seleccione el curso...</option>
               <optgroup label="1ros de Secundaria">
@@ -572,8 +541,8 @@
               </optgroup>
             </select>
           </div>
-          <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="guardarEstudiante()">
-            <i class="bi bi-check-circle-fill me-1"></i> Guardar Alumno
+          <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="guardarEstudiante()">
+            GUARDAR ESTUDIANTE EN SHEETS
           </button>
           <div id="gestion-msg" class="mt-3 text-center"></div>
         </div>
@@ -604,8 +573,8 @@
               <option value='6 "B"'>6 "B"</option>
               <option value='6 "C"'>6 "C"</option>
             </select>
-            <button class="btn btn-gradient-primary px-3" onclick="cargarEstudiantesEliminar()">
-              <i class="bi bi-arrow-clockwise"></i>
+            <button class="btn btn-solid-blue px-3 fw-bold" onclick="cargarEstudiantesEliminar()">
+              LISTAR
             </button>
           </div>
 
@@ -619,43 +588,48 @@
         </div>
       </div>
 
-      <!-- SECCIÓN 5: AJUSTES -->
-      <div id="tab-regente-ajustes" class="card card-modern p-4" style="display:none;">
-        <h6 class="fw-bold text-white mb-3"><i class="bi bi-shield-lock-fill text-info me-1"></i> Seguridad del Regente</h6>
+      <!-- SECCIÓN 5: AJUSTES (CONTRASEÑA + BUZÓN DE JUSTIFICACIONES) -->
+      <div id="tab-regente-ajustes" class="card card-modern p-3" style="display:none;">
+        
+        <!-- Buzón de Justificaciones -->
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary border-opacity-25">
+          <span class="fw-bold text-info small text-uppercase">Buzón de Justificaciones</span>
+          <button class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" onclick="cargarBuzonJustificaciones()">ACTUALIZAR</button>
+        </div>
+        
+        <div id="buzon-justificaciones-cont" class="mb-4">
+          <p class="text-secondary small text-center py-2">Presiona "Actualizar" para revisar solicitudes de permiso enviadas por alumnos.</p>
+        </div>
+
+        <!-- Parámetros del Colegio -->
+        <div class="p-3 mb-4 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
+          <div class="fw-bold text-light small mb-2 text-uppercase">Horarios de Regencia</div>
+          <div class="small text-secondary">• Límite de Puntualidad: <strong class="text-success">07:20 AM</strong></div>
+          <div class="small text-secondary">• Límite de Tolerancia / Atraso: <strong class="text-warning">12:00 PM</strong></div>
+          <div class="small text-secondary">• Límite Disciplinario: <strong class="text-danger">4 retrasos o faltas = Citación</strong></div>
+        </div>
+
+        <!-- Cambio de Clave -->
+        <div class="fw-bold text-light small mb-2 text-uppercase">Seguridad de la Cuenta</div>
         <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Nueva Contraseña</label>
+          <label class="form-label text-secondary small">Nueva Contraseña del Regente</label>
           <input type="password" id="nuevaPass" class="form-control form-control-modern" placeholder="Mínimo 4 caracteres">
         </div>
-        <button class="btn btn-gradient-primary w-100 py-3" onclick="actualizarContrasena()">
-          <i class="bi bi-key-fill me-1"></i> Actualizar Contraseña
+        <button class="btn btn-solid-blue w-100 py-3" onclick="actualizarContrasena()">
+          ACTUALIZAR CONTRASEÑA
         </button>
         <div id="perfil-msg" class="mt-3 text-center"></div>
       </div>
 
     </div>
 
-    <!-- BARRA INFERIOR DEL REGENTE -->
+    <!-- BARRA INFERIOR DEL REGENTE (SOLO TEXTO ELEGANTE) -->
     <div class="bottom-nav">
-      <button class="bottom-nav-item active" id="bnav-inicio" onclick="cambiarSeccionRegente('inicio')">
-        <i class="bi bi-grid-fill"></i>
-        <span>Inicio</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-escaner" onclick="cambiarSeccionRegente('escaner')">
-        <i class="bi bi-qr-code-scan"></i>
-        <span>Escáner</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-reportes" onclick="cambiarSeccionRegente('reportes')">
-        <i class="bi bi-bar-chart-fill"></i>
-        <span>Reportes</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-alumnos" onclick="cambiarSeccionRegente('alumnos')">
-        <i class="bi bi-people-fill"></i>
-        <span>Alumnos</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-ajustes" onclick="cambiarSeccionRegente('ajustes')">
-        <i class="bi bi-gear-fill"></i>
-        <span>Ajustes</span>
-      </button>
+      <button class="bottom-nav-item active" id="bnav-inicio" onclick="cambiarSeccionRegente('inicio')">INICIO</button>
+      <button class="bottom-nav-item" id="bnav-escaner" onclick="cambiarSeccionRegente('escaner')">ESCÁNER</button>
+      <button class="bottom-nav-item" id="bnav-reportes" onclick="cambiarSeccionRegente('reportes')">REPORTES</button>
+      <button class="bottom-nav-item" id="bnav-alumnos" onclick="cambiarSeccionRegente('alumnos')">ALUMNOS</button>
+      <button class="bottom-nav-item" id="bnav-ajustes" onclick="cambiarSeccionRegente('ajustes')">AJUSTES</button>
     </div>
 
   </div>
@@ -674,9 +648,7 @@
           <small class="text-info fw-semibold" style="font-size: 0.72rem;" id="est-curso-badge">U.E. Paulo Freire</small>
         </div>
       </div>
-      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3" onclick="cerrarPortalEstudiante()">
-        <i class="bi bi-power"></i>
-      </button>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" onclick="cerrarPortalEstudiante()">SALIR</button>
     </div>
 
     <!-- CONTENIDO DEL PORTAL ESTUDIANTE -->
@@ -711,8 +683,8 @@
           </div>
         </div>
 
-        <button class="btn btn-gradient-primary rounded-pill mt-2 px-4 shadow" onclick="window.print()">
-          <i class="bi bi-printer me-1"></i> Imprimir / Guardar Carnet
+        <button class="btn btn-solid-blue rounded-pill mt-2 px-4 shadow" onclick="window.print()">
+          IMPRIMIR O GUARDAR CARNET
         </button>
       </div>
 
@@ -755,7 +727,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-light small"><i class="bi bi-clock-history me-1 text-info"></i> Mis Asistencias Registradas:</span>
+          <span class="fw-bold text-light small text-uppercase">Mis Asistencias Registradas</span>
         </div>
 
         <div class="table-responsive rounded-3 border border-secondary border-opacity-25" style="max-height: 250px; overflow-y: auto;">
@@ -773,8 +745,8 @@
 
       <!-- SUB-SECCIÓN 3: ENVIAR JUSTIFICACIÓN -->
       <div id="sec-est-justificar" class="card card-modern p-3" style="display:none;">
-        <h6 class="fw-bold text-white mb-2"><i class="bi bi-file-earmark-medical-fill text-info me-1"></i> Justificar Falta o Atraso</h6>
-        <p class="text-secondary small mb-3">Envía tu justificativo médico o familiar directamente a Regencia.</p>
+        <div class="fw-bold text-white small mb-2 text-uppercase">Justificar Falta o Atraso</div>
+        <p class="text-secondary small mb-3">Envía tu justificativo para que el regente lo revise en su panel.</p>
 
         <div class="mb-3">
           <label class="form-label text-secondary small fw-semibold">Fecha de la Falta:</label>
@@ -796,35 +768,26 @@
           <textarea id="justDetalle" class="form-control form-control-modern" rows="3" placeholder="Describe brevemente la causa..."></textarea>
         </div>
 
-        <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="enviarJustificacionEstudiante()">
-          <i class="bi bi-send-fill me-1"></i> Enviar Justificación al Regente
+        <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="enviarJustificacionEstudiante()">
+          ENVIAR JUSTIFICACIÓN AL REGENTE
         </button>
         <div id="just-msg" class="mt-3 text-center"></div>
       </div>
 
     </div>
 
-    <!-- BARRA INFERIOR DEL ESTUDIANTE -->
+    <!-- BARRA INFERIOR DEL ESTUDIANTE (SOLO TEXTO) -->
     <div class="bottom-nav">
-      <button class="bottom-nav-item active" id="bnav-est-carnet" onclick="cambiarSeccionEstudiante('carnet')">
-        <i class="bi bi-person-vcard-fill"></i>
-        <span>Mi Carnet</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-est-historial" onclick="cambiarSeccionEstudiante('historial')">
-        <i class="bi bi-pie-chart-fill"></i>
-        <span>Asistencia</span>
-      </button>
-      <button class="bottom-nav-item" id="bnav-est-justificar" onclick="cambiarSeccionEstudiante('justificar')">
-        <i class="bi bi-file-earmark-medical-fill"></i>
-        <span>Justificar</span>
-      </button>
+      <button class="bottom-nav-item active" id="bnav-est-carnet" onclick="cambiarSeccionEstudiante('carnet')">MI CARNET</button>
+      <button class="bottom-nav-item" id="bnav-est-historial" onclick="cambiarSeccionEstudiante('historial')">ASISTENCIA</button>
+      <button class="bottom-nav-item" id="bnav-est-justificar" onclick="cambiarSeccionEstudiante('justificar')">JUSTIFICAR</button>
     </div>
 
   </div>
 
 </div>
 
-<!-- VENTANA MODAL PARA IMPRIMIR CREDENCIAL -->
+<!-- MODAL PARA IMPRIMIR CREDENCIAL -->
 <div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
     <div class="modal-content bg-transparent border-0">
@@ -856,8 +819,8 @@
         </div>
       </div>
       <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0 gap-2">
-        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="window.print()">Imprimir</button>
+        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light fw-bold" data-bs-dismiss="modal">CERRAR</button>
+        <button type="button" class="btn btn-sm btn-solid-blue rounded-pill px-3 shadow fw-bold" onclick="window.print()">IMPRIMIR</button>
       </div>
     </div>
   </div>
@@ -878,7 +841,7 @@
   let cursoReporteActual = "";
   let estudianteConsultaActual = null;
 
-  // --- RELOJ Y ESTADO ---
+  // --- RELOJ Y HORARIO ---
   function actualizarReloj() {
     const ahora = new Date();
     const h = String(ahora.getHours()).padStart(2, '0');
@@ -894,13 +857,13 @@
     if (badgeHorario) {
       if (horaMinutos <= 440) {
         badgeHorario.className = "badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1";
-        badgeHorario.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Puntual (hasta 07:20)';
+        badgeHorario.innerText = 'PUNTUAL (HASTA 07:20)';
       } else if (horaMinutos <= 720) {
         badgeHorario.className = "badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-2 py-1";
-        badgeHorario.innerHTML = '<i class="bi bi-clock-history me-1"></i> Tolerancia / Retraso';
+        badgeHorario.innerText = 'RETRASO / TOLERANCIA';
       } else {
         badgeHorario.className = "badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-2 py-1";
-        badgeHorario.innerHTML = '<i class="bi bi-x-circle me-1"></i> Horario Cerrado';
+        badgeHorario.innerText = 'HORARIO CERRADO';
       }
     }
   }
@@ -909,13 +872,14 @@
 
   function toggleMute() {
     audioSilenciado = !audioSilenciado;
-    const icono = document.getElementById("icono-audio");
-    if (icono) {
-      icono.className = audioSilenciado ? "bi bi-volume-mute-fill text-danger fs-5" : "bi bi-volume-up-fill text-light fs-5";
+    const btn = document.getElementById("btn-audio-mute");
+    if (btn) {
+      btn.innerText = audioSilenciado ? "[ SONIDO: OFF ]" : "[ SONIDO: ON ]";
+      btn.className = audioSilenciado ? "btn btn-sm btn-outline-danger border-0 p-0 fw-bold" : "btn btn-sm btn-outline-secondary border-0 text-light p-0 fw-bold";
     }
   }
 
-  // --- ANIMAR ANILLOS CIRCULARES SVG (GAUGES) ---
+  // --- ANIMAR ANILLOS CIRCULARES SVG ---
   function animarCirculo(circuloId, textoId, porcentajeNum) {
     const circulo = document.getElementById(circuloId);
     const texto = document.getElementById(textoId);
@@ -984,6 +948,8 @@
       setTimeout(iniciarCamara, 300);
     } else if (seccion === 'inicio') {
       cargarDashboardRegente();
+    } else if (seccion === 'ajustes') {
+      cargarBuzonJustificaciones();
     }
   }
 
@@ -1008,7 +974,7 @@
     const msg = document.getElementById("login-msg");
 
     if(!user || !pass) return msg.innerHTML = '<span class="text-danger small">Completa todos los campos</span>';
-    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Validando...</span>';
+    msg.innerHTML = '<span class="text-info small">Validando...</span>';
 
     llamarAPI({ action: "login", usuario: user, password: pass }, function(res) {
       if(res.success) {
@@ -1036,7 +1002,7 @@
     const msg = document.getElementById("est-login-msg");
 
     if(!ci) return alert("Por favor ingresa tu número de Carnet / C.I.");
-    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Consultando ficha escolar...</span>';
+    msg.innerHTML = '<span class="text-info small">Consultando ficha escolar...</span>';
 
     llamarAPI({ action: "buscarEstudiante", ci: ci }, function(res) {
       msg.innerHTML = "";
@@ -1072,11 +1038,9 @@
         });
         alertaCont.innerHTML = `
           <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
-            <div class="d-flex align-items-center text-danger fw-bold mb-1">
-              <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i> CITACIÓN OFICIAL A DIRECCIÓN
-            </div>
+            <div class="text-danger fw-bold mb-1">CITACIÓN OFICIAL A DIRECCIÓN</div>
             <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded mb-2">${motivos}</div>
-            <small class="text-warning d-block"><i class="bi bi-info-circle me-1"></i>Presentarse con su Padre/Madre de Familia a Regencia.</small>
+            <small class="text-warning d-block">Debes presentarte con tu Padre/Madre de Familia a Regencia.</small>
           </div>
         `;
       } else {
@@ -1130,7 +1094,7 @@
 
     if (!fecha || !detalle) return alert("Por favor indica la fecha de la falta y el detalle");
 
-    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Enviando justificación...</span>';
+    msg.innerHTML = '<span class="text-info small">Enviando justificación...</span>';
 
     llamarAPI({
       action: "enviarJustificacion",
@@ -1150,13 +1114,57 @@
     });
   }
 
+  // --- BUZÓN DE JUSTIFICACIONES PARA EL REGENTE ---
+  function cargarBuzonJustificaciones() {
+    const cont = document.getElementById("buzon-justificaciones-cont");
+    cont.innerHTML = '<div class="text-center text-info py-2 small">Cargando solicitudes...</div>';
+
+    llamarAPI({ action: "obtenerJustificaciones" }, function(res) {
+      if (!res.success || !res.justificaciones || res.justificaciones.length === 0) {
+        cont.innerHTML = '<div class="p-2 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay solicitudes de justificación registradas.</div>';
+        return;
+      }
+
+      let html = '<div class="d-grid gap-2">';
+      res.justificaciones.forEach(j => {
+        const esPendiente = (j.estado === "Pendiente");
+        html += `
+          <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-start">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="badge ${esPendiente ? 'bg-warning text-dark' : 'bg-secondary'}">${j.estado}</span>
+              <small class="text-secondary">${j.fechaEnvio}</small>
+            </div>
+            <div class="fw-bold text-white small">Alumno C.I.: ${j.idEstudiante} (${j.curso})</div>
+            <div class="text-info small">Fecha Falta: ${j.fechaFalta} — ${j.motivo}</div>
+            <div class="text-secondary small mt-1 mb-2 bg-dark p-2 rounded">"${j.detalle}"</div>
+            ${esPendiente ? `
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-success fw-bold py-1 px-3" onclick="responderJust('${j.idRegistro}', 'Aprobada')">APROBAR</button>
+                <button class="btn btn-sm btn-danger fw-bold py-1 px-3" onclick="responderJust('${j.idRegistro}', 'Rechazada')">RECHAZAR</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+      html += '</div>';
+      cont.innerHTML = html;
+    });
+  }
+
+  function responderJust(idReg, nuevoEstado) {
+    llamarAPI({ action: "responderJustificacion", idRegistro: idReg, estado: nuevoEstado }, function(res) {
+      alert(res.mensaje);
+      cargarBuzonJustificaciones();
+    });
+  }
+
   // --- LISTA DE ALUMNOS CON BOTÓN SEPARADO PARA CARNET ---
   function mostrarSubGestion(modo) {
     document.getElementById("sec-inscribir").style.display = (modo === 'inscribir') ? 'block' : 'none';
     document.getElementById("sec-eliminar").style.display = (modo === 'eliminar') ? 'block' : 'none';
 
-    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
-    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-2 fw-bold" : "nav-link rounded-2 text-secondary py-2 fw-bold";
+    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-2 fw-bold" : "nav-link rounded-2 text-secondary py-2 fw-bold";
 
     if (modo === 'eliminar') cargarEstudiantesEliminar();
   }
@@ -1167,7 +1175,7 @@
     const cont = document.getElementById("lista-eliminar-resultado");
     const filtroCont = document.getElementById("contenedor-filtro");
 
-    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando alumnos de ' + curso + '...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-3 small">Cargando alumnos de ' + curso + '...</div>';
 
     llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
       if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
@@ -1186,7 +1194,7 @@
               <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
                 <th style="width: 10%;">N°</th>
                 <th class="text-start">ESTUDIANTE</th>
-                <th style="width: 38%;">ACCIONES</th>
+                <th style="width: 45%;">ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -1197,19 +1205,15 @@
           <tr class="fila-alumno-item">
             <td class="text-secondary">${e.nro}</td>
             <td class="text-start">
-              <span class="fw-bold text-white d-block text-truncate" style="max-width: 140px;">
+              <span class="fw-bold text-white d-block text-truncate" style="max-width: 130px;">
                 ${e.nombreCompleto}
               </span>
               <small class="text-secondary font-monospace" style="font-size: 0.72rem;">C.I.: ${e.id}</small>
             </td>
             <td>
               <div class="d-flex justify-content-center gap-1">
-                <button class="btn-carnet-action" onclick="clickBotonCarnetLista(${idx})" title="Ver Carnet QR">
-                  <i class="bi bi-person-vcard-fill me-1"></i>Carnet
-                </button>
-                <button class="btn-del-action" onclick="confirmarEliminarIdx(${idx})" title="Eliminar alumno">
-                  <i class="bi bi-trash3-fill"></i>
-                </button>
+                <button class="btn-action-carnet" onclick="clickBotonCarnetLista(${idx})">CARNET</button>
+                <button class="btn-action-del" onclick="confirmarEliminarIdx(${idx})">ELIMINAR</button>
               </div>
             </td>
           </tr>
@@ -1249,7 +1253,7 @@
     if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
 
     const cont = document.getElementById("lista-eliminar-resultado");
-    cont.innerHTML = '<div class="text-center text-danger py-3"><div class="spinner-border spinner-border-sm me-2"></div>Eliminando...</div>';
+    cont.innerHTML = '<div class="text-center text-danger py-3 small">Eliminando...</div>';
 
     llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
       alert(res.mensaje);
@@ -1281,10 +1285,10 @@
       alDetectarQR,
       () => {}
     ).then(() => {
-      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-camera me-1"></i> Apunta la cámara al carnet QR...';
+      document.getElementById("estado-escaneo").innerText = 'Apunta la cámara al carnet QR...';
     }).catch(err => {
       document.getElementById("estado-escaneo").className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
-      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> Permite el acceso a la cámara.';
+      document.getElementById("estado-escaneo").innerText = 'Permite el acceso a la cámara.';
     });
   }
 
@@ -1305,26 +1309,26 @@
 
     const div = document.getElementById("estado-escaneo");
     div.className = "box-estado mt-3 bg-primary bg-opacity-25 border border-primary text-info";
-    div.innerHTML = `<div class="spinner-border spinner-border-sm me-2"></div> Registrando: ${codigo}...`;
+    div.innerText = `Registrando: ${codigo}...`;
 
     llamarAPI({ action: "asistencia", id: codigo }, function(res) {
       if(res.success) {
         if(res.alertaCitacion) {
           sonarBip(true);
           div.className = "box-estado mt-3 bg-danger bg-opacity-25 text-white border border-danger shadow";
-          div.innerHTML = `<div><i class="bi bi-exclamation-octagon-fill me-1 text-danger"></i> <strong>¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
+          div.innerHTML = `<div><strong>¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
         } else if(res.estado === "P") {
           sonarBip(false);
           div.className = "box-estado mt-3 bg-success bg-opacity-25 border border-success text-success";
-          div.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${res.mensaje}`;
+          div.innerText = res.mensaje;
         } else {
           sonarBip(false);
           div.className = "box-estado mt-3 bg-warning bg-opacity-25 border border-warning text-warning";
-          div.innerHTML = `<i class="bi bi-clock-history me-1"></i> ${res.mensaje}`;
+          div.innerText = res.mensaje;
         }
       } else {
         div.className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
-        div.innerHTML = `<i class="bi bi-x-circle-fill me-1 text-danger"></i> ${res.mensaje}`;
+        div.innerText = res.mensaje;
       }
     });
   }
@@ -1334,13 +1338,13 @@
 
     const div = document.getElementById("estado-escaneo");
     div.className = "box-estado mt-3 bg-info bg-opacity-25 border border-info text-info";
-    div.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Procesando faltas...';
+    div.innerText = 'Procesando faltas...';
 
     llamarAPI({ action: "marcarFaltas" }, function(res) {
       if(res.success) {
         alert(res.mensaje);
         div.className = "box-estado mt-3 bg-secondary bg-opacity-25 border border-secondary text-secondary";
-        div.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Asistencia del día cerrada.';
+        div.innerText = 'Asistencia del día cerrada.';
       } else {
         alert("Error: " + res.mensaje);
       }
@@ -1350,7 +1354,7 @@
   // --- REPORTES Y CITACIONES ---
   function cargarCitaciones() {
     const cont = document.getElementById("repResultado");
-    cont.innerHTML = '<div class="text-center text-warning py-3"><div class="spinner-border spinner-border-sm me-2"></div>Auditando citaciones...</div>';
+    cont.innerHTML = '<div class="text-center text-warning py-3 small">Auditando citaciones...</div>';
 
     llamarAPI({ action: "obtenerCitaciones" }, function(res) {
       if(!res.success) {
@@ -1359,7 +1363,7 @@
       }
 
       let html = `
-        <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Citaciones por 4+ Retrasos o Faltas</h6>
+        <div class="fw-bold text-danger mb-2 small text-uppercase">Citaciones por 4+ Retrasos o Faltas</div>
         <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
           <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.8rem;">
             <thead>
@@ -1395,7 +1399,7 @@
     cursoReporteActual = curso;
     const cont = document.getElementById("repResultado");
 
-    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando reporte mensual...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-3 small">Cargando reporte mensual...</div>';
 
     llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
       if(!res.success) {
@@ -1413,13 +1417,13 @@
         <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
           <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
                 <th style="width: 10%;">N°</th>
                 <th class="text-start">ESTUDIANTE</th>
                 <th>P</th>
                 <th>T</th>
                 <th>F</th>
-                <th style="width: 20%;">CARNET</th>
+                <th style="width: 25%;">CARNET</th>
               </tr>
             </thead>
             <tbody>
@@ -1437,9 +1441,7 @@
             <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
             <td><span class="badge badge-f px-2 py-1">${al.f}</span></td>
             <td>
-              <button class="btn-carnet-action py-1 px-2" onclick="clickBotonCarnetReporte(${idx})" title="Ver Carnet">
-                <i class="bi bi-person-vcard-fill"></i>
-              </button>
+              <button class="btn-action-carnet" onclick="clickBotonCarnetReporte(${idx})">CARNET</button>
             </td>
           </tr>
         `;
@@ -1476,17 +1478,17 @@
     if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) return alert("Por favor completa todos los campos");
 
     const msg = document.getElementById("gestion-msg");
-    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Guardando...</span>';
+    msg.innerHTML = '<span class="text-info small">Guardando en Google Sheets...</span>';
 
     llamarAPI(datos, function(res) {
       if(res.success) {
-        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success"><i class="bi bi-check-circle-fill me-1"></i> ${res.mensaje}</div>`;
+        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success">${res.mensaje}</div>`;
         document.getElementById("estId").value = "";
         document.getElementById("estNombres").value = "";
         document.getElementById("estApellidos").value = "";
         document.getElementById("selectCurso").value = "";
       } else {
-        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> ${res.mensaje}</div>`;
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger">${res.mensaje}</div>`;
       }
     });
   }
