@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Control de Asistencia - U.E. Paulo Freire</title>
+  <title>Sistema de Asistencia - U.E. Paulo Freire</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons (Librería de Iconos Profesionales) -->
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Google Fonts (Inter) -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,155 +18,123 @@
 
   <style>
     :root {
-      --bg-dark: #090d16;
-      --card-bg: rgba(22, 30, 49, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent-blue: #0284c7;
-      --accent-cyan: #38bdf8;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
+      --bg-main: #081022;
+      --card-surface: rgba(14, 27, 56, 0.72);
+      --card-border: rgba(56, 189, 248, 0.15);
+      --primary-blue: #1d4ed8;
+      --primary-cyan: #38bdf8;
+      --gold-solar: #f59e0b;
+      --green-shield: #10b981;
+      --rose-alert: #f43f5e;
     }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-main);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.2) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(29, 78, 216, 0.22) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
       background-attachment: fixed;
       color: #f8fafc;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      padding-bottom: 90px; /* Espacio para que la barra inferior no tape nada */
     }
 
     /* Tarjetas Glassmorphism */
     .card-modern {
-      background: var(--card-bg);
+      background: var(--card-surface);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 20px;
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6);
     }
 
-    /* Pestañas de Navegación */
-    .nav-modern .nav-link {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--card-border);
-      color: #94a3b8;
-      font-weight: 500;
-      font-size: 0.85rem;
-      border-radius: 12px;
-      padding: 10px 8px;
-      margin: 0 3px;
-      transition: all 0.25s ease;
+    /* BARRA DE NAVEGACIÓN INFERIOR (BOTTOM DOCK) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(10, 20, 42, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1040;
+      padding: 0 10px;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .bottom-nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-    }
-    .nav-modern .nav-link i {
-      font-size: 1.15rem;
-    }
-    .nav-modern .nav-link.active {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+      justify-content: center;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      flex: 1;
     }
 
-    /* Inputs y Selects */
+    .bottom-nav-item i {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+      transition: transform 0.2s ease;
+    }
+
+    .bottom-nav-item.active {
+      color: var(--primary-cyan);
+    }
+
+    .bottom-nav-item.active i {
+      transform: translateY(-2px);
+      color: var(--primary-cyan);
+      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.5));
+    }
+
+    /* Botones e Inputs */
     .form-control-modern, .form-select-modern {
-      background: rgba(15, 23, 42, 0.8) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: rgba(10, 20, 42, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
       color: #f8fafc !important;
       border-radius: 12px;
       padding: 11px 14px;
       font-size: 0.9rem;
-      transition: all 0.2s ease;
     }
     .form-control-modern:focus, .form-select-modern:focus {
-      border-color: var(--accent-cyan) !important;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
+      border-color: var(--primary-cyan) !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
     }
 
-    /* Botones Modernos */
     .btn-gradient-primary {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
+      background: linear-gradient(135deg, #1d4ed8, #0284c7);
       border: none;
       color: #fff;
       font-weight: 600;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 11px 18px;
       transition: all 0.25s ease;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 4px 15px rgba(29, 78, 216, 0.35);
     }
     .btn-gradient-primary:hover {
-      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      background: linear-gradient(135deg, #1e40af, #0369a1);
       color: #fff;
       transform: translateY(-1px);
     }
-    .btn-gradient-danger {
-      background: linear-gradient(135deg, #e11d48, #be123c);
-      border: none;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 12px;
-      transition: all 0.25s ease;
-    }
 
-    /* Escáner */
-    #reader {
-      width: 100%;
-      max-width: 380px;
-      margin: 0 auto;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 2px solid rgba(56, 189, 248, 0.5);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
-    }
-    .box-estado {
-      min-height: 55px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 14px;
-      padding: 12px;
-    }
-
-    /* Badges de Asistencia */
-    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); font-weight: 700; border-radius: 8px; }
-    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-weight: 700; border-radius: 8px; }
-    .badge-f { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); font-weight: 700; border-radius: 8px; }
-
-    /* Alumno clickeable */
-    .alumno-link {
-      color: var(--accent-cyan) !important;
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-    .alumno-link:hover {
-      color: #bae6fd !important;
-      text-decoration: underline;
-    }
-
-    .logo-hero {
-      max-width: 110px;
-      height: auto;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
-      transition: transform 0.3s ease;
-    }
-    .logo-hero:hover {
-      transform: scale(1.05);
-    }
-
-    /* Selector de Rol Moderno */
     .role-toggle {
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(10, 20, 42, 0.8);
       border-radius: 14px;
       padding: 4px;
       border: 1px solid var(--card-border);
@@ -183,21 +151,55 @@
       transition: all 0.25s ease;
     }
     .role-toggle .btn-check:checked + .btn {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
+      background: linear-gradient(135deg, #1d4ed8, #0284c7);
       color: #ffffff;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
 
-    /* Tarjetas de métricas */
-    .metric-card-modern {
-      background: rgba(15, 23, 42, 0.6);
+    /* KPI Cards del Dashboard */
+    .kpi-card {
+      background: rgba(10, 20, 42, 0.7);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 12px 8px;
-      text-align: center;
+      padding: 14px;
+      transition: transform 0.2s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
     }
 
-    /* Impresión de Credencial */
+    /* Escáner */
+    #reader {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    }
+    .box-estado {
+      min-height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); font-weight: 700; border-radius: 8px; }
+    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-weight: 700; border-radius: 8px; }
+    .badge-f { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); font-weight: 700; border-radius: 8px; }
+
+    .logo-hero {
+      max-width: 115px;
+      height: auto;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+    }
+
+    /* Impresión */
     @media print {
       body * { visibility: hidden; }
       #carnet-credencial, #carnet-credencial * { visibility: visible; }
@@ -213,31 +215,28 @@
     }
   </style>
 </head>
-<body class="p-3 p-md-4">
+<body class="p-3">
 
-<div class="container" style="max-width: 580px;">
+<div class="container" style="max-width: 600px;">
 
   <!-- ========================================== -->
-  <!-- PANTALLA 1: INICIO (LOGIN / ESTUDIANTE)   -->
+  <!-- 1. PANTALLA DE ACCESO (LOGIN)              -->
   <!-- ========================================== -->
-  <div id="vista-login" class="card card-modern p-4 text-center mt-2">
-    
-    <!-- Encabezado Institucional -->
-    <div class="mb-3">
-      <span class="badge bg-primary bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-1 rounded-pill mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-        GESTIÓN ESCOLAR OFICIAL
+  <div id="vista-login" class="card card-modern p-4 text-center mt-3">
+    <div class="mb-2">
+      <span class="badge bg-primary bg-opacity-20 text-info border border-info border-opacity-30 px-3 py-1 rounded-pill" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        UNIDAD EDUCATIVA TÉCNICO - HUMANÍSTICO
       </span>
-      <h5 class="fw-bold text-white mb-0" style="letter-spacing: -0.5px;">CONTROL DE ASISTENCIA</h5>
-      <div class="text-secondary small fw-medium">U.E. PAULO FREIRE</div>
+      <h4 class="fw-bold text-white mt-2 mb-0">PAULO FREIRE</h4>
+      <div class="text-secondary small fw-medium">Sacaba — Cochabamba</div>
     </div>
 
-    <!-- Escudo del Colegio -->
-    <div class="my-2">
+    <!-- Escudo Oficial -->
+    <div class="my-3">
       <img src="logo.png" alt="Escudo Paulo Freire" class="logo-hero">
     </div>
-    <div class="text-secondary small mb-4" style="font-size: 0.8rem;">Sacaba — Cochabamba</div>
 
-    <!-- Selector de Rol (Segmented Control) -->
+    <!-- Selector de Rol -->
     <div class="role-toggle mb-4">
       <input type="radio" class="btn-check" name="btnRol" id="rolRegente" checked onclick="toggleRol('regente')">
       <label class="btn" for="rolRegente"><i class="bi bi-shield-lock me-1"></i> Regente</label>
@@ -246,10 +245,10 @@
       <label class="btn" for="rolEstudiante"><i class="bi bi-mortarboard me-1"></i> Estudiante</label>
     </div>
 
-    <!-- Formulario Regente -->
+    <!-- Acceso Regente -->
     <div id="form-regente" class="text-start">
       <div class="mb-3">
-        <label class="form-label text-secondary small fw-semibold">Usuario de Acceso</label>
+        <label class="form-label text-secondary small fw-semibold">Usuario</label>
         <div class="input-group">
           <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-person"></i></span>
           <input type="text" id="logUsuario" class="form-control form-control-modern" placeholder="Ej: regente1">
@@ -263,43 +262,37 @@
         </div>
       </div>
       <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="iniciarSesion()">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Panel
+        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Sistema
       </button>
       <div id="login-msg" class="mt-3 text-center"></div>
     </div>
 
-    <!-- Formulario / Buscador Estudiante -->
+    <!-- Acceso Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-start">
-      <label class="form-label text-light small fw-bold"><i class="bi bi-search me-1 text-info"></i> Buscar Estudiante por Carnet / C.I.:</label>
+      <label class="form-label text-secondary small fw-semibold">Ingresa tu Carnet de Identidad (C.I.):</label>
       <div class="input-group mb-3">
-        <input type="text" id="ciEstudiante" class="form-control form-control-modern" placeholder="Ingresa tu C.I. (Ej: 58634568)">
-        <button class="btn btn-gradient-primary px-3" onclick="consultarEstudiante()">
-          <i class="bi bi-search"></i>
-        </button>
+        <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-card-text"></i></span>
+        <input type="text" id="ciEstudiante" class="form-control form-control-modern" placeholder="Ej: 58634568">
       </div>
-
-      <div id="estudiante-resultado" class="mt-3">
-        <div class="p-4 rounded-3 border border-secondary border-opacity-25 text-center text-secondary small bg-dark bg-opacity-25">
-          <i class="bi bi-card-text fs-3 d-block text-secondary mb-2 opacity-50"></i>
-          Ingresa tu número de carnet de identidad para consultar tus asistencias, faltas acumuladas y carnet digital QR.
-        </div>
-      </div>
+      <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="ingresarPortalEstudiante()">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar a Mi Portal
+      </button>
+      <div id="est-login-msg" class="mt-3 text-center"></div>
     </div>
-
   </div>
 
   <!-- ========================================== -->
-  <!-- PANTALLA 2: PANEL DE ADMINISTRACIÓN REGENTE-->
+  <!-- 2. PANEL DEL REGENTE (CON NAVEGACIÓN ABAJO)-->
   <!-- ========================================== -->
   <div id="vista-panel" style="display:none;">
     
     <!-- Barra Superior -->
     <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
       <div class="d-flex align-items-center">
-        <img src="logo.png" alt="Escudo" style="max-height: 42px; margin-right: 12px;">
+        <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 10px;">
         <div>
           <h6 class="m-0 text-white fw-bold" id="saludoRegente">Panel del Regente</h6>
-          <small class="text-info fw-semibold" style="font-size: 0.75rem;"><i class="bi bi-patch-check-fill me-1"></i>U.E. Paulo Freire</small>
+          <small class="text-info fw-semibold" style="font-size: 0.72rem;">U.E. Paulo Freire</small>
         </div>
       </div>
       <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3" onclick="cerrarSesion()">
@@ -307,78 +300,106 @@
       </button>
     </div>
 
-    <!-- Pestañas Modernas -->
-    <ul class="nav nav-pills nav-modern mb-3 nav-justified" id="pills-tab" role="tablist">
-      <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-escaner" onclick="iniciarCamara()">
-          <i class="bi bi-qr-code-scan"></i>
-          <span>Escáner</span>
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-reportes" onclick="detenerCamara()">
-          <i class="bi bi-bar-chart-line"></i>
-          <span>Reportes</span>
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gestion" onclick="detenerCamara()">
-          <i class="bi bi-people"></i>
-          <span>Alumnos</span>
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-perfil" onclick="detenerCamara()">
-          <i class="bi bi-gear"></i>
-          <span>Ajustes</span>
-        </button>
-      </li>
-    </ul>
-
-    <div class="tab-content">
+    <!-- CONTENEDOR DE SECCIONES DEL REGENTE -->
+    <div id="regente-tabs-content">
       
-      <!-- TAB 1: ESCÁNER EN VIVO -->
-      <div class="tab-pane fade show active card card-modern p-3 text-center" id="tab-escaner">
+      <!-- SECCIÓN 1: INICIO / DASHBOARD (LO PRIMERO QUE VE AL ENTRAR) -->
+      <div id="tab-regente-inicio" class="card card-modern p-3">
         
-        <!-- Reloj Digital y Estado del Horario (Nueva Función) -->
-        <div class="d-flex justify-content-between align-items-center mb-3 px-2 py-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
+        <!-- Reloj y Estado del Momento -->
+        <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <div class="d-flex align-items-center">
-            <i class="bi bi-clock text-info me-2"></i>
+            <i class="bi bi-clock-history text-info me-2"></i>
             <span id="reloj-vivo" class="fw-bold font-monospace text-light" style="font-size: 0.95rem;">00:00:00</span>
           </div>
           <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">
             Puntual
           </div>
-          <button id="btn-audio-mute" class="btn btn-sm btn-outline-secondary border-0 p-1 text-light" onclick="toggleMute()" title="Silenciar / Activar sonido">
-            <i class="bi bi-volume-up-fill" id="icono-audio"></i>
+        </div>
+
+        <h6 class="fw-bold text-white mb-3"><i class="bi bi-speedometer2 text-info me-1"></i> Resumen de la Unidad Educativa</h6>
+
+        <!-- Grid de Estadísticas / Faltas -->
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <div class="kpi-card border-danger border-opacity-30 bg-danger bg-opacity-10">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.68rem;">% FALTAS DEL COLEGIO</div>
+              <h3 class="fw-bold text-danger my-1" id="dash-faltas">0%</h3>
+              <small class="text-secondary" style="font-size: 0.7rem;">Inasistencias registradas</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card border-success border-opacity-30 bg-success bg-opacity-10">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.68rem;">% ASISTENCIA GLOBAL</div>
+              <h3 class="fw-bold text-success my-1" id="dash-asistencia">100%</h3>
+              <small class="text-secondary" style="font-size: 0.7rem;">Alumnos puntuales y tarde</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.68rem;">ALUMNOS MATRICULADOS</div>
+              <h4 class="fw-bold text-info my-1" id="dash-alumnos">0</h4>
+              <small class="text-secondary" style="font-size: 0.7rem;">Total en los 21 cursos</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card border-warning border-opacity-30 bg-warning bg-opacity-10">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.68rem;">CITACIONES ACTIVAS</div>
+              <h4 class="fw-bold text-warning my-1" id="dash-citaciones">0</h4>
+              <small class="text-secondary" style="font-size: 0.7rem;">Por 4+ faltas o retrasos</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <h6 class="fw-bold text-white mb-2" style="font-size: 0.85rem;"><i class="bi bi-lightning-charge text-warning me-1"></i> Acciones Rápidas</h6>
+        <div class="d-grid gap-2 mb-2">
+          <button class="btn btn-gradient-primary text-start py-3" onclick="cambiarSeccionRegente('escaner')">
+            <i class="bi bi-qr-code-scan me-2 fs-5 align-middle"></i>
+            <span class="align-middle fw-bold">Tomar Asistencia con Escáner</span>
           </button>
-        </div>
-
-        <!-- Visor de Cámara -->
-        <div id="reader"></div>
-
-        <!-- Estado de Escaneo -->
-        <div id="estado-escaneo" class="box-estado mt-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-info">
-          <i class="bi bi-camera me-2"></i> Apunta la cámara al carnet QR...
-        </div>
-
-        <!-- Cierre de asistencia -->
-        <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
-          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3 border-opacity-50" onclick="cerrarAsistenciaDia()">
-            <i class="bi bi-lock-fill me-1"></i> Cerrar Asistencia de Hoy (Marcar Faltas)
+          <button class="btn btn-dark border border-secondary border-opacity-25 text-start py-2 text-light" onclick="cambiarSeccionRegente('alumnos')">
+            <i class="bi bi-person-plus text-info me-2 fs-5 align-middle"></i>
+            <span class="align-middle">Inscribir Nuevo Alumno</span>
+          </button>
+          <button class="btn btn-dark border border-secondary border-opacity-25 text-start py-2 text-light" onclick="cambiarSeccionRegente('reportes'); cargarCitaciones();">
+            <i class="bi bi-exclamation-triangle text-warning me-2 fs-5 align-middle"></i>
+            <span class="align-middle">Revisar Alumnos con Citación</span>
           </button>
         </div>
       </div>
 
-      <!-- TAB 2: REPORTES Y CITACIONES -->
-      <div class="tab-pane fade card card-modern p-3" id="tab-reportes">
+      <!-- SECCIÓN 2: ESCÁNER QR -->
+      <div id="tab-regente-escaner" class="card card-modern p-3 text-center" style="display:none;">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold text-white m-0"><i class="bi bi-calendar3 me-1 text-info"></i> Asistencia Mensual</h6>
-          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3" onclick="cargarCitaciones()">
-            <i class="bi bi-exclamation-triangle-fill me-1"></i> Citaciones
+          <h6 class="fw-bold text-white m-0"><i class="bi bi-qr-code-scan text-info me-1"></i> Escáner en Vivo</h6>
+          <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0" onclick="toggleMute()">
+            <i class="bi bi-volume-up-fill fs-5" id="icono-audio"></i>
           </button>
         </div>
-        
+
+        <div id="reader"></div>
+
+        <div id="estado-escaneo" class="box-estado mt-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-info">
+          <i class="bi bi-camera me-2"></i> Apunta la cámara al carnet QR...
+        </div>
+
+        <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
+          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3" onclick="cerrarAsistenciaDia()">
+            <i class="bi bi-lock-fill me-1"></i> Cerrar Asistencia de Hoy (Poner Faltas)
+          </button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: REPORTES Y CITACIONES -->
+      <div id="tab-regente-reportes" class="card card-modern p-3" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold text-white m-0"><i class="bi bi-bar-chart-fill text-info me-1"></i> Reportes por Curso</h6>
+          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3" onclick="cargarCitaciones()">
+            <i class="bi bi-exclamation-octagon-fill me-1"></i> Ver Citaciones
+          </button>
+        </div>
+
         <div class="row g-2 mb-3">
           <div class="col-6">
             <label class="form-label text-secondary small fw-medium">Curso:</label>
@@ -425,17 +446,17 @@
         </div>
 
         <button class="btn btn-gradient-primary w-100 py-2 mb-3" onclick="cargarReporteMensual()">
-          <i class="bi bi-search me-1"></i> Consultar Asistencias del Mes
+          <i class="bi bi-search me-1"></i> Consultar Asistencias
         </button>
 
         <div id="repResultado">
-          <p class="text-center text-secondary small py-4">Selecciona un curso y mes para consultar o pulsa "Citaciones".</p>
+          <p class="text-center text-secondary small py-3">Selecciona un curso y mes para ver las asistencias de los estudiantes.</p>
         </div>
       </div>
 
-      <!-- TAB 3: GESTIÓN DE ALUMNOS -->
-      <div class="tab-pane fade card card-modern p-3" id="tab-gestion">
-        <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25" id="subTabGestion" role="tablist">
+      <!-- SECCIÓN 4: GESTIÓN DE ALUMNOS (INSCRIBIR / CREDENCIALES) -->
+      <div id="tab-regente-alumnos" class="card card-modern p-3" style="display:none;">
+        <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <li class="nav-item">
             <button class="nav-link active rounded-2 text-white py-2" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
               <i class="bi bi-person-plus me-1"></i> Inscribir
@@ -443,18 +464,17 @@
           </li>
           <li class="nav-item">
             <button class="nav-link rounded-2 text-secondary py-2" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">
-              <i class="bi bi-person-badge me-1"></i> Lista & Credenciales
+              <i class="bi bi-person-badge me-1"></i> Credenciales & Lista
             </button>
           </li>
         </ul>
 
-        <!-- SECCIÓN 1: FORMULARIO DE INSCRIPCIÓN -->
+        <!-- Formulario Inscribir -->
         <div id="sec-inscribir">
           <div class="mb-3">
-            <label class="form-label text-secondary small fw-semibold">Código de Carnet / C.I. (único)</label>
+            <label class="form-label text-secondary small fw-semibold">C.I. / Carnet (único)</label>
             <input type="text" id="estId" class="form-control form-control-modern" placeholder="Ej: 58634568">
           </div>
-
           <div class="row g-2 mb-3">
             <div class="col-6">
               <label class="form-label text-secondary small fw-semibold">Nombres</label>
@@ -465,7 +485,6 @@
               <input type="text" id="estApellidos" class="form-control form-control-modern" placeholder="Ej: Valeriano">
             </div>
           </div>
-
           <div class="mb-4">
             <label class="form-label text-secondary small fw-semibold">Curso</label>
             <select id="selectCurso" class="form-select form-select-modern">
@@ -505,16 +524,14 @@
               </optgroup>
             </select>
           </div>
-
           <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="guardarEstudiante()">
-            <i class="bi bi-check-circle me-1"></i> Registrar Estudiante
+            <i class="bi bi-check-circle me-1"></i> Registrar Alumno en Sheets
           </button>
           <div id="gestion-msg" class="mt-3 text-center"></div>
         </div>
 
-        <!-- SECCIÓN 2: LISTA DE ALUMNOS CON CREDENCIALES Y FILTRO EN VIVO -->
+        <!-- Lista de Alumnos con Buscador -->
         <div id="sec-eliminar" style="display:none;">
-          <label class="form-label text-secondary small fw-semibold">Selecciona el curso para ver alumnos:</label>
           <div class="input-group mb-3">
             <select id="delCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
@@ -540,27 +557,23 @@
               <option value='6 "C"'>6 "C"</option>
             </select>
             <button class="btn btn-gradient-primary px-3" onclick="cargarEstudiantesEliminar()">
-              <i class="bi bi-arrow-clockwise me-1"></i> Listar
+              <i class="bi bi-arrow-clockwise"></i> Listar
             </button>
           </div>
 
-          <!-- Buscador / Filtro Rápido en Vivo (Nueva Función) -->
           <div id="contenedor-filtro" class="mb-3" style="display:none;">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-funnel"></i></span>
-              <input type="text" id="filtroRapido" class="form-control form-control-modern" placeholder="Filtrar por nombre o C.I..." onkeyup="filtrarAlumnosTabla()">
-            </div>
+            <input type="text" id="filtroRapido" class="form-control form-control-modern" placeholder="Filtrar por nombre o C.I..." onkeyup="filtrarAlumnosTabla()">
           </div>
 
           <div id="lista-eliminar-resultado">
-            <p class="text-center text-secondary small py-4">Selecciona un curso para ver a los alumnos y abrir sus credenciales.</p>
+            <p class="text-center text-secondary small py-3">Selecciona un curso para ver alumnos y abrir sus credenciales.</p>
           </div>
         </div>
       </div>
 
-      <!-- TAB 4: AJUSTES -->
-      <div class="tab-pane fade card card-modern p-4" id="tab-perfil">
-        <h6 class="fw-bold text-white mb-3"><i class="bi bi-shield-lock me-1 text-info"></i> Seguridad de la Cuenta</h6>
+      <!-- SECCIÓN 5: AJUSTES -->
+      <div id="tab-regente-ajustes" class="card card-modern p-4" style="display:none;">
+        <h6 class="fw-bold text-white mb-3"><i class="bi bi-shield-lock text-info me-1"></i> Cambiar Mi Contraseña</h6>
         <div class="mb-3">
           <label class="form-label text-secondary small fw-semibold">Nueva Contraseña</label>
           <input type="password" id="nuevaPass" class="form-control form-control-modern" placeholder="Mínimo 4 caracteres">
@@ -572,70 +585,184 @@
       </div>
 
     </div>
+
+    <!-- ========================================== -->
+    <!-- BARRA INFERIOR DE NAVEGACIÓN (BOTTOM BAR)  -->
+    <!-- ========================================== -->
+    <div class="bottom-nav">
+      <button class="bottom-nav-item active" id="bnav-inicio" onclick="cambiarSeccionRegente('inicio')">
+        <i class="bi bi-grid-fill"></i>
+        <span>Inicio</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-escaner" onclick="cambiarSeccionRegente('escaner')">
+        <i class="bi bi-qr-code-scan"></i>
+        <span>Escáner</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-reportes" onclick="cambiarSeccionRegente('reportes')">
+        <i class="bi bi-bar-chart-fill"></i>
+        <span>Reportes</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-alumnos" onclick="cambiarSeccionRegente('alumnos')">
+        <i class="bi bi-people-fill"></i>
+        <span>Alumnos</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-ajustes" onclick="cambiarSeccionRegente('ajustes')">
+        <i class="bi bi-gear-fill"></i>
+        <span>Ajustes</span>
+      </button>
+    </div>
+
   </div>
 
-</div>
+  <!-- ========================================== -->
+  <!-- 3. PORTAL INDEPENDIENTE DEL ESTUDIANTE     -->
+  <!-- ========================================== -->
+  <div id="vista-estudiante-panel" style="display:none;">
+    
+    <!-- Barra Superior Estudiante -->
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
+      <div class="d-flex align-items-center">
+        <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 10px;">
+        <div>
+          <h6 class="m-0 text-white fw-bold text-uppercase" id="est-saludo">Portal Estudiantil</h6>
+          <small class="text-info fw-semibold" style="font-size: 0.72rem;" id="est-curso-badge">U.E. Paulo Freire</small>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3" onclick="cerrarPortalEstudiante()">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </button>
+    </div>
 
-<!-- ========================================== -->
-<!-- MODAL: CREDENCIAL ESTUDIANTIL OFICIAL PVC  -->
-<!-- ========================================== -->
-<div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
-    <div class="modal-content bg-transparent border-0">
-      <div class="modal-body p-0">
-        
-        <!-- DISEÑO CREDENCIAL MODERNA -->
-        <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 20px; background: #ffffff;">
-          
-          <!-- Encabezado Institucional -->
-          <div class="p-3 text-center text-white position-relative" style="background: linear-gradient(135deg, #0284c7, #1e3a8a);">
-            <img src="logo.png" alt="Escudo" style="max-height: 52px;" class="mb-1">
-            <h6 class="fw-bold m-0" style="font-size: 0.88rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
-            <div style="font-size: 0.68rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
-            <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">
-              CREDENCIAL ESTUDIANTIL
-            </div>
-          </div>
+    <!-- Pestañas del Estudiante -->
+    <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25" id="pills-estudiante">
+      <li class="nav-item">
+        <button class="nav-link active rounded-2 text-white py-2" id="btnEstCarnet" onclick="cambiarSeccionEstudiante('carnet')">
+          <i class="bi bi-qr-code me-1"></i> Mi Carnet
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link rounded-2 text-secondary py-2" id="btnEstHistorial" onclick="cambiarSeccionEstudiante('historial')">
+          <i class="bi bi-bar-chart me-1"></i> Asistencia
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link rounded-2 text-secondary py-2" id="btnEstJustificar" onclick="cambiarSeccionEstudiante('justificar')">
+          <i class="bi bi-file-earmark-medical me-1"></i> Justificar
+        </button>
+      </li>
+    </ul>
 
-          <!-- Cuerpo con QR y Datos -->
-          <div class="p-3 text-center">
-            <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
-              <img id="credQrImg" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
-            </div>
-
-            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="credNombre">NOMBRE ALUMNO</h6>
-            
-            <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
-              <div class="col-6">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
-                <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="credCurso">-</span>
-              </div>
-              <div class="col-6 text-end">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CÓDIGO / C.I.:</div>
-                <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="credId">-</span>
-              </div>
-            </div>
-
-            <div class="mt-2 text-muted" style="font-size: 0.62rem;">
-              Control Automatizado de Asistencia Estudiantil QR
-            </div>
-          </div>
+    <!-- SECCIÓN ESTUDIANTE 1: MI CARNET QR -->
+    <div id="sec-est-carnet" class="card card-modern p-3 text-center">
+      <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden mx-auto my-2" style="max-width: 320px; border-radius: 18px; background: #ffffff;">
+        <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
+          <img src="logo.png" alt="Escudo" style="max-height: 50px;" class="mb-1">
+          <h6 class="fw-bold m-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
+          <div style="font-size: 0.65rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
+          <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem;">CREDENCIAL ESTUDIANTIL</div>
         </div>
 
+        <div class="p-3 text-center">
+          <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
+            <img id="est-qr-img" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
+          </div>
+          <h6 class="fw-bold text-dark mb-1 text-uppercase" id="est-card-nombre">NOMBRE ALUMNO</h6>
+          <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
+            <div class="col-6">
+              <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
+              <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="est-card-curso">-</span>
+            </div>
+            <div class="col-6 text-end">
+              <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">C.I.:</div>
+              <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="est-card-ci">-</span>
+            </div>
+          </div>
+          <div class="mt-2 text-muted" style="font-size: 0.62rem;">Control Automatizado de Asistencia Estudiantil QR</div>
+        </div>
       </div>
 
-      <!-- Botones de Acción -->
-      <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0 gap-2">
-        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-1"></i> Cerrar
-        </button>
-        <button type="button" class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="window.print()">
-          <i class="bi bi-printer me-1"></i> Imprimir
-        </button>
-      </div>
-
+      <button class="btn btn-gradient-primary rounded-pill mt-2 px-4 shadow" onclick="window.print()">
+        <i class="bi bi-printer me-1"></i> Imprimir / Guardar Carnet
+      </button>
     </div>
+
+    <!-- SECCIÓN ESTUDIANTE 2: HISTORIAL Y MÉTRICAS -->
+    <div id="sec-est-historial" class="card card-modern p-3" style="display:none;">
+      <div id="est-alerta-citacion"></div>
+
+      <!-- Tarjetas de Resumen -->
+      <div class="row g-2 text-center mb-3">
+        <div class="col-4">
+          <div class="kpi-card border-success border-opacity-30 bg-success bg-opacity-10 py-2">
+            <span class="d-block text-success fw-bold fs-4" id="est-count-p">0</span>
+            <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">ASISTENCIAS</small>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="kpi-card border-warning border-opacity-30 bg-warning bg-opacity-10 py-2">
+            <span class="d-block text-warning fw-bold fs-4" id="est-count-t">0</span>
+            <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">RETRASOS</small>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="kpi-card border-danger border-opacity-30 bg-danger bg-opacity-10 py-2">
+            <span class="d-block text-danger fw-bold fs-4" id="est-count-f">0</span>
+            <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">FALTAS</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <span class="fw-bold text-light small"><i class="bi bi-clock-history me-1 text-info"></i> Mis Asistencias:</span>
+        <span class="badge bg-dark border border-secondary border-opacity-25 text-info" id="est-porcentaje-badge">% Asistencia: 100%</span>
+      </div>
+
+      <div class="table-responsive rounded-3 border border-secondary border-opacity-25" style="max-height: 250px; overflow-y: auto;">
+        <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+          <thead>
+            <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
+              <th>FECHA</th>
+              <th>ESTADO</th>
+            </tr>
+          </thead>
+          <tbody id="est-tabla-historial"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECCIÓN ESTUDIANTE 3: ENVIAR JUSTIFICACIÓN -->
+    <div id="sec-est-justificar" class="card card-modern p-3" style="display:none;">
+      <h6 class="fw-bold text-white mb-2"><i class="bi bi-file-earmark-medical text-info me-1"></i> Justificar Falta o Atraso</h6>
+      <p class="text-secondary small mb-3">Envía tu justificativo médico o familiar para que el regente lo revise.</p>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-semibold">Fecha de la Falta:</label>
+        <input type="date" id="justFecha" class="form-control form-control-modern">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-semibold">Motivo:</label>
+        <select id="justMotivo" class="form-select form-select-modern">
+          <option value="Motivo de Salud / Médico">Motivo de Salud / Médico</option>
+          <option value="Emergencia Familiar">Emergencia Familiar</option>
+          <option value="Trámite / Personal">Trámite / Personal</option>
+          <option value="Otro">Otro motivo</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-semibold">Detalle o Explicación:</label>
+        <textarea id="justDetalle" class="form-control form-control-modern" rows="3" placeholder="Describe brevemente la causa..."></textarea>
+      </div>
+
+      <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="enviarJustificacionEstudiante()">
+        <i class="bi bi-send-fill me-1"></i> Enviar Justificación al Regente
+      </button>
+      <div id="just-msg" class="mt-3 text-center"></div>
+    </div>
+
   </div>
+
 </div>
 
 <!-- Bootstrap Bundle -->
@@ -653,7 +780,7 @@
   let cursoReporteActual = "";
   let estudianteConsultaActual = null;
 
-  // --- RELOJ EN VIVO Y HORARIO INTELIGENTE ---
+  // --- RELOJ DIGITAL Y ESTADO DEL HORARIO ---
   function actualizarReloj() {
     const ahora = new Date();
     const h = String(ahora.getHours()).padStart(2, '0');
@@ -686,7 +813,7 @@
     audioSilenciado = !audioSilenciado;
     const icono = document.getElementById("icono-audio");
     if (icono) {
-      icono.className = audioSilenciado ? "bi bi-volume-mute-fill text-danger" : "bi bi-volume-up-fill text-light";
+      icono.className = audioSilenciado ? "bi bi-volume-mute-fill text-danger fs-5" : "bi bi-volume-up-fill text-light fs-5";
     }
   }
 
@@ -719,140 +846,45 @@
     document.getElementById("form-estudiante").style.display = (rol === 'estudiante') ? 'block' : 'none';
   }
 
-  // --- CONSULTA DEL ESTUDIANTE POR CARNET ---
-  function consultarEstudiante() {
-    const ci = document.getElementById("ciEstudiante").value.trim();
-    const cont = document.getElementById("estudiante-resultado");
+  // --- NAVEGACIÓN INFERIOR DEL REGENTE (5 PESTAÑAS) ---
+  function cambiarSeccionRegente(seccion) {
+    detenerCamara();
+    
+    // Ocultar todas las secciones
+    document.getElementById("tab-regente-inicio").style.display = "none";
+    document.getElementById("tab-regente-escaner").style.display = "none";
+    document.getElementById("tab-regente-reportes").style.display = "none";
+    document.getElementById("tab-regente-alumnos").style.display = "none";
+    document.getElementById("tab-regente-ajustes").style.display = "none";
 
-    if (!ci) return alert("Por favor ingresa tu número de Carnet / Código");
-    cont.innerHTML = `
-      <div class="text-center text-info py-4">
-        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-        Buscando ficha del estudiante...
-      </div>
-    `;
+    // Desactivar items de la barra inferior
+    document.getElementById("bnav-inicio").className = "bottom-nav-item";
+    document.getElementById("bnav-escaner").className = "bottom-nav-item";
+    document.getElementById("bnav-reportes").className = "bottom-nav-item";
+    document.getElementById("bnav-alumnos").className = "bottom-nav-item";
+    document.getElementById("bnav-ajustes").className = "bottom-nav-item";
 
-    llamarAPI({ action: "buscarEstudiante", ci: ci }, function(res) {
-      if (!res.success) {
-        cont.innerHTML = `
-          <div class="alert alert-warning border-0 text-center small p-3 bg-warning bg-opacity-10 text-warning">
-            <i class="bi bi-exclamation-triangle fs-5 d-block mb-1"></i>
-            ${res.mensaje}
-          </div>
-        `;
-        return;
-      }
+    // Activar seleccionada
+    document.getElementById(`tab-regente-${seccion}`).style.display = "block";
+    document.getElementById(`bnav-${seccion}`).className = "bottom-nav-item active";
 
-      estudianteConsultaActual = res.estudiante;
-      const est = res.estudiante;
-      const r = res.resumen;
-
-      let avisoCitacion = "";
-      if (res.citaciones && res.citaciones.length > 0) {
-        let motivosHtml = "";
-        res.citaciones.forEach(c => {
-          motivosHtml += `<div class="mb-1">• <strong>${c.motivo}</strong> (${c.fecha}) — ${c.estado}</div>`;
-        });
-
-        avisoCitacion = `
-          <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
-            <div class="d-flex align-items-center text-danger fw-bold mb-2">
-              <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i>
-              CITACIÓN OFICIAL A DIRECCIÓN
-            </div>
-            <div class="small text-light mb-2">Has superado el límite permitido de faltas o retrasos:</div>
-            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded">${motivosHtml}</div>
-            <small class="text-warning mt-2 d-block"><i class="bi bi-info-circle me-1"></i>Presentarse con su Padre/Madre de Familia a Regencia.</small>
-          </div>
-        `;
-      }
-
-      let filasHistorial = "";
-      if (res.historial.length === 0) {
-        filasHistorial = '<tr><td colspan="2" class="text-secondary small py-3">Aún no registras asistencias en la gestión.</td></tr>';
-      } else {
-        res.historial.forEach(h => {
-          filasHistorial += `
-            <tr>
-              <td class="text-light fw-medium">${h.fecha}</td>
-              <td><span class="badge ${h.badge} px-2 py-1">${h.estadoTexto} (${h.estado})</span></td>
-            </tr>
-          `;
-        });
-      }
-
-      let html = `
-        ${avisoCitacion}
-        
-        <!-- Ficha de Perfil -->
-        <div class="p-3 card-modern mb-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="text-secondary small" style="font-size: 0.7rem; font-weight: 600;">ESTUDIANTE REGISTRADO</div>
-              <h6 class="fw-bold text-info mb-1 text-uppercase">${est.nombreCompleto}</h6>
-              <div class="text-light small">Curso: <strong class="text-warning">${est.curso}</strong></div>
-              <div class="text-secondary small">C.I.: <strong class="text-light font-monospace">${est.id}</strong></div>
-            </div>
-            <button class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="verCarnetEstudianteActual()">
-              <i class="bi bi-qr-code me-1"></i> Mi QR
-            </button>
-          </div>
-        </div>
-
-        <!-- Tarjetas de Métricas -->
-        <div class="row g-2 text-center mb-3">
-          <div class="col-4">
-            <div class="metric-card-modern border-success border-opacity-25 bg-success bg-opacity-10">
-              <span class="d-block text-success fw-bold" style="font-size: 1.35rem;">${r.p}</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">ASISTENCIAS</small>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metric-card-modern border-warning border-opacity-25 bg-warning bg-opacity-10">
-              <span class="d-block text-warning fw-bold" style="font-size: 1.35rem;">${r.t}</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">RETRASOS</small>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metric-card-modern border-danger border-opacity-25 bg-danger bg-opacity-10">
-              <span class="d-block text-danger fw-bold" style="font-size: 1.35rem;">${r.f}</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">FALTAS</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-light small"><i class="bi bi-clock-history me-1 text-info"></i> Historial Reciente:</span>
-          <span class="badge bg-dark border border-secondary border-opacity-25 text-info">% Asistencia: ${r.porcentaje}</span>
-        </div>
-
-        <!-- Tabla Historial -->
-        <div class="table-responsive rounded-3 border border-secondary border-opacity-25" style="max-height: 250px; overflow-y: auto;">
-          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
-            <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
-                <th>FECHA</th>
-                <th>ESTADO</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filasHistorial}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      cont.innerHTML = html;
-    });
+    if (seccion === 'escaner') {
+      setTimeout(iniciarCamara, 300);
+    } else if (seccion === 'inicio') {
+      cargarDashboardRegente();
+    }
   }
 
-  function verCarnetEstudianteActual() {
-    if (!estudianteConsultaActual) return;
-    abrirCredencial(
-      estudianteConsultaActual.id,
-      estudianteConsultaActual.nombreCompleto,
-      estudianteConsultaActual.curso
-    );
+  // Cargar métricas del Dashboard al entrar
+  function cargarDashboardRegente() {
+    llamarAPI({ action: "obtenerDashboard" }, function(res) {
+      if (res.success) {
+        document.getElementById("dash-faltas").innerText = res.porcentajeFaltas;
+        document.getElementById("dash-asistencia").innerText = res.porcentajeAsistencia;
+        document.getElementById("dash-alumnos").innerText = res.totalAlumnos;
+        document.getElementById("dash-citaciones").innerText = res.totalCitaciones;
+      }
+    });
   }
 
   function iniciarSesion() {
@@ -869,7 +901,7 @@
         document.getElementById("saludoRegente").innerText = "Hola, " + res.nombre;
         document.getElementById("vista-login").style.display = "none";
         document.getElementById("vista-panel").style.display = "block";
-        setTimeout(iniciarCamara, 300);
+        cambiarSeccionRegente('inicio'); // Lo primero que ve es el Menú / Dashboard
       } else {
         msg.innerHTML = `<span class="text-danger small">${res.mensaje}</span>`;
       }
@@ -883,49 +915,138 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  function abrirCredencial(id, nombre, curso) {
-    document.getElementById("credNombre").innerText = nombre;
-    document.getElementById("credCurso").innerText = curso;
-    document.getElementById("credId").innerText = id;
-    document.getElementById("credQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(id)}`;
+  // --- PORTAL ESTUDIANTIL INDEPENDIENTE ---
+  function ingresarPortalEstudiante() {
+    const ci = document.getElementById("ciEstudiante").value.trim();
+    const msg = document.getElementById("est-login-msg");
 
-    const modalEl = document.getElementById('modalCredencial');
-    const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modalObj.show();
+    if(!ci) return alert("Por favor ingresa tu número de Carnet / C.I.");
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Consultando ficha escolar...</span>';
+
+    llamarAPI({ action: "buscarEstudiante", ci: ci }, function(res) {
+      msg.innerHTML = "";
+      if (!res.success) {
+        alert(res.mensaje);
+        return;
+      }
+
+      estudianteConsultaActual = res.estudiante;
+      const est = res.estudiante;
+      const r = res.resumen;
+
+      // Cargar Datos en el Portal
+      document.getElementById("est-saludo").innerText = est.nombreCompleto;
+      document.getElementById("est-curso-badge").innerText = est.curso + " — U.E. Paulo Freire";
+
+      // Carnet
+      document.getElementById("est-card-nombre").innerText = est.nombreCompleto;
+      document.getElementById("est-card-curso").innerText = est.curso;
+      document.getElementById("est-card-ci").innerText = est.id;
+      document.getElementById("est-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(est.id)}`;
+
+      // Métricas
+      document.getElementById("est-count-p").innerText = r.p;
+      document.getElementById("est-count-t").innerText = r.t;
+      document.getElementById("est-count-f").innerText = r.f;
+      document.getElementById("est-porcentaje-badge").innerText = `% Asistencia: ${r.porcentaje}`;
+
+      // Alerta de Citación si tiene 4+ T o 4+ F
+      const alertaCont = document.getElementById("est-alerta-citacion");
+      if (res.citaciones && res.citaciones.length > 0) {
+        let motivos = "";
+        res.citaciones.forEach(c => {
+          motivos += `<div>• <strong>${c.motivo}</strong> (${c.fecha}) — ${c.estado}</div>`;
+        });
+        alertaCont.innerHTML = `
+          <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
+            <div class="d-flex align-items-center text-danger fw-bold mb-1">
+              <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i> CITACIÓN OFICIAL A DIRECCIÓN
+            </div>
+            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded mb-2">${motivos}</div>
+            <small class="text-warning d-block"><i class="bi bi-info-circle me-1"></i>Presentarse con su Padre/Madre de Familia a Regencia.</small>
+          </div>
+        `;
+      } else {
+        alertaCont.innerHTML = "";
+      }
+
+      // Historial
+      const tablaHist = document.getElementById("est-tabla-historial");
+      if (res.historial.length === 0) {
+        tablaHist.innerHTML = '<tr><td colspan="2" class="text-secondary small py-3">Aún no registras asistencias en la gestión.</td></tr>';
+      } else {
+        let filas = "";
+        res.historial.forEach(h => {
+          filas += `
+            <tr>
+              <td class="text-light fw-medium">${h.fecha}</td>
+              <td><span class="badge ${h.badge} px-2 py-1">${h.estadoTexto} (${h.estado})</span></td>
+            </tr>
+          `;
+        });
+        tablaHist.innerHTML = filas;
+      }
+
+      // Abrir Portal
+      document.getElementById("vista-login").style.display = "none";
+      document.getElementById("vista-estudiante-panel").style.display = "block";
+      cambiarSeccionEstudiante('carnet');
+    });
   }
 
-  function clickAlumnoLista(index) {
-    const alumno = alumnosListaMemoria[index];
-    if (alumno) {
-      abrirCredencial(alumno.id, alumno.nombreCompleto, cursoListaActual);
-    }
+  function cerrarPortalEstudiante() {
+    estudianteConsultaActual = null;
+    document.getElementById("vista-estudiante-panel").style.display = "none";
+    document.getElementById("vista-login").style.display = "block";
   }
 
-  function clickAlumnoReporte(index) {
-    const alumno = alumnosReporteMemoria[index];
-    if (alumno) {
-      abrirCredencial(alumno.id, alumno.nombreCompleto, cursoReporteActual);
-    }
+  function cambiarSeccionEstudiante(sec) {
+    document.getElementById("sec-est-carnet").style.display = (sec === 'carnet') ? 'block' : 'none';
+    document.getElementById("sec-est-historial").style.display = (sec === 'historial') ? 'block' : 'none';
+    document.getElementById("sec-est-justificar").style.display = (sec === 'justificar') ? 'block' : 'none';
+
+    document.getElementById("btnEstCarnet").className = (sec === 'carnet') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+    document.getElementById("btnEstHistorial").className = (sec === 'historial') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+    document.getElementById("btnEstJustificar").className = (sec === 'justificar') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
   }
 
+  function enviarJustificacionEstudiante() {
+    const fecha = document.getElementById("justFecha").value;
+    const motivo = document.getElementById("justMotivo").value;
+    const detalle = document.getElementById("justDetalle").value.trim();
+    const msg = document.getElementById("just-msg");
+
+    if (!fecha || !detalle) return alert("Por favor indica la fecha de la falta y el detalle del motivo");
+
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Enviando justificación...</span>';
+
+    llamarAPI({
+      action: "enviarJustificacion",
+      id: estudianteConsultaActual.id,
+      curso: estudianteConsultaActual.curso,
+      fechaFalta: fecha,
+      motivo: motivo,
+      detalle: detalle
+    }, function(res) {
+      if (res.success) {
+        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success">${res.mensaje}</div>`;
+        document.getElementById("justFecha").value = "";
+        document.getElementById("justDetalle").value = "";
+      } else {
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger">${res.mensaje}</div>`;
+      }
+    });
+  }
+
+  // --- SUBGESTIÓN REGENTE (INSCRIBIR / LISTA) ---
   function mostrarSubGestion(modo) {
-    const btnIns = document.getElementById("btnSubInscribir");
-    const btnDel = document.getElementById("btnSubEliminar");
-    const secIns = document.getElementById("sec-inscribir");
-    const secDel = document.getElementById("sec-eliminar");
+    document.getElementById("sec-inscribir").style.display = (modo === 'inscribir') ? 'block' : 'none';
+    document.getElementById("sec-eliminar").style.display = (modo === 'eliminar') ? 'block' : 'none';
 
-    if (modo === 'inscribir') {
-      btnIns.className = "nav-link active rounded-2 text-white py-2";
-      btnDel.className = "nav-link rounded-2 text-secondary py-2";
-      secIns.style.display = "block";
-      secDel.style.display = "none";
-    } else {
-      btnDel.className = "nav-link active rounded-2 text-white py-2";
-      btnIns.className = "nav-link rounded-2 text-secondary py-2";
-      secIns.style.display = "none";
-      secDel.style.display = "block";
-      cargarEstudiantesEliminar();
-    }
+    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+
+    if (modo === 'eliminar') cargarEstudiantesEliminar();
   }
 
   function cargarEstudiantesEliminar() {
@@ -934,12 +1055,7 @@
     const cont = document.getElementById("lista-eliminar-resultado");
     const filtroCont = document.getElementById("contenedor-filtro");
 
-    cont.innerHTML = `
-      <div class="text-center text-info py-4">
-        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-        Cargando alumnos de ${curso}...
-      </div>
-    `;
+    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando alumnos de ' + curso + '...</div>';
 
     llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
       if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
@@ -953,9 +1069,9 @@
 
       let html = `
         <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
-          <table id="tablaAlumnosGestion" class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
             <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
                 <th style="width: 12%;">N°</th>
                 <th class="text-start">ESTUDIANTE</th>
                 <th style="width: 20%;">ACCIÓN</th>
@@ -969,7 +1085,7 @@
           <tr class="fila-alumno-item">
             <td class="text-secondary">${e.nro}</td>
             <td class="text-start">
-              <span class="alumno-link text-truncate d-block" style="max-width: 170px;" onclick="clickAlumnoLista(${idx})">
+              <span class="text-info fw-bold d-block text-truncate" style="max-width: 170px; cursor:pointer;" onclick="clickAlumnoLista(${idx})">
                 <i class="bi bi-person-badge me-1"></i>${e.nombreCompleto}
               </span>
               <small class="text-secondary font-monospace" style="font-size: 0.72rem;">C.I.: ${e.id}</small>
@@ -988,15 +1104,27 @@
     });
   }
 
-  // --- FILTRO EN VIVO PARA ALUMNOS ---
   function filtrarAlumnosTabla() {
     const input = document.getElementById("filtroRapido").value.toLowerCase();
     const filas = document.querySelectorAll(".fila-alumno-item");
-
     filas.forEach(f => {
-      const texto = f.innerText.toLowerCase();
-      f.style.display = texto.includes(input) ? "" : "none";
+      f.style.display = f.innerText.toLowerCase().includes(input) ? "" : "none";
     });
+  }
+
+  function clickAlumnoLista(index) {
+    const alumno = alumnosListaMemoria[index];
+    if (alumno) {
+      estudianteConsultaActual = { id: alumno.id, nombreCompleto: alumno.nombreCompleto, curso: cursoListaActual };
+      document.getElementById("est-card-nombre").innerText = alumno.nombreCompleto;
+      document.getElementById("est-card-curso").innerText = cursoListaActual;
+      document.getElementById("est-card-ci").innerText = alumno.id;
+      document.getElementById("est-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(alumno.id)}`;
+      
+      document.getElementById("vista-panel").style.display = "none";
+      document.getElementById("vista-estudiante-panel").style.display = "block";
+      cambiarSeccionEstudiante('carnet');
+    }
   }
 
   function confirmarEliminarIdx(idx) {
@@ -1005,7 +1133,7 @@
     if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
 
     const cont = document.getElementById("lista-eliminar-resultado");
-    cont.innerHTML = '<div class="text-center text-danger py-3"><div class="spinner-border spinner-border-sm me-2"></div>Eliminando estudiante...</div>';
+    cont.innerHTML = '<div class="text-center text-danger py-3"><div class="spinner-border spinner-border-sm me-2"></div>Eliminando...</div>';
 
     llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
       alert(res.mensaje);
@@ -1013,6 +1141,7 @@
     });
   }
 
+  // --- CÁMARA & ESCÁNER ---
   function sonarBip(esAlerta) {
     if (audioSilenciado) return;
     try {
@@ -1027,9 +1156,7 @@
   }
 
   function iniciarCamara() {
-    if (!html5QrCode) {
-      html5QrCode = new Html5Qrcode("reader");
-    }
+    if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
     if (html5QrCode.isScanning) return;
 
     html5QrCode.start(
@@ -1041,7 +1168,7 @@
       document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-camera me-1"></i> Apunta la cámara al carnet QR...';
     }).catch(err => {
       document.getElementById("estado-escaneo").className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
-      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> Permite el acceso a la cámara en el navegador.';
+      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> Permite el acceso a la cámara.';
     });
   }
 
@@ -1091,7 +1218,7 @@
 
     const div = document.getElementById("estado-escaneo");
     div.className = "box-estado mt-3 bg-info bg-opacity-25 border border-info text-info";
-    div.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Procesando faltas en todos los cursos...';
+    div.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Procesando faltas...';
 
     llamarAPI({ action: "marcarFaltas" }, function(res) {
       if(res.success) {
@@ -1104,9 +1231,10 @@
     });
   }
 
+  // --- REPORTES Y CITACIONES ---
   function cargarCitaciones() {
     const cont = document.getElementById("repResultado");
-    cont.innerHTML = '<div class="text-center text-warning py-4"><div class="spinner-border spinner-border-sm me-2"></div>Auditando y consultando citaciones...</div>';
+    cont.innerHTML = '<div class="text-center text-warning py-3"><div class="spinner-border spinner-border-sm me-2"></div>Auditando citaciones...</div>';
 
     llamarAPI({ action: "obtenerCitaciones" }, function(res) {
       if(!res.success) {
@@ -1151,7 +1279,7 @@
     cursoReporteActual = curso;
     const cont = document.getElementById("repResultado");
 
-    cont.innerHTML = '<div class="text-center text-info py-4"><div class="spinner-border spinner-border-sm me-2"></div>Cargando reporte mensual...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando reporte mensual...</div>';
 
     llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
       if(!res.success) {
@@ -1185,10 +1313,10 @@
           <tr>
             <td class="text-secondary">${al.nro}</td>
             <td class="text-start text-truncate" style="max-width: 150px;">
-              <span class="alumno-link" onclick="clickAlumnoReporte(${idx})" title="Ver credencial">
+              <span class="text-info fw-bold d-block" style="cursor:pointer;" onclick="clickAlumnoReporte(${idx})" title="Ver credencial">
                 <i class="bi bi-person-badge me-1"></i>${al.nombreCompleto}
               </span>
-              <br><small class="text-secondary" style="font-size: 0.72rem;">% Asist: ${al.porcentaje}</small>
+              <small class="text-secondary" style="font-size: 0.72rem;">% Asist: ${al.porcentaje}</small>
             </td>
             <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
             <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
@@ -1202,6 +1330,21 @@
     });
   }
 
+  function clickAlumnoReporte(index) {
+    const alumno = alumnosReporteMemoria[index];
+    if (alumno) {
+      estudianteConsultaActual = { id: alumno.id, nombreCompleto: alumno.nombreCompleto, curso: cursoReporteActual };
+      document.getElementById("est-card-nombre").innerText = alumno.nombreCompleto;
+      document.getElementById("est-card-curso").innerText = cursoReporteActual;
+      document.getElementById("est-card-ci").innerText = alumno.id;
+      document.getElementById("est-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(alumno.id)}`;
+      
+      document.getElementById("vista-panel").style.display = "none";
+      document.getElementById("vista-estudiante-panel").style.display = "block";
+      cambiarSeccionEstudiante('carnet');
+    }
+  }
+
   function guardarEstudiante() {
     const datos = {
       action: "guardarEstudiante",
@@ -1211,12 +1354,10 @@
       curso: document.getElementById("selectCurso").value
     };
 
-    if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) {
-      return alert("Por favor completa todos los campos requeridos");
-    }
+    if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) return alert("Por favor completa todos los campos");
 
     const msg = document.getElementById("gestion-msg");
-    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Guardando en Google Sheets...</span>';
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Guardando...</span>';
 
     llamarAPI(datos, function(res) {
       if(res.success) {
@@ -1226,14 +1367,14 @@
         document.getElementById("estApellidos").value = "";
         document.getElementById("selectCurso").value = "";
       } else {
-        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger"><i class="bi bi-exclamation-triangle me-1"></i> ${res.mensaje}</div>`;
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger">${res.mensaje}</div>`;
       }
     });
   }
 
   function actualizarContrasena() {
     const pass = document.getElementById("nuevaPass").value.trim();
-    if(pass.length < 4) return alert("La contraseña debe tener al menos 4 caracteres");
+    if(pass.length < 4) return alert("Mínimo 4 caracteres");
 
     llamarAPI({ action: "cambiarPass", usuario: usuarioActual, nuevaPass: pass }, function(res) {
       const msg = document.getElementById("perfil-msg");
