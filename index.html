@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Sistema de Asistencia - U.E. Paulo Freire</title>
   
   <!-- Bootstrap 5 CSS -->
@@ -19,13 +19,26 @@
   <style>
     :root {
       --navy-bg: #060d1f;
-      --card-surface: rgba(11, 22, 48, 0.85);
+      --card-surface: rgba(11, 22, 48, 0.88);
       --card-border: rgba(56, 189, 248, 0.18);
       --royal-blue: #1d4ed8;
       --cyan-accent: #38bdf8;
       --gold-solar: #f59e0b;
       --shield-green: #10b981;
       --crimson-red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
 
     body {
@@ -37,7 +50,15 @@
       color: #ffffff;
       font-family: 'Inter', -apple-system, sans-serif;
       min-height: 100vh;
-      padding-bottom: 95px;
+      /* Margen de seguridad inferior para que la barra nunca tape el contenido */
+      padding-bottom: calc(105px + env(safe-area-inset-bottom, 20px)) !important;
+    }
+
+    .container-app {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 10px 12px;
     }
 
     .card-modern {
@@ -45,27 +66,29 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7);
+      padding: 14px;
     }
 
-    /* BARRAS DE NAVEGACIÓN INFERIORES CON ICONOS Y TEXTO */
+    /* BARRA INFERIOR DE NAVEGACIÓN ADAPTADA A CELULAR */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 72px;
-      background: rgba(7, 15, 34, 0.95);
+      min-height: 62px;
+      height: auto;
+      background: rgba(7, 15, 34, 0.96);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      border-top: 1px solid rgba(56, 189, 248, 0.22);
+      border-top: 1px solid rgba(56, 189, 248, 0.25);
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 1040;
-      padding: 0 6px;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+      padding: 4px 4px calc(6px + env(safe-area-inset-bottom, 0px)) 4px;
+      box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6);
     }
 
     .bottom-nav-item {
@@ -75,36 +98,35 @@
       justify-content: center;
       color: #94a3b8;
       text-decoration: none;
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      padding: 6px 10px;
-      border-radius: 12px;
+      letter-spacing: 0.2px;
+      padding: 4px 2px;
+      border-radius: 10px;
       transition: all 0.2s ease;
       cursor: pointer;
       border: 1px solid transparent;
       background: transparent;
       flex: 1;
       text-align: center;
+      min-width: 0;
     }
 
     .bottom-nav-item i {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       margin-bottom: 2px;
-      transition: transform 0.2s ease;
+      line-height: 1;
     }
 
     .bottom-nav-item.active {
-      color: var(--cyan-accent);
-      background: rgba(29, 78, 216, 0.28);
-      border-color: rgba(56, 189, 248, 0.35);
-      box-shadow: 0 2px 12px rgba(29, 78, 216, 0.35);
+      color: #ffffff;
+      background: rgba(29, 78, 216, 0.35);
+      border-color: rgba(56, 189, 248, 0.4);
     }
 
     .bottom-nav-item.active i {
-      transform: translateY(-2px);
       color: var(--cyan-accent);
-      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.5));
+      transform: translateY(-1px);
     }
 
     /* BOTONES */
@@ -113,30 +135,28 @@
       border: none;
       color: #fff;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      border-radius: 14px;
-      padding: 13px 20px;
+      letter-spacing: 0.4px;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 16px rgba(29, 78, 216, 0.35);
+      box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
     }
-    .btn-solid-blue:hover {
-      background: linear-gradient(135deg, #1e40af, #0369a1);
-      color: #fff;
-      transform: translateY(-1px);
+    .btn-solid-blue:active {
+      transform: scale(0.98);
     }
 
     .btn-action-carnet {
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid rgba(56, 189, 248, 0.4);
       color: var(--cyan-accent);
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      border-radius: 10px;
-      padding: 6px 12px;
-      transition: all 0.2s ease;
+      border-radius: 8px;
+      padding: 5px 8px;
+      white-space: nowrap;
     }
-    .btn-action-carnet:hover {
+    .btn-action-carnet:active {
       background: var(--cyan-accent);
       color: #060d1f;
     }
@@ -145,37 +165,36 @@
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.4);
       color: #f87171;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      border-radius: 10px;
-      padding: 6px 12px;
-      transition: all 0.2s ease;
+      border-radius: 8px;
+      padding: 5px 8px;
+      white-space: nowrap;
     }
-    .btn-action-del:hover {
+    .btn-action-del:active {
       background: var(--crimson-red);
       color: #fff;
     }
 
-    /* Inputs */
+    /* Inputs móvil */
     .form-control-modern, .form-select-modern {
-      background: rgba(7, 15, 34, 0.88) !important;
+      background: rgba(7, 15, 34, 0.9) !important;
       border: 1px solid rgba(255, 255, 255, 0.14) !important;
       color: #ffffff !important;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 0.9rem;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.88rem;
     }
     .form-control-modern:focus, .form-select-modern:focus {
       border-color: var(--cyan-accent) !important;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
     }
 
-    /* GRÁFICO CIRCULAR EN SVG */
+    /* GRÁFICO CIRCULAR RESPONSIVO */
     .circle-chart-container {
       position: relative;
-      width: 112px;
-      height: 112px;
+      width: 95px;
+      height: 95px;
       margin: 0 auto;
     }
     .circle-chart-svg {
@@ -201,40 +220,55 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-weight: 900;
-      font-size: 1.25rem;
+      font-weight: 800;
+      font-size: 1.1rem;
       letter-spacing: -0.5px;
     }
 
     /* Badges */
-    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35); font-weight: 700; border-radius: 8px; }
-    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); font-weight: 700; border-radius: 8px; }
-    .badge-f { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35); font-weight: 700; border-radius: 8px; }
+    .badge-p { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35); font-weight: 700; border-radius: 6px; font-size: 0.72rem; }
+    .badge-t { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); font-weight: 700; border-radius: 6px; font-size: 0.72rem; }
+    .badge-f { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35); font-weight: 700; border-radius: 6px; font-size: 0.72rem; }
 
     #reader {
       width: 100%;
-      max-width: 370px;
+      max-width: 320px;
       margin: 0 auto;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
       border: 2px solid rgba(56, 189, 248, 0.5);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
     }
     .box-estado {
-      min-height: 55px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      border-radius: 14px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 10px;
     }
 
     .logo-hero {
-      max-width: 110px;
+      max-width: 95px;
       height: auto;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.65));
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.65));
+    }
+
+    /* Tablas adaptadas a celular */
+    .table-scroll-touch {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .table-scroll-touch table {
+      width: 100%;
+      min-width: 290px;
+      margin-bottom: 0;
+      font-size: 0.8rem;
     }
 
     @media print {
@@ -245,63 +279,62 @@
         left: 50%;
         top: 20px;
         transform: translateX(-50%);
-        width: 320px !important;
+        width: 300px !important;
         box-shadow: none !important;
         border: 2px solid #0284c7 !important;
       }
     }
   </style>
 </head>
-<body class="p-3">
+<body>
 
-<div class="container" style="max-width: 580px;">
+<div class="container-app">
 
   <!-- ========================================== -->
   <!-- 1. PANTALLA PRINCIPAL DE LOGIN             -->
   <!-- ========================================== -->
-  <div id="vista-login" class="card card-modern p-4 text-center mt-3">
+  <div id="vista-login" class="card card-modern text-center mt-2">
     <div class="mb-2">
-      <span class="badge bg-primary bg-opacity-20 text-info border border-info border-opacity-30 px-3 py-1 rounded-pill" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+      <span class="badge bg-primary bg-opacity-20 text-info border border-info border-opacity-30 px-3 py-1 rounded-pill" style="font-size: 0.65rem; letter-spacing: 0.5px;">
         UNIDAD EDUCATIVA TÉCNICO - HUMANÍSTICO
       </span>
-      <h4 class="fw-bold text-white mt-2 mb-0">PAULO FREIRE</h4>
-      <div class="text-secondary small">Sacaba — Cochabamba</div>
+      <h5 class="fw-bold text-white mt-2 mb-0">PAULO FREIRE</h5>
+      <div class="text-secondary small" style="font-size: 0.75rem;">Sacaba — Cochabamba</div>
     </div>
 
-    <!-- Escudo Oficial -->
-    <div class="my-3">
+    <div class="my-2">
       <img src="logo.png" alt="Escudo Paulo Freire" class="logo-hero">
     </div>
 
     <!-- Selector de Rol -->
-    <div class="btn-group w-100 p-1 rounded-3 bg-dark bg-opacity-75 border border-secondary border-opacity-25 mb-4" role="group">
+    <div class="btn-group w-100 p-1 rounded-3 bg-dark bg-opacity-75 border border-secondary border-opacity-25 mb-3" role="group">
       <input type="radio" class="btn-check" name="btnRol" id="rolRegente" checked onclick="toggleRol('regente')">
-      <label class="btn btn-sm rounded-2 text-white py-2 fw-bold" for="rolRegente" id="lbl-rol-regente">REGENTE</label>
+      <label class="btn btn-sm rounded-2 text-white py-2 fw-bold" for="rolRegente" id="lbl-rol-regente" style="font-size: 0.78rem;">REGENTE</label>
 
       <input type="radio" class="btn-check" name="btnRol" id="rolEstudiante" onclick="toggleRol('estudiante')">
-      <label class="btn btn-sm rounded-2 text-secondary py-2 fw-bold" for="rolEstudiante" id="lbl-rol-estudiante">ESTUDIANTE</label>
+      <label class="btn btn-sm rounded-2 text-secondary py-2 fw-bold" for="rolEstudiante" id="lbl-rol-estudiante" style="font-size: 0.78rem;">ESTUDIANTE</label>
     </div>
 
     <!-- Formulario Regente -->
     <div id="form-regente" class="text-start">
-      <div class="mb-3">
+      <div class="mb-2">
         <label class="form-label text-secondary small fw-semibold">Usuario del Regente</label>
         <input type="text" id="logUsuario" class="form-control form-control-modern" placeholder="Ej: regente1">
       </div>
-      <div class="mb-4">
+      <div class="mb-3">
         <label class="form-label text-secondary small fw-semibold">Contraseña</label>
         <input type="password" id="logPass" class="form-control form-control-modern" placeholder="••••••••">
       </div>
       <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="iniciarSesion()">INGRESAR AL SISTEMA</button>
-      <div id="login-msg" class="mt-3 text-center"></div>
+      <div id="login-msg" class="mt-2 text-center"></div>
     </div>
 
     <!-- Formulario Estudiante -->
     <div id="form-estudiante" style="display:none;" class="text-start">
       <label class="form-label text-secondary small fw-semibold">Número de Carnet de Identidad (C.I.):</label>
-      <input type="text" id="ciEstudiante" class="form-control form-control-modern mb-4" placeholder="Ej: 58634568">
+      <input type="text" id="ciEstudiante" class="form-control form-control-modern mb-3" placeholder="Ej: 58634568">
       <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="ingresarPortalEstudiante()">INGRESAR A MI PORTAL</button>
-      <div id="est-login-msg" class="mt-3 text-center"></div>
+      <div id="est-login-msg" class="mt-2 text-center"></div>
     </div>
   </div>
 
@@ -310,16 +343,16 @@
   <!-- ========================================== -->
   <div id="vista-panel" style="display:none;">
     
-    <!-- Barra Superior Limpia -->
-    <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
+    <!-- Barra Superior -->
+    <div class="d-flex justify-content-between align-items-center mb-2 p-2 card-modern">
       <div class="d-flex align-items-center">
-        <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 12px;">
+        <img src="logo.png" alt="Escudo" style="max-height: 36px; margin-right: 10px;">
         <div>
-          <h6 class="m-0 text-white fw-bold">U.E. PAULO FREIRE</h6>
-          <small class="text-info fw-semibold" style="font-size: 0.72rem;">SISTEMA OFICIAL DE REGENCIA</small>
+          <h6 class="m-0 text-white fw-bold" style="font-size: 0.88rem;">U.E. PAULO FREIRE</h6>
+          <small class="text-info fw-semibold" style="font-size: 0.68rem;">SISTEMA DE REGENCIA</small>
         </div>
       </div>
-      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" onclick="cerrarSesion()">SALIR</button>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" style="font-size: 0.72rem;" onclick="cerrarSesion()">SALIR</button>
     </div>
 
     <!-- SECCIONES DEL REGENTE -->
@@ -328,31 +361,28 @@
       <!-- SECCIÓN 1: MENÚ INICIAL / DASHBOARD -->
       <div id="tab-regente-inicio" class="card card-modern p-3">
         
-        <!-- ENCABEZADO INSTITUCIONAL CON LOGO Y MENSAJE DE ASISTENCIA -->
         <div class="p-3 mb-3 text-center rounded-4 border border-info border-opacity-25" style="background: linear-gradient(135deg, rgba(29, 78, 216, 0.25), rgba(2, 132, 199, 0.15));">
-          <img src="logo.png" alt="Escudo Paulo Freire" style="max-height: 65px;" class="mb-2">
-          <h6 class="fw-bold text-white mb-1" style="letter-spacing: 0.5px;">CONTROL INSTITUCIONAL DE ASISTENCIA</h6>
-          <p class="text-secondary small m-0 fst-italic" style="font-size: 0.76rem;">
+          <img src="logo.png" alt="Escudo Paulo Freire" style="max-height: 55px;" class="mb-2">
+          <h6 class="fw-bold text-white mb-1" style="font-size: 0.82rem; letter-spacing: 0.3px;">CONTROL INSTITUCIONAL DE ASISTENCIA</h6>
+          <p class="text-secondary small m-0 fst-italic" style="font-size: 0.72rem; line-height: 1.3;">
             "La puntualidad y la constancia son la base de la excelencia académica. Registro diario de asistencia estudiantil."
           </p>
         </div>
 
-        <!-- Reloj y Estado del Horario -->
+        <!-- Reloj y Estado -->
         <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
-          <span id="reloj-vivo" class="fw-bold font-monospace text-light px-2" style="font-size: 0.95rem;">00:00:00</span>
-          <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-1">
+          <span id="reloj-vivo" class="fw-bold font-monospace text-light px-2" style="font-size: 0.9rem;">00:00:00</span>
+          <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1" style="font-size: 0.7rem;">
             PUNTUAL
           </div>
         </div>
 
-        <div class="small fw-bold text-info mb-3 text-uppercase" style="letter-spacing: 0.5px;">Métricas Generales de la Unidad</div>
+        <div class="small fw-bold text-info mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Métricas de la Unidad</div>
 
-        <!-- GRÁFICOS CIRCULARES DINÁMICOS -->
+        <!-- GRÁFICOS CIRCULARES -->
         <div class="row g-2 mb-3 text-center">
-          
-          <!-- Círculo 1: Asistencia Global -->
           <div class="col-6">
-            <div class="p-3 rounded-4 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
+            <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
               <div class="circle-chart-container">
                 <svg viewBox="0 0 100 100" class="circle-chart-svg">
                   <circle cx="50" cy="50" r="40" class="circle-chart-bg"></circle>
@@ -360,14 +390,13 @@
                 </svg>
                 <div class="circle-chart-text text-success" id="gauge-asistencia-texto">0%</div>
               </div>
-              <div class="small fw-bold text-light mt-2" style="font-size: 0.72rem;">ASISTENCIA GLOBAL</div>
-              <small class="text-secondary" style="font-size: 0.65rem;">Alumnos presentes</small>
+              <div class="small fw-bold text-light mt-1" style="font-size: 0.68rem;">ASISTENCIA</div>
+              <small class="text-secondary" style="font-size: 0.62rem;">Presentes hoy</small>
             </div>
           </div>
 
-          <!-- Círculo 2: Faltas Globales -->
           <div class="col-6">
-            <div class="p-3 rounded-4 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
+            <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
               <div class="circle-chart-container">
                 <svg viewBox="0 0 100 100" class="circle-chart-svg">
                   <circle cx="50" cy="50" r="40" class="circle-chart-bg"></circle>
@@ -375,36 +404,36 @@
                 </svg>
                 <div class="circle-chart-text text-danger" id="gauge-faltas-texto">0%</div>
               </div>
-              <div class="small fw-bold text-light mt-2" style="font-size: 0.72rem;">FALTAS GLOBALES</div>
-              <small class="text-secondary" style="font-size: 0.65rem;">Alumnos ausentes</small>
+              <div class="small fw-bold text-light mt-1" style="font-size: 0.68rem;">FALTAS</div>
+              <small class="text-secondary" style="font-size: 0.62rem;">Ausencias hoy</small>
             </div>
           </div>
         </div>
 
-        <!-- Tarjetas de Información -->
+        <!-- Tarjetas Secundarias -->
         <div class="row g-2 mb-3">
           <div class="col-6">
-            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
-              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">ALUMNOS MATRICULADOS</div>
-              <h4 class="fw-bold text-info my-1" id="dash-alumnos">0</h4>
-              <small class="text-secondary" style="font-size: 0.65rem;">En los 21 cursos</small>
+            <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.62rem;">MATRICULADOS</div>
+              <h5 class="fw-bold text-info my-1" id="dash-alumnos">0</h5>
+              <small class="text-secondary" style="font-size: 0.62rem;">21 cursos</small>
             </div>
           </div>
           <div class="col-6">
-            <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
-              <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">CITACIONES ACTIVAS</div>
-              <h4 class="fw-bold text-warning my-1" id="dash-citaciones">0</h4>
-              <small class="text-secondary" style="font-size: 0.65rem;">Por 4+ faltas o retrasos</small>
+            <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
+              <div class="text-secondary small fw-semibold" style="font-size: 0.62rem;">CITACIONES</div>
+              <h5 class="fw-bold text-warning my-1" id="dash-citaciones">0</h5>
+              <small class="text-secondary" style="font-size: 0.62rem;">4+ faltas/retrasos</small>
             </div>
           </div>
         </div>
 
         <!-- Acciones Directas -->
         <div class="d-grid gap-2">
-          <button class="btn btn-solid-blue text-center py-3" onclick="cambiarSeccionRegente('escaner')">
+          <button class="btn btn-solid-blue py-3" onclick="cambiarSeccionRegente('escaner')">
             ABRIR ESCÁNER DE ASISTENCIA
           </button>
-          <button class="btn btn-dark border border-secondary border-opacity-25 text-center py-2 text-light fw-bold" onclick="cambiarSeccionRegente('alumnos')">
+          <button class="btn btn-dark border border-secondary border-opacity-25 py-2 text-light fw-bold" style="font-size: 0.82rem;" onclick="cambiarSeccionRegente('alumnos')">
             INSCRIBIR NUEVO ALUMNO
           </button>
         </div>
@@ -412,9 +441,9 @@
 
       <!-- SECCIÓN 2: ESCÁNER QR -->
       <div id="tab-regente-escaner" class="card card-modern p-3 text-center" style="display:none;">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-3 py-1">CÁMARA TRASERA ACTIVA</span>
-          <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0 fw-bold" id="btn-audio-mute" onclick="toggleMute()">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1" style="font-size: 0.68rem;">CÁMARA ACTIVA</span>
+          <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0 fw-bold" id="btn-audio-mute" style="font-size: 0.72rem;" onclick="toggleMute()">
             [ SONIDO: ON ]
           </button>
         </div>
@@ -422,11 +451,11 @@
         <div id="reader"></div>
 
         <div id="estado-escaneo" class="box-estado mt-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-info">
-          Apunta la cámara al carnet QR del estudiante...
+          Apunta la cámara al carnet QR...
         </div>
 
         <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
-          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3 fw-bold" onclick="cerrarAsistenciaDia()">
+          <button class="btn btn-outline-danger btn-sm w-100 py-2 rounded-3 fw-bold" style="font-size: 0.78rem;" onclick="cerrarAsistenciaDia()">
             CERRAR ASISTENCIA DE HOY (MARCAR FALTAS)
           </button>
         </div>
@@ -434,16 +463,16 @@
 
       <!-- SECCIÓN 3: REPORTES Y CITACIONES -->
       <div id="tab-regente-reportes" class="card card-modern p-3" style="display:none;">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="fw-bold text-white small text-uppercase">Consulta por Curso</span>
-          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3 fw-bold" onclick="cargarCitaciones()">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="fw-bold text-white small" style="font-size: 0.75rem;">REPORTES POR CURSO</span>
+          <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-2 py-1 fw-bold" style="font-size: 0.7rem;" onclick="cargarCitaciones()">
             CITACIONES
           </button>
         </div>
 
-        <div class="row g-2 mb-3">
+        <div class="row g-2 mb-2">
           <div class="col-6">
-            <label class="form-label text-secondary small fw-semibold">Curso:</label>
+            <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Curso:</label>
             <select id="repCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
@@ -469,7 +498,7 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label text-secondary small fw-semibold">Mes:</label>
+            <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Mes:</label>
             <select id="repMes" class="form-select form-select-modern">
               <option value="2">Febrero</option>
               <option value="3">Marzo</option>
@@ -486,12 +515,12 @@
           </div>
         </div>
 
-        <button class="btn btn-solid-blue w-100 py-2 mb-3" onclick="cargarReporteMensual()">
+        <button class="btn btn-solid-blue w-100 py-2 mb-2" onclick="cargarReporteMensual()">
           CONSULTAR ASISTENCIAS
         </button>
 
         <div id="repResultado">
-          <p class="text-center text-secondary small py-3">Selecciona un curso y mes para consultar.</p>
+          <p class="text-center text-secondary small py-2" style="font-size: 0.75rem;">Selecciona un curso y mes para consultar.</p>
         </div>
       </div>
 
@@ -499,12 +528,12 @@
       <div id="tab-regente-alumnos" class="card card-modern p-3" style="display:none;">
         <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <li class="nav-item">
-            <button class="nav-link active rounded-2 text-white py-2 fw-bold" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
+            <button class="nav-link active rounded-2 text-white py-1 fw-bold" id="btnSubInscribir" style="font-size: 0.72rem;" onclick="mostrarSubGestion('inscribir')">
               INSCRIBIR
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link rounded-2 text-secondary py-2 fw-bold" id="btnSubEliminar" onclick="mostrarSubGestion('eliminar')">
+            <button class="nav-link rounded-2 text-secondary py-1 fw-bold" id="btnSubEliminar" style="font-size: 0.72rem;" onclick="mostrarSubGestion('eliminar')">
               LISTA Y CARNETS
             </button>
           </li>
@@ -512,22 +541,22 @@
 
         <!-- Formulario Inscribir -->
         <div id="sec-inscribir">
-          <div class="mb-3">
-            <label class="form-label text-secondary small fw-semibold">Número de Carnet / C.I. (único)</label>
+          <div class="mb-2">
+            <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Número de C.I. (único)</label>
             <input type="text" id="estId" class="form-control form-control-modern" placeholder="Ej: 58634568">
           </div>
-          <div class="row g-2 mb-3">
+          <div class="row g-2 mb-2">
             <div class="col-6">
-              <label class="form-label text-secondary small fw-semibold">Nombres</label>
+              <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Nombres</label>
               <input type="text" id="estNombres" class="form-control form-control-modern" placeholder="Ej: Diego">
             </div>
             <div class="col-6">
-              <label class="form-label text-secondary small fw-semibold">Apellidos</label>
+              <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Apellidos</label>
               <input type="text" id="estApellidos" class="form-control form-control-modern" placeholder="Ej: Valeriano">
             </div>
           </div>
-          <div class="mb-4">
-            <label class="form-label text-secondary small fw-semibold">Curso Oficial</label>
+          <div class="mb-3">
+            <label class="form-label text-secondary small fw-semibold" style="font-size: 0.72rem;">Curso Oficial</label>
             <select id="selectCurso" class="form-select form-select-modern">
               <option value="">Seleccione el curso...</option>
               <optgroup label="1ros de Secundaria">
@@ -566,14 +595,14 @@
             </select>
           </div>
           <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="guardarEstudiante()">
-            GUARDAR ESTUDIANTE EN SHEETS
+            GUARDAR EN SHEETS
           </button>
-          <div id="gestion-msg" class="mt-3 text-center"></div>
+          <div id="gestion-msg" class="mt-2 text-center"></div>
         </div>
 
         <!-- Lista con Botón Separado para Carnet -->
         <div id="sec-eliminar" style="display:none;">
-          <div class="input-group mb-3">
+          <div class="input-group mb-2">
             <select id="delCurso" class="form-select form-select-modern">
               <option value='1 "A"'>1 "A"</option>
               <option value='1 "B"'>1 "B"</option>
@@ -597,57 +626,55 @@
               <option value='6 "B"'>6 "B"</option>
               <option value='6 "C"'>6 "C"</option>
             </select>
-            <button class="btn btn-solid-blue px-3 fw-bold" onclick="cargarEstudiantesEliminar()">
+            <button class="btn btn-solid-blue px-3 fw-bold" style="font-size: 0.75rem;" onclick="cargarEstudiantesEliminar()">
               LISTAR
             </button>
           </div>
 
-          <div id="contenedor-filtro" class="mb-3" style="display:none;">
+          <div id="contenedor-filtro" class="mb-2" style="display:none;">
             <input type="text" id="filtroRapido" class="form-control form-control-modern" placeholder="Filtrar por nombre o C.I..." onkeyup="filtrarAlumnosTabla()">
           </div>
 
           <div id="lista-eliminar-resultado">
-            <p class="text-center text-secondary small py-3">Selecciona un curso para ver alumnos.</p>
+            <p class="text-center text-secondary small py-2" style="font-size: 0.75rem;">Selecciona un curso para ver alumnos.</p>
           </div>
         </div>
       </div>
 
       <!-- SECCIÓN 5: AJUSTES (CONTRASEÑA + BUZÓN DE JUSTIFICACIONES) -->
       <div id="tab-regente-ajustes" class="card card-modern p-3" style="display:none;">
-        
-        <!-- Buzón de Justificaciones -->
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary border-opacity-25">
-          <span class="fw-bold text-info small text-uppercase">Buzón de Justificaciones</span>
-          <button class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" onclick="cargarBuzonJustificaciones()">ACTUALIZAR</button>
+          <span class="fw-bold text-info small" style="font-size: 0.75rem;">BUZÓN DE JUSTIFICACIONES</span>
+          <button class="btn btn-sm btn-outline-info rounded-pill px-2 py-1 fw-bold" style="font-size: 0.68rem;" onclick="cargarBuzonJustificaciones()">ACTUALIZAR</button>
         </div>
         
-        <div id="buzon-justificaciones-cont" class="mb-4">
-          <p class="text-secondary small text-center py-2">Presiona "Actualizar" para revisar solicitudes de permiso enviadas por alumnos.</p>
+        <div id="buzon-justificaciones-cont" class="mb-3">
+          <p class="text-secondary small text-center py-2" style="font-size: 0.75rem;">Presiona "Actualizar" para revisar solicitudes enviadas por alumnos.</p>
         </div>
 
         <!-- Parámetros del Colegio -->
-        <div class="p-3 mb-4 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
-          <div class="fw-bold text-light small mb-2 text-uppercase">Horarios de Regencia</div>
-          <div class="small text-secondary">• Límite de Puntualidad: <strong class="text-success">07:20 AM</strong></div>
-          <div class="small text-secondary">• Límite de Tolerancia / Atraso: <strong class="text-warning">12:00 PM</strong></div>
-          <div class="small text-secondary">• Límite Disciplinario: <strong class="text-danger">4 retrasos o faltas = Citación</strong></div>
+        <div class="p-2 mb-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25" style="font-size: 0.75rem;">
+          <div class="fw-bold text-light mb-1">HORARIOS DE REGENCIA</div>
+          <div class="text-secondary">• Límite Puntual: <strong class="text-success">07:20 AM</strong></div>
+          <div class="text-secondary">• Límite Atraso: <strong class="text-warning">12:00 PM</strong></div>
+          <div class="text-secondary">• Disciplinario: <strong class="text-danger">4 retrasos o faltas = Citación</strong></div>
         </div>
 
         <!-- Cambio de Clave -->
-        <div class="fw-bold text-light small mb-2 text-uppercase">Seguridad de la Cuenta</div>
-        <div class="mb-3">
-          <label class="form-label text-secondary small">Nueva Contraseña del Regente</label>
+        <div class="fw-bold text-light small mb-2" style="font-size: 0.75rem;">SEGURIDAD DE LA CUENTA</div>
+        <div class="mb-2">
+          <label class="form-label text-secondary small" style="font-size: 0.72rem;">Nueva Contraseña del Regente</label>
           <input type="password" id="nuevaPass" class="form-control form-control-modern" placeholder="Mínimo 4 caracteres">
         </div>
         <button class="btn btn-solid-blue w-100 py-3" onclick="actualizarContrasena()">
           ACTUALIZAR CONTRASEÑA
         </button>
-        <div id="perfil-msg" class="mt-3 text-center"></div>
+        <div id="perfil-msg" class="mt-2 text-center"></div>
       </div>
 
     </div>
 
-    <!-- BARRA INFERIOR DEL REGENTE (ICONOS CONSERVADOS + ETIQUETA) -->
+    <!-- BARRA INFERIOR DEL REGENTE -->
     <div class="bottom-nav">
       <button class="bottom-nav-item active" id="bnav-inicio" onclick="cambiarSeccionRegente('inicio')">
         <i class="bi bi-grid-fill"></i>
@@ -679,60 +706,60 @@
   <div id="vista-estudiante-panel" style="display:none;">
     
     <!-- Barra Superior Estudiante -->
-    <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
+    <div class="d-flex justify-content-between align-items-center mb-2 p-2 card-modern">
       <div class="d-flex align-items-center">
-        <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 12px;">
+        <img src="logo.png" alt="Escudo" style="max-height: 36px; margin-right: 10px;">
         <div>
-          <h6 class="m-0 text-white fw-bold text-uppercase" id="est-saludo">Portal Estudiantil</h6>
-          <small class="text-info fw-semibold" style="font-size: 0.72rem;" id="est-curso-badge">U.E. Paulo Freire</small>
+          <h6 class="m-0 text-white fw-bold text-uppercase" id="est-saludo" style="font-size: 0.88rem;">Portal Estudiantil</h6>
+          <small class="text-info fw-semibold" style="font-size: 0.68rem;" id="est-curso-badge">U.E. Paulo Freire</small>
         </div>
       </div>
-      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" onclick="cerrarPortalEstudiante()">SALIR</button>
+      <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" style="font-size: 0.72rem;" onclick="cerrarPortalEstudiante()">SALIR</button>
     </div>
 
     <!-- CONTENIDO DEL PORTAL ESTUDIANTE -->
     <div id="estudiante-tabs-content">
       
       <!-- SUB-SECCIÓN 1: MI CARNET QR -->
-      <div id="sec-est-carnet" class="card card-modern p-3 text-center">
-        <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden mx-auto my-2" style="max-width: 320px; border-radius: 20px; background: #ffffff;">
-          <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
-            <img src="logo.png" alt="Escudo" style="max-height: 50px;" class="mb-1">
-            <h6 class="fw-bold m-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
-            <div style="font-size: 0.65rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
-            <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem;">CREDENCIAL ESTUDIANTIL</div>
+      <div id="sec-est-carnet" class="card card-modern p-2 text-center">
+        <div id="carnet-credencial" class="card shadow text-dark border-0 overflow-hidden mx-auto my-1" style="max-width: 290px; border-radius: 18px; background: #ffffff;">
+          <div class="p-2 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
+            <img src="logo.png" alt="Escudo" style="max-height: 45px;" class="mb-1">
+            <h6 class="fw-bold m-0" style="font-size: 0.8rem; letter-spacing: 0.3px;">U.E. PAULO FREIRE</h6>
+            <div style="font-size: 0.62rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
+            <div class="badge bg-warning text-dark mt-1 px-2 py-1 fw-bold" style="font-size: 0.6rem;">CREDENCIAL ESTUDIANTIL</div>
           </div>
 
-          <div class="p-3 text-center">
-            <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
-              <img id="est-qr-img" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
+          <div class="p-2 text-center">
+            <div class="p-1 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-1">
+              <img id="est-qr-img" src="" alt="Código QR" style="width: 150px; height: 150px;" class="img-fluid d-block">
             </div>
-            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="est-card-nombre">NOMBRE ALUMNO</h6>
-            <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
+            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="est-card-nombre" style="font-size: 0.85rem;">NOMBRE ALUMNO</h6>
+            <div class="row g-1 mt-1 text-start bg-light p-2 rounded-2 border" style="font-size: 0.75rem;">
               <div class="col-6">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
-                <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="est-card-curso">-</span>
+                <div class="text-secondary" style="font-size: 0.6rem; font-weight: 600;">CURSO:</div>
+                <span class="fw-bold text-primary" id="est-card-curso">-</span>
               </div>
               <div class="col-6 text-end">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">C.I.:</div>
-                <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="est-card-ci">-</span>
+                <div class="text-secondary" style="font-size: 0.6rem; font-weight: 600;">C.I.:</div>
+                <span class="fw-bold text-dark font-monospace" id="est-card-ci">-</span>
               </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 0.62rem;">Control Automatizado de Asistencia Estudiantil QR</div>
+            <div class="mt-1 text-muted" style="font-size: 0.58rem;">Control Automatizado de Asistencia Estudiantil QR</div>
           </div>
         </div>
 
         <button class="btn btn-solid-blue rounded-pill mt-2 px-4 shadow" onclick="window.print()">
-          IMPRIMIR O GUARDAR CARNET
+          IMPRIMIR O GUARDAR
         </button>
       </div>
 
       <!-- SUB-SECCIÓN 2: HISTORIAL Y CÍRCULO PERSONAL -->
-      <div id="sec-est-historial" class="card card-modern p-3" style="display:none;">
+      <div id="sec-est-historial" class="card card-modern p-2" style="display:none;">
         <div id="est-alerta-citacion"></div>
 
         <!-- Círculo Personal del Alumno -->
-        <div class="p-3 mb-3 rounded-4 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
+        <div class="p-2 mb-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
           <div class="circle-chart-container">
             <svg viewBox="0 0 100 100" class="circle-chart-svg">
               <circle cx="50" cy="50" r="40" class="circle-chart-bg"></circle>
@@ -740,39 +767,37 @@
             </svg>
             <div class="circle-chart-text text-info" id="est-gauge-texto">0%</div>
           </div>
-          <div class="small fw-bold text-light mt-2" style="font-size: 0.75rem;">MI PUNTUALIDAD</div>
+          <div class="small fw-bold text-light mt-1" style="font-size: 0.7rem;">MI PUNTUALIDAD</div>
         </div>
 
         <!-- Tarjetas de Resumen -->
-        <div class="row g-2 text-center mb-3">
+        <div class="row g-2 text-center mb-2">
           <div class="col-4">
             <div class="p-2 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
-              <span class="d-block text-success fw-bold fs-4" id="est-count-p">0</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">PRESENTES</small>
+              <span class="d-block text-success fw-bold fs-5" id="est-count-p">0</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.6rem;">PRESENTES</small>
             </div>
           </div>
           <div class="col-4">
             <div class="p-2 rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25">
-              <span class="d-block text-warning fw-bold fs-4" id="est-count-t">0</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">RETRASOS</small>
+              <span class="d-block text-warning fw-bold fs-5" id="est-count-t">0</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.6rem;">RETRASOS</small>
             </div>
           </div>
           <div class="col-4">
             <div class="p-2 rounded-3 bg-danger bg-opacity-10 border border-danger border-opacity-25">
-              <span class="d-block text-danger fw-bold fs-4" id="est-count-f">0</span>
-              <small class="text-secondary fw-semibold" style="font-size: 0.65rem;">FALTAS</small>
+              <span class="d-block text-danger fw-bold fs-5" id="est-count-f">0</span>
+              <small class="text-secondary fw-semibold" style="font-size: 0.6rem;">FALTAS</small>
             </div>
           </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-light small text-uppercase">Mis Asistencias Registradas</span>
-        </div>
+        <div class="small fw-bold text-light mb-1 px-1" style="font-size: 0.72rem;">MIS ASISTENCIAS REGISTRADAS</div>
 
-        <div class="table-responsive rounded-3 border border-secondary border-opacity-25" style="max-height: 250px; overflow-y: auto;">
-          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+        <div class="table-scroll-touch" style="max-height: 220px;">
+          <table class="table table-dark table-striped text-center align-middle mb-0">
             <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
+              <tr class="table-secondary text-dark" style="font-size: 0.68rem;">
                 <th>FECHA</th>
                 <th>ESTADO</th>
               </tr>
@@ -784,16 +809,16 @@
 
       <!-- SUB-SECCIÓN 3: ENVIAR JUSTIFICACIÓN -->
       <div id="sec-est-justificar" class="card card-modern p-3" style="display:none;">
-        <div class="fw-bold text-white small mb-2 text-uppercase">Justificar Falta o Atraso</div>
-        <p class="text-secondary small mb-3">Envía tu justificativo para que el regente lo revise en su panel.</p>
+        <div class="fw-bold text-white small mb-1" style="font-size: 0.78rem;">JUSTIFICAR FALTA O ATRASO</div>
+        <p class="text-secondary small mb-2" style="font-size: 0.72rem;">Envía tu justificativo para que el regente lo revise.</p>
 
-        <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Fecha de la Falta:</label>
+        <div class="mb-2">
+          <label class="form-label text-secondary small fw-semibold" style="font-size: 0.7rem;">Fecha de la Falta:</label>
           <input type="date" id="justFecha" class="form-control form-control-modern">
         </div>
 
-        <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Motivo:</label>
+        <div class="mb-2">
+          <label class="form-label text-secondary small fw-semibold" style="font-size: 0.7rem;">Motivo:</label>
           <select id="justMotivo" class="form-select form-select-modern">
             <option value="Motivo de Salud / Médico">Motivo de Salud / Médico</option>
             <option value="Emergencia Familiar">Emergencia Familiar</option>
@@ -803,23 +828,23 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label text-secondary small fw-semibold">Detalle o Explicación:</label>
+          <label class="form-label text-secondary small fw-semibold" style="font-size: 0.7rem;">Detalle o Explicación:</label>
           <textarea id="justDetalle" class="form-control form-control-modern" rows="3" placeholder="Describe brevemente la causa..."></textarea>
         </div>
 
         <button class="btn btn-solid-blue w-100 py-3 shadow" onclick="enviarJustificacionEstudiante()">
-          ENVIAR JUSTIFICACIÓN AL REGENTE
+          ENVIAR AL REGENTE
         </button>
-        <div id="just-msg" class="mt-3 text-center"></div>
+        <div id="just-msg" class="mt-2 text-center"></div>
       </div>
 
     </div>
 
-    <!-- BARRA INFERIOR DEL ESTUDIANTE (ICONOS CONSERVADOS + ETIQUETA) -->
+    <!-- BARRA INFERIOR DEL ESTUDIANTE -->
     <div class="bottom-nav">
       <button class="bottom-nav-item active" id="bnav-est-carnet" onclick="cambiarSeccionEstudiante('carnet')">
         <i class="bi bi-person-vcard-fill"></i>
-        <span>Mi Carnet</span>
+        <span>Carnet</span>
       </button>
       <button class="bottom-nav-item" id="bnav-est-historial" onclick="cambiarSeccionEstudiante('historial')">
         <i class="bi bi-pie-chart-fill"></i>
@@ -837,38 +862,38 @@
 
 <!-- MODAL PARA IMPRIMIR CREDENCIAL -->
 <div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 320px;">
     <div class="modal-content bg-transparent border-0">
       <div class="modal-body p-0">
-        <div id="carnet-credencial-modal" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 20px; background: #ffffff;">
-          <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
-            <img src="logo.png" alt="Escudo" style="max-height: 50px;" class="mb-1">
-            <h6 class="fw-bold m-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
-            <div style="font-size: 0.65rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
-            <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem;">CREDENCIAL ESTUDIANTIL</div>
+        <div id="carnet-credencial-modal" class="card shadow text-dark border-0 overflow-hidden" style="border-radius: 18px; background: #ffffff;">
+          <div class="p-2 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
+            <img src="logo.png" alt="Escudo" style="max-height: 45px;" class="mb-1">
+            <h6 class="fw-bold m-0" style="font-size: 0.8rem; letter-spacing: 0.3px;">U.E. PAULO FREIRE</h6>
+            <div style="font-size: 0.62rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
+            <div class="badge bg-warning text-dark mt-1 px-2 py-1 fw-bold" style="font-size: 0.6rem;">CREDENCIAL ESTUDIANTIL</div>
           </div>
-          <div class="p-3 text-center">
-            <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
-              <img id="modalQrImg" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
+          <div class="p-2 text-center">
+            <div class="p-1 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-1">
+              <img id="modalQrImg" src="" alt="Código QR" style="width: 150px; height: 150px;" class="img-fluid d-block">
             </div>
-            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="modalNombre">NOMBRE ALUMNO</h6>
-            <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
+            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="modalNombre" style="font-size: 0.85rem;">NOMBRE ALUMNO</h6>
+            <div class="row g-1 mt-1 text-start bg-light p-2 rounded-2 border" style="font-size: 0.75rem;">
               <div class="col-6">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
-                <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="modalCurso">-</span>
+                <div class="text-secondary" style="font-size: 0.6rem; font-weight: 600;">CURSO:</div>
+                <span class="fw-bold text-primary" id="modalCurso">-</span>
               </div>
               <div class="col-6 text-end">
-                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">C.I.:</div>
-                <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="modalId">-</span>
+                <div class="text-secondary" style="font-size: 0.6rem; font-weight: 600;">C.I.:</div>
+                <span class="fw-bold text-dark font-monospace" id="modalId">-</span>
               </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 0.62rem;">Control Automatizado de Asistencia Estudiantil QR</div>
+            <div class="mt-1 text-muted" style="font-size: 0.58rem;">Control Automatizado de Asistencia Estudiantil QR</div>
           </div>
         </div>
       </div>
       <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0 gap-2">
-        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light fw-bold" data-bs-dismiss="modal">CERRAR</button>
-        <button type="button" class="btn btn-sm btn-solid-blue rounded-pill px-3 shadow fw-bold" onclick="window.print()">IMPRIMIR</button>
+        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light fw-bold" style="font-size: 0.75rem;" data-bs-dismiss="modal">CERRAR</button>
+        <button type="button" class="btn btn-sm btn-solid-blue rounded-pill px-3 shadow fw-bold" style="font-size: 0.75rem;" onclick="window.print()">IMPRIMIR</button>
       </div>
     </div>
   </div>
@@ -905,13 +930,13 @@
     if (badgeHorario) {
       if (horaMinutos <= 440) {
         badgeHorario.className = "badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1";
-        badgeHorario.innerText = 'PUNTUAL (HASTA 07:20)';
+        badgeHorario.innerText = 'PUNTUAL';
       } else if (horaMinutos <= 720) {
         badgeHorario.className = "badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-2 py-1";
-        badgeHorario.innerText = 'RETRASO / TOLERANCIA';
+        badgeHorario.innerText = 'ATRASO';
       } else {
         badgeHorario.className = "badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-2 py-1";
-        badgeHorario.innerText = 'HORARIO CERRADO';
+        badgeHorario.innerText = 'CERRADO';
       }
     }
   }
@@ -1063,7 +1088,7 @@
       const r = res.resumen;
 
       document.getElementById("est-saludo").innerText = est.nombreCompleto;
-      document.getElementById("est-curso-badge").innerText = est.curso + " — U.E. Paulo Freire";
+      document.getElementById("est-curso-badge").innerText = est.curso;
 
       document.getElementById("est-card-nombre").innerText = est.nombreCompleto;
       document.getElementById("est-card-curso").innerText = est.curso;
@@ -1084,9 +1109,9 @@
           motivos += `<div>• <strong>${c.motivo}</strong> (${c.fecha}) — ${c.estado}</div>`;
         });
         alertaCont.innerHTML = `
-          <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
+          <div class="p-2 mb-2 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start" style="font-size: 0.75rem;">
             <div class="text-danger fw-bold mb-1">CITACIÓN OFICIAL A DIRECCIÓN</div>
-            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded mb-2">${motivos}</div>
+            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded mb-1">${motivos}</div>
             <small class="text-warning d-block">Debes presentarte con tu Padre/Madre de Familia a Regencia.</small>
           </div>
         `;
@@ -1096,7 +1121,7 @@
 
       const tablaHist = document.getElementById("est-tabla-historial");
       if (res.historial.length === 0) {
-        tablaHist.innerHTML = '<tr><td colspan="2" class="text-secondary small py-3">Aún no registras asistencias en la gestión.</td></tr>';
+        tablaHist.innerHTML = '<tr><td colspan="2" class="text-secondary small py-2">Sin registros aún.</td></tr>';
       } else {
         let filas = "";
         res.historial.forEach(h => {
@@ -1122,7 +1147,6 @@
     document.getElementById("vista-login").style.display = "block";
   }
 
-  // --- NAVEGACIÓN INFERIOR DEL ESTUDIANTE ---
   function cambiarSeccionEstudiante(sec) {
     document.getElementById("sec-est-carnet").style.display = (sec === 'carnet') ? 'block' : 'none';
     document.getElementById("sec-est-historial").style.display = (sec === 'historial') ? 'block' : 'none';
@@ -1168,7 +1192,7 @@
 
     llamarAPI({ action: "obtenerJustificaciones" }, function(res) {
       if (!res.success || !res.justificaciones || res.justificaciones.length === 0) {
-        cont.innerHTML = '<div class="p-2 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay solicitudes de justificación registradas.</div>';
+        cont.innerHTML = '<div class="p-2 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay solicitudes de justificación.</div>';
         return;
       }
 
@@ -1176,18 +1200,18 @@
       res.justificaciones.forEach(j => {
         const esPendiente = (j.estado === "Pendiente");
         html += `
-          <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-start">
+          <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-start" style="font-size: 0.75rem;">
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="badge ${esPendiente ? 'bg-warning text-dark' : 'bg-secondary'}">${j.estado}</span>
               <small class="text-secondary">${j.fechaEnvio}</small>
             </div>
-            <div class="fw-bold text-white small">Alumno C.I.: ${j.idEstudiante} (${j.curso})</div>
-            <div class="text-info small">Fecha Falta: ${j.fechaFalta} — ${j.motivo}</div>
-            <div class="text-secondary small mt-1 mb-2 bg-dark p-2 rounded">"${j.detalle}"</div>
+            <div class="fw-bold text-white">Alumno C.I.: ${j.idEstudiante} (${j.curso})</div>
+            <div class="text-info">Fecha Falta: ${j.fechaFalta} — ${j.motivo}</div>
+            <div class="text-secondary mt-1 mb-2 bg-dark p-2 rounded">"${j.detalle}"</div>
             ${esPendiente ? `
               <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-success fw-bold py-1 px-3" onclick="responderJust('${j.idRegistro}', 'Aprobada')">APROBAR</button>
-                <button class="btn btn-sm btn-danger fw-bold py-1 px-3" onclick="responderJust('${j.idRegistro}', 'Rechazada')">RECHAZAR</button>
+                <button class="btn btn-sm btn-success fw-bold py-1 px-3" style="font-size: 0.72rem;" onclick="responderJust('${j.idRegistro}', 'Aprobada')">APROBAR</button>
+                <button class="btn btn-sm btn-danger fw-bold py-1 px-3" style="font-size: 0.72rem;" onclick="responderJust('${j.idRegistro}', 'Rechazada')">RECHAZAR</button>
               </div>
             ` : ''}
           </div>
@@ -1205,13 +1229,13 @@
     });
   }
 
-  // --- LISTA DE ALUMNOS CON BOTÓN SEPARADO PARA CARNET ---
+  // --- LISTA DE ALUMNOS ---
   function mostrarSubGestion(modo) {
     document.getElementById("sec-inscribir").style.display = (modo === 'inscribir') ? 'block' : 'none';
     document.getElementById("sec-eliminar").style.display = (modo === 'eliminar') ? 'block' : 'none';
 
-    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-2 fw-bold" : "nav-link rounded-2 text-secondary py-2 fw-bold";
-    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-2 fw-bold" : "nav-link rounded-2 text-secondary py-2 fw-bold";
+    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-1 fw-bold" : "nav-link rounded-2 text-secondary py-1 fw-bold";
+    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-1 fw-bold" : "nav-link rounded-2 text-secondary py-1 fw-bold";
 
     if (modo === 'eliminar') cargarEstudiantesEliminar();
   }
@@ -1222,12 +1246,12 @@
     const cont = document.getElementById("lista-eliminar-resultado");
     const filtroCont = document.getElementById("contenedor-filtro");
 
-    cont.innerHTML = '<div class="text-center text-info py-3 small">Cargando alumnos de ' + curso + '...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-2 small">Cargando alumnos de ' + curso + '...</div>';
 
     llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
       if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
         if (filtroCont) filtroCont.style.display = "none";
-        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay alumnos inscritos en ${curso}.</div>`;
+        cont.innerHTML = `<div class="p-2 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay alumnos inscritos en ${curso}.</div>`;
         return;
       }
 
@@ -1235,13 +1259,13 @@
       if (filtroCont) filtroCont.style.display = "block";
 
       let html = `
-        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
-          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+        <div class="table-scroll-touch">
+          <table class="table table-dark table-striped text-center align-middle mb-0">
             <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
-                <th style="width: 10%;">N°</th>
+              <tr class="table-secondary text-dark" style="font-size: 0.68rem;">
+                <th style="width: 12%;">N°</th>
                 <th class="text-start">ESTUDIANTE</th>
-                <th style="width: 45%;">ACCIONES</th>
+                <th style="width: 48%;">ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -1252,10 +1276,10 @@
           <tr class="fila-alumno-item">
             <td class="text-secondary">${e.nro}</td>
             <td class="text-start">
-              <span class="fw-bold text-white d-block text-truncate" style="max-width: 130px;">
+              <span class="fw-bold text-white d-block text-truncate" style="max-width: 110px;">
                 ${e.nombreCompleto}
               </span>
-              <small class="text-secondary font-monospace" style="font-size: 0.72rem;">C.I.: ${e.id}</small>
+              <small class="text-secondary font-monospace" style="font-size: 0.68rem;">C.I.: ${e.id}</small>
             </td>
             <td>
               <div class="d-flex justify-content-center gap-1">
@@ -1300,7 +1324,7 @@
     if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
 
     const cont = document.getElementById("lista-eliminar-resultado");
-    cont.innerHTML = '<div class="text-center text-danger py-3 small">Eliminando...</div>';
+    cont.innerHTML = '<div class="text-center text-danger py-2 small">Eliminando...</div>';
 
     llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
       alert(res.mensaje);
@@ -1328,7 +1352,7 @@
 
     html5QrCode.start(
       { facingMode: "environment" },
-      { fps: 15, qrbox: { width: 250, height: 250 } },
+      { fps: 15, qrbox: { width: 220, height: 220 } },
       alDetectarQR,
       () => {}
     ).then(() => {
@@ -1401,20 +1425,20 @@
   // --- REPORTES Y CITACIONES ---
   function cargarCitaciones() {
     const cont = document.getElementById("repResultado");
-    cont.innerHTML = '<div class="text-center text-warning py-3 small">Auditando citaciones...</div>';
+    cont.innerHTML = '<div class="text-center text-warning py-2 small">Auditando citaciones...</div>';
 
     llamarAPI({ action: "obtenerCitaciones" }, function(res) {
       if(!res.success) {
-        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">${res.mensaje}</div>`;
+        cont.innerHTML = `<div class="p-2 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay citaciones emitidas.</div>`;
         return;
       }
 
       let html = `
-        <div class="fw-bold text-danger mb-2 small text-uppercase">Citaciones por 4+ Retrasos o Faltas</div>
-        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
-          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.8rem;">
+        <div class="fw-bold text-danger mb-1 small text-uppercase" style="font-size: 0.7rem;">Citaciones por 4+ Retrasos o Faltas</div>
+        <div class="table-scroll-touch">
+          <table class="table table-dark table-striped text-center align-middle mb-0">
             <thead>
-              <tr class="table-danger text-dark" style="font-size: 0.72rem;">
+              <tr class="table-danger text-dark" style="font-size: 0.65rem;">
                 <th>REPORTE</th>
                 <th class="text-start">ESTUDIANTE</th>
                 <th>CURSO</th>
@@ -1427,10 +1451,10 @@
       res.citaciones.forEach(c => {
         html += `
           <tr>
-            <td><small class="fw-bold">${c.nro}</small><br><span class="text-secondary" style="font-size: 0.7rem;">${c.fecha}</span></td>
-            <td class="text-start fw-bold text-truncate" style="max-width: 130px;">${c.estudiante}</td>
+            <td><small class="fw-bold">${c.nro}</small><br><span class="text-secondary" style="font-size: 0.65rem;">${c.fecha}</span></td>
+            <td class="text-start fw-bold text-truncate" style="max-width: 100px;">${c.estudiante}</td>
             <td>${c.curso}</td>
-            <td><span class="badge bg-danger text-wrap" style="font-size: 0.72rem;">${c.motivo}</span></td>
+            <td><span class="badge bg-danger text-wrap" style="font-size: 0.65rem;">${c.motivo}</span></td>
           </tr>
         `;
       });
@@ -1446,31 +1470,31 @@
     cursoReporteActual = curso;
     const cont = document.getElementById("repResultado");
 
-    cont.innerHTML = '<div class="text-center text-info py-3 small">Cargando reporte mensual...</div>';
+    cont.innerHTML = '<div class="text-center text-info py-2 small">Cargando reporte mensual...</div>';
 
     llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
       if(!res.success) {
-        cont.innerHTML = `<div class="p-3 text-center text-warning small bg-warning bg-opacity-10 rounded-3">${res.mensaje}</div>`;
+        cont.innerHTML = `<div class="p-2 text-center text-warning small bg-warning bg-opacity-10 rounded-3">${res.mensaje}</div>`;
         return;
       }
 
       alumnosReporteMemoria = res.alumnos;
 
       let html = `
-        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-          <span class="fw-bold text-info small">${res.curso} — ${res.mesNombre}</span>
-          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary">${res.totalDiasClase} días hábiles</span>
+        <div class="d-flex justify-content-between align-items-center mb-1 px-1">
+          <span class="fw-bold text-info small" style="font-size: 0.72rem;">${res.curso} — ${res.mesNombre}</span>
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary" style="font-size: 0.65rem;">${res.totalDiasClase} días</span>
         </div>
-        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
-          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+        <div class="table-scroll-touch">
+          <table class="table table-dark table-striped text-center align-middle mb-0">
             <thead>
-              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
+              <tr class="table-secondary text-dark" style="font-size: 0.68rem;">
                 <th style="width: 10%;">N°</th>
                 <th class="text-start">ESTUDIANTE</th>
                 <th>P</th>
                 <th>T</th>
                 <th>F</th>
-                <th style="width: 25%;">CARNET</th>
+                <th style="width: 28%;">CARNET</th>
               </tr>
             </thead>
             <tbody>
@@ -1480,13 +1504,13 @@
         html += `
           <tr>
             <td class="text-secondary">${al.nro}</td>
-            <td class="text-start text-truncate" style="max-width: 130px;">
+            <td class="text-start text-truncate" style="max-width: 110px;">
               <span class="fw-bold text-white d-block">${al.nombreCompleto}</span>
-              <small class="text-secondary" style="font-size: 0.7rem;">% Asist: ${al.porcentaje}</small>
+              <small class="text-secondary" style="font-size: 0.65rem;">% Asist: ${al.porcentaje}</small>
             </td>
-            <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
-            <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
-            <td><span class="badge badge-f px-2 py-1">${al.f}</span></td>
+            <td><span class="badge badge-p px-1 py-1">${al.p}</span></td>
+            <td><span class="badge badge-t px-1 py-1">${al.t}</span></td>
+            <td><span class="badge badge-f px-1 py-1">${al.f}</span></td>
             <td>
               <button class="btn-action-carnet" onclick="clickBotonCarnetReporte(${idx})">CARNET</button>
             </td>
@@ -1525,7 +1549,7 @@
     if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) return alert("Por favor completa todos los campos");
 
     const msg = document.getElementById("gestion-msg");
-    msg.innerHTML = '<span class="text-info small">Guardando en Google Sheets...</span>';
+    msg.innerHTML = '<span class="text-info small">Guardando...</span>';
 
     llamarAPI(datos, function(res) {
       if(res.success) {
