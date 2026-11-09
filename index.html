@@ -784,4 +784,724 @@
         <div class="mb-3">
           <label class="form-label text-secondary small fw-semibold">Motivo:</label>
           <select id="justMotivo" class="form-select form-select-modern">
-            <option value="Moti
+            <option value="Motivo de Salud / Médico">Motivo de Salud / Médico</option>
+            <option value="Emergencia Familiar">Emergencia Familiar</option>
+            <option value="Trámite / Personal">Trámite / Personal</option>
+            <option value="Otro">Otro motivo</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-semibold">Detalle o Explicación:</label>
+          <textarea id="justDetalle" class="form-control form-control-modern" rows="3" placeholder="Describe brevemente la causa..."></textarea>
+        </div>
+
+        <button class="btn btn-gradient-primary w-100 py-3 shadow" onclick="enviarJustificacionEstudiante()">
+          <i class="bi bi-send-fill me-1"></i> Enviar Justificación al Regente
+        </button>
+        <div id="just-msg" class="mt-3 text-center"></div>
+      </div>
+
+    </div>
+
+    <!-- BARRA INFERIOR DEL ESTUDIANTE -->
+    <div class="bottom-nav">
+      <button class="bottom-nav-item active" id="bnav-est-carnet" onclick="cambiarSeccionEstudiante('carnet')">
+        <i class="bi bi-person-vcard-fill"></i>
+        <span>Mi Carnet</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-est-historial" onclick="cambiarSeccionEstudiante('historial')">
+        <i class="bi bi-pie-chart-fill"></i>
+        <span>Asistencia</span>
+      </button>
+      <button class="bottom-nav-item" id="bnav-est-justificar" onclick="cambiarSeccionEstudiante('justificar')">
+        <i class="bi bi-file-earmark-medical-fill"></i>
+        <span>Justificar</span>
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- VENTANA MODAL PARA IMPRIMIR CREDENCIAL -->
+<div class="modal fade" id="modalCredencial" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0">
+        <div id="carnet-credencial-modal" class="card shadow-lg text-dark border-0 overflow-hidden" style="border-radius: 20px; background: #ffffff;">
+          <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
+            <img src="logo.png" alt="Escudo" style="max-height: 50px;" class="mb-1">
+            <h6 class="fw-bold m-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">U.E. PAULO FREIRE</h6>
+            <div style="font-size: 0.65rem; opacity: 0.9;">TÉCNICO - HUMANÍSTICO | SACABA</div>
+            <div class="badge bg-warning text-dark mt-1 px-3 py-1 fw-bold" style="font-size: 0.65rem;">CREDENCIAL ESTUDIANTIL</div>
+          </div>
+          <div class="p-3 text-center">
+            <div class="p-2 d-inline-block bg-white rounded-3 shadow-sm border border-2 border-primary mb-2">
+              <img id="modalQrImg" src="" alt="Código QR" style="width: 170px; height: 170px;" class="img-fluid d-block">
+            </div>
+            <h6 class="fw-bold text-dark mb-1 text-uppercase" id="modalNombre">NOMBRE ALUMNO</h6>
+            <div class="row g-1 mt-2 text-start bg-light p-2 rounded-3 border">
+              <div class="col-6">
+                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">CURSO:</div>
+                <span class="fw-bold text-primary" style="font-size: 0.85rem;" id="modalCurso">-</span>
+              </div>
+              <div class="col-6 text-end">
+                <div class="text-secondary" style="font-size: 0.65rem; font-weight: 600;">C.I.:</div>
+                <span class="fw-bold text-dark font-monospace" style="font-size: 0.85rem;" id="modalId">-</span>
+              </div>
+            </div>
+            <div class="mt-2 text-muted" style="font-size: 0.62rem;">Control Automatizado de Asistencia Estudiantil QR</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 justify-content-center bg-transparent mt-2 p-0 gap-2">
+        <button type="button" class="btn btn-sm btn-dark border border-secondary rounded-pill px-3 text-light" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow" onclick="window.print()">Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbyV16aq3IGB3JrnHeEx6F_wU0Ro71a2Djik-CuXSDBosMcr1Tg5anmBBGuEB5xqnsYm/exec";
+  let usuarioActual = "";
+  let html5QrCode = null;
+  let audioSilenciado = false;
+
+  let alumnosListaMemoria = [];
+  let cursoListaActual = "";
+  let alumnosReporteMemoria = [];
+  let cursoReporteActual = "";
+  let estudianteConsultaActual = null;
+
+  // --- RELOJ Y ESTADO ---
+  function actualizarReloj() {
+    const ahora = new Date();
+    const h = String(ahora.getHours()).padStart(2, '0');
+    const m = String(ahora.getMinutes()).padStart(2, '0');
+    const s = String(ahora.getSeconds()).padStart(2, '0');
+    
+    const relojEl = document.getElementById("reloj-vivo");
+    if (relojEl) relojEl.innerText = `${h}:${m}:${s}`;
+
+    const horaMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+    const badgeHorario = document.getElementById("badge-horario");
+    
+    if (badgeHorario) {
+      if (horaMinutos <= 440) {
+        badgeHorario.className = "badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Puntual (hasta 07:20)';
+      } else if (horaMinutos <= 720) {
+        badgeHorario.className = "badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-clock-history me-1"></i> Tolerancia / Retraso';
+      } else {
+        badgeHorario.className = "badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-2 py-1";
+        badgeHorario.innerHTML = '<i class="bi bi-x-circle me-1"></i> Horario Cerrado';
+      }
+    }
+  }
+  setInterval(actualizarReloj, 1000);
+  actualizarReloj();
+
+  function toggleMute() {
+    audioSilenciado = !audioSilenciado;
+    const icono = document.getElementById("icono-audio");
+    if (icono) {
+      icono.className = audioSilenciado ? "bi bi-volume-mute-fill text-danger fs-5" : "bi bi-volume-up-fill text-light fs-5";
+    }
+  }
+
+  // --- ANIMAR ANILLOS CIRCULARES SVG (GAUGES) ---
+  function animarCirculo(circuloId, textoId, porcentajeNum) {
+    const circulo = document.getElementById(circuloId);
+    const texto = document.getElementById(textoId);
+    if (!circulo || !texto) return;
+
+    const radio = 40;
+    const circunferencia = 2 * Math.PI * radio; // 251.2
+    const offset = circunferencia - (porcentajeNum / 100) * circunferencia;
+
+    circulo.style.strokeDashoffset = offset;
+    texto.innerText = `${porcentajeNum}%`;
+  }
+
+  // --- LLAMADAS API (JSONP) ---
+  function llamarAPI(params, callback) {
+    const cbName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    window[cbName] = function(res) {
+      delete window[cbName];
+      const s = document.getElementById(cbName);
+      if(s) s.remove();
+      callback(res);
+    };
+
+    let query = `callback=${cbName}&t=${Date.now()}`;
+    for (let key in params) {
+      query += `&${key}=${encodeURIComponent(params[key])}`;
+    }
+
+    const script = document.createElement("script");
+    script.id = cbName;
+    script.src = `${API_URL}?${query}`;
+    script.onerror = function() {
+      callback({ success: false, mensaje: "Error de red con Google Sheets" });
+    };
+    document.body.appendChild(script);
+  }
+
+  function toggleRol(rol) {
+    document.getElementById("form-regente").style.display = (rol === 'regente') ? 'block' : 'none';
+    document.getElementById("form-estudiante").style.display = (rol === 'estudiante') ? 'block' : 'none';
+    
+    document.getElementById("lbl-rol-regente").className = (rol === 'regente') ? "btn btn-sm rounded-2 text-white py-2 fw-bold" : "btn btn-sm rounded-2 text-secondary py-2 fw-bold";
+    document.getElementById("lbl-rol-estudiante").className = (rol === 'estudiante') ? "btn btn-sm rounded-2 text-white py-2 fw-bold" : "btn btn-sm rounded-2 text-secondary py-2 fw-bold";
+  }
+
+  // --- NAVEGACIÓN INFERIOR DEL REGENTE ---
+  function cambiarSeccionRegente(seccion) {
+    detenerCamara();
+    
+    document.getElementById("tab-regente-inicio").style.display = "none";
+    document.getElementById("tab-regente-escaner").style.display = "none";
+    document.getElementById("tab-regente-reportes").style.display = "none";
+    document.getElementById("tab-regente-alumnos").style.display = "none";
+    document.getElementById("tab-regente-ajustes").style.display = "none";
+
+    document.getElementById("bnav-inicio").className = "bottom-nav-item";
+    document.getElementById("bnav-escaner").className = "bottom-nav-item";
+    document.getElementById("bnav-reportes").className = "bottom-nav-item";
+    document.getElementById("bnav-alumnos").className = "bottom-nav-item";
+    document.getElementById("bnav-ajustes").className = "bottom-nav-item";
+
+    document.getElementById(`tab-regente-${seccion}`).style.display = "block";
+    document.getElementById(`bnav-${seccion}`).className = "bottom-nav-item active";
+
+    if (seccion === 'escaner') {
+      setTimeout(iniciarCamara, 300);
+    } else if (seccion === 'inicio') {
+      cargarDashboardRegente();
+    }
+  }
+
+  function cargarDashboardRegente() {
+    llamarAPI({ action: "obtenerDashboard" }, function(res) {
+      if (res.success) {
+        document.getElementById("dash-alumnos").innerText = res.totalAlumnos;
+        document.getElementById("dash-citaciones").innerText = res.totalCitaciones;
+        
+        const numAsis = parseInt(res.porcentajeAsistencia, 10) || 0;
+        const numFalt = parseInt(res.porcentajeFaltas, 10) || 0;
+
+        animarCirculo("gauge-asistencia-circulo", "gauge-asistencia-texto", numAsis);
+        animarCirculo("gauge-faltas-circulo", "gauge-faltas-texto", numFalt);
+      }
+    });
+  }
+
+  function iniciarSesion() {
+    const user = document.getElementById("logUsuario").value.trim();
+    const pass = document.getElementById("logPass").value.trim();
+    const msg = document.getElementById("login-msg");
+
+    if(!user || !pass) return msg.innerHTML = '<span class="text-danger small">Completa todos los campos</span>';
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Validando...</span>';
+
+    llamarAPI({ action: "login", usuario: user, password: pass }, function(res) {
+      if(res.success) {
+        usuarioActual = res.usuario;
+        document.getElementById("saludoRegente").innerText = "Hola, " + res.nombre;
+        document.getElementById("vista-login").style.display = "none";
+        document.getElementById("vista-panel").style.display = "block";
+        cambiarSeccionRegente('inicio');
+      } else {
+        msg.innerHTML = `<span class="text-danger small">${res.mensaje}</span>`;
+      }
+    });
+  }
+
+  function cerrarSesion() {
+    detenerCamara();
+    usuarioActual = "";
+    document.getElementById("vista-panel").style.display = "none";
+    document.getElementById("vista-login").style.display = "block";
+  }
+
+  // --- PORTAL INDEPENDIENTE DEL ESTUDIANTE ---
+  function ingresarPortalEstudiante() {
+    const ci = document.getElementById("ciEstudiante").value.trim();
+    const msg = document.getElementById("est-login-msg");
+
+    if(!ci) return alert("Por favor ingresa tu número de Carnet / C.I.");
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Consultando ficha escolar...</span>';
+
+    llamarAPI({ action: "buscarEstudiante", ci: ci }, function(res) {
+      msg.innerHTML = "";
+      if (!res.success) {
+        alert(res.mensaje);
+        return;
+      }
+
+      estudianteConsultaActual = res.estudiante;
+      const est = res.estudiante;
+      const r = res.resumen;
+
+      document.getElementById("est-saludo").innerText = est.nombreCompleto;
+      document.getElementById("est-curso-badge").innerText = est.curso + " — U.E. Paulo Freire";
+
+      document.getElementById("est-card-nombre").innerText = est.nombreCompleto;
+      document.getElementById("est-card-curso").innerText = est.curso;
+      document.getElementById("est-card-ci").innerText = est.id;
+      document.getElementById("est-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(est.id)}`;
+
+      document.getElementById("est-count-p").innerText = r.p;
+      document.getElementById("est-count-t").innerText = r.t;
+      document.getElementById("est-count-f").innerText = r.f;
+
+      const pctEst = parseInt(r.porcentaje, 10) || 0;
+      animarCirculo("est-gauge-circulo", "est-gauge-texto", pctEst);
+
+      const alertaCont = document.getElementById("est-alerta-citacion");
+      if (res.citaciones && res.citaciones.length > 0) {
+        let motivos = "";
+        res.citaciones.forEach(c => {
+          motivos += `<div>• <strong>${c.motivo}</strong> (${c.fecha}) — ${c.estado}</div>`;
+        });
+        alertaCont.innerHTML = `
+          <div class="p-3 mb-3 rounded-3 border border-danger border-opacity-50 bg-danger bg-opacity-10 text-start">
+            <div class="d-flex align-items-center text-danger fw-bold mb-1">
+              <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i> CITACIÓN OFICIAL A DIRECCIÓN
+            </div>
+            <div class="small text-danger bg-dark bg-opacity-50 p-2 rounded mb-2">${motivos}</div>
+            <small class="text-warning d-block"><i class="bi bi-info-circle me-1"></i>Presentarse con su Padre/Madre de Familia a Regencia.</small>
+          </div>
+        `;
+      } else {
+        alertaCont.innerHTML = "";
+      }
+
+      const tablaHist = document.getElementById("est-tabla-historial");
+      if (res.historial.length === 0) {
+        tablaHist.innerHTML = '<tr><td colspan="2" class="text-secondary small py-3">Aún no registras asistencias en la gestión.</td></tr>';
+      } else {
+        let filas = "";
+        res.historial.forEach(h => {
+          filas += `
+            <tr>
+              <td class="text-light fw-medium">${h.fecha}</td>
+              <td><span class="badge ${h.badge} px-2 py-1">${h.estadoTexto} (${h.estado})</span></td>
+            </tr>
+          `;
+        });
+        tablaHist.innerHTML = filas;
+      }
+
+      document.getElementById("vista-login").style.display = "none";
+      document.getElementById("vista-estudiante-panel").style.display = "block";
+      cambiarSeccionEstudiante('carnet');
+    });
+  }
+
+  function cerrarPortalEstudiante() {
+    estudianteConsultaActual = null;
+    document.getElementById("vista-estudiante-panel").style.display = "none";
+    document.getElementById("vista-login").style.display = "block";
+  }
+
+  // --- NAVEGACIÓN INFERIOR DEL ESTUDIANTE (BOTTOM NAV) ---
+  function cambiarSeccionEstudiante(sec) {
+    document.getElementById("sec-est-carnet").style.display = (sec === 'carnet') ? 'block' : 'none';
+    document.getElementById("sec-est-historial").style.display = (sec === 'historial') ? 'block' : 'none';
+    document.getElementById("sec-est-justificar").style.display = (sec === 'justificar') ? 'block' : 'none';
+
+    document.getElementById("bnav-est-carnet").className = (sec === 'carnet') ? "bottom-nav-item active" : "bottom-nav-item";
+    document.getElementById("bnav-est-historial").className = (sec === 'historial') ? "bottom-nav-item active" : "bottom-nav-item";
+    document.getElementById("bnav-est-justificar").className = (sec === 'justificar') ? "bottom-nav-item active" : "bottom-nav-item";
+  }
+
+  function enviarJustificacionEstudiante() {
+    const fecha = document.getElementById("justFecha").value;
+    const motivo = document.getElementById("justMotivo").value;
+    const detalle = document.getElementById("justDetalle").value.trim();
+    const msg = document.getElementById("just-msg");
+
+    if (!fecha || !detalle) return alert("Por favor indica la fecha de la falta y el detalle");
+
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Enviando justificación...</span>';
+
+    llamarAPI({
+      action: "enviarJustificacion",
+      id: estudianteConsultaActual.id,
+      curso: estudianteConsultaActual.curso,
+      fechaFalta: fecha,
+      motivo: motivo,
+      detalle: detalle
+    }, function(res) {
+      if (res.success) {
+        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success">${res.mensaje}</div>`;
+        document.getElementById("justFecha").value = "";
+        document.getElementById("justDetalle").value = "";
+      } else {
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger">${res.mensaje}</div>`;
+      }
+    });
+  }
+
+  // --- LISTA DE ALUMNOS CON BOTÓN SEPARADO PARA CARNET ---
+  function mostrarSubGestion(modo) {
+    document.getElementById("sec-inscribir").style.display = (modo === 'inscribir') ? 'block' : 'none';
+    document.getElementById("sec-eliminar").style.display = (modo === 'eliminar') ? 'block' : 'none';
+
+    document.getElementById("btnSubInscribir").className = (modo === 'inscribir') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+    document.getElementById("btnSubEliminar").className = (modo === 'eliminar') ? "nav-link active rounded-2 text-white py-2" : "nav-link rounded-2 text-secondary py-2";
+
+    if (modo === 'eliminar') cargarEstudiantesEliminar();
+  }
+
+  function cargarEstudiantesEliminar() {
+    const curso = document.getElementById("delCurso").value;
+    cursoListaActual = curso;
+    const cont = document.getElementById("lista-eliminar-resultado");
+    const filtroCont = document.getElementById("contenedor-filtro");
+
+    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando alumnos de ' + curso + '...</div>';
+
+    llamarAPI({ action: "obtenerEstudiantesCurso", curso: curso }, function(res) {
+      if (!res.success || !res.estudiantes || res.estudiantes.length === 0) {
+        if (filtroCont) filtroCont.style.display = "none";
+        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">No hay alumnos inscritos en ${curso}.</div>`;
+        return;
+      }
+
+      alumnosListaMemoria = res.estudiantes;
+      if (filtroCont) filtroCont.style.display = "block";
+
+      let html = `
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+            <thead>
+              <tr class="table-secondary text-dark" style="font-size: 0.72rem;">
+                <th style="width: 10%;">N°</th>
+                <th class="text-start">ESTUDIANTE</th>
+                <th style="width: 38%;">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      alumnosListaMemoria.forEach((e, idx) => {
+        html += `
+          <tr class="fila-alumno-item">
+            <td class="text-secondary">${e.nro}</td>
+            <td class="text-start">
+              <span class="fw-bold text-white d-block text-truncate" style="max-width: 140px;">
+                ${e.nombreCompleto}
+              </span>
+              <small class="text-secondary font-monospace" style="font-size: 0.72rem;">C.I.: ${e.id}</small>
+            </td>
+            <td>
+              <div class="d-flex justify-content-center gap-1">
+                <button class="btn-carnet-action" onclick="clickBotonCarnetLista(${idx})" title="Ver Carnet QR">
+                  <i class="bi bi-person-vcard-fill me-1"></i>Carnet
+                </button>
+                <button class="btn-del-action" onclick="confirmarEliminarIdx(${idx})" title="Eliminar alumno">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      cont.innerHTML = html;
+    });
+  }
+
+  function filtrarAlumnosTabla() {
+    const input = document.getElementById("filtroRapido").value.toLowerCase();
+    const filas = document.querySelectorAll(".fila-alumno-item");
+    filas.forEach(f => {
+      f.style.display = f.innerText.toLowerCase().includes(input) ? "" : "none";
+    });
+  }
+
+  function clickBotonCarnetLista(index) {
+    const alumno = alumnosListaMemoria[index];
+    if (alumno) {
+      document.getElementById("modalNombre").innerText = alumno.nombreCompleto;
+      document.getElementById("modalCurso").innerText = cursoListaActual;
+      document.getElementById("modalId").innerText = alumno.id;
+      document.getElementById("modalQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(alumno.id)}`;
+
+      const modalEl = document.getElementById('modalCredencial');
+      const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modalObj.show();
+    }
+  }
+
+  function confirmarEliminarIdx(idx) {
+    const e = alumnosListaMemoria[idx];
+    if (!e) return;
+    if (!confirm(`¿Estás seguro de eliminar a ${e.nombreCompleto}?\n\nEsta acción borrará al estudiante y su código QR de la lista oficial.`)) return;
+
+    const cont = document.getElementById("lista-eliminar-resultado");
+    cont.innerHTML = '<div class="text-center text-danger py-3"><div class="spinner-border spinner-border-sm me-2"></div>Eliminando...</div>';
+
+    llamarAPI({ action: "eliminarEstudiante", id: e.id }, function(res) {
+      alert(res.mensaje);
+      cargarEstudiantesEliminar();
+    });
+  }
+
+  // --- CÁMARA & ESCÁNER ---
+  function sonarBip(esAlerta) {
+    if (audioSilenciado) return;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      osc.type = esAlerta ? "sawtooth" : "sine";
+      osc.frequency.setValueAtTime(esAlerta ? 400 : 880, audioCtx.currentTime);
+      osc.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + (esAlerta ? 0.4 : 0.15));
+    } catch(e) {}
+  }
+
+  function iniciarCamara() {
+    if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+    if (html5QrCode.isScanning) return;
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 15, qrbox: { width: 250, height: 250 } },
+      alDetectarQR,
+      () => {}
+    ).then(() => {
+      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-camera me-1"></i> Apunta la cámara al carnet QR...';
+    }).catch(err => {
+      document.getElementById("estado-escaneo").className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
+      document.getElementById("estado-escaneo").innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> Permite el acceso a la cámara.';
+    });
+  }
+
+  function detenerCamara() {
+    if (html5QrCode && html5QrCode.isScanning) {
+      html5QrCode.stop().catch(() => {});
+    }
+  }
+
+  let ultimoCodigo = "";
+  let tiempoUltimo = 0;
+
+  function alDetectarQR(codigo) {
+    const ahora = Date.now();
+    if (codigo === ultimoCodigo && (ahora - tiempoUltimo) < 4000) return;
+    ultimoCodigo = codigo;
+    tiempoUltimo = ahora;
+
+    const div = document.getElementById("estado-escaneo");
+    div.className = "box-estado mt-3 bg-primary bg-opacity-25 border border-primary text-info";
+    div.innerHTML = `<div class="spinner-border spinner-border-sm me-2"></div> Registrando: ${codigo}...`;
+
+    llamarAPI({ action: "asistencia", id: codigo }, function(res) {
+      if(res.success) {
+        if(res.alertaCitacion) {
+          sonarBip(true);
+          div.className = "box-estado mt-3 bg-danger bg-opacity-25 text-white border border-danger shadow";
+          div.innerHTML = `<div><i class="bi bi-exclamation-octagon-fill me-1 text-danger"></i> <strong>¡4° RETRASO ACUMULADO!</strong><br><small>${res.mensaje}</small></div>`;
+        } else if(res.estado === "P") {
+          sonarBip(false);
+          div.className = "box-estado mt-3 bg-success bg-opacity-25 border border-success text-success";
+          div.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${res.mensaje}`;
+        } else {
+          sonarBip(false);
+          div.className = "box-estado mt-3 bg-warning bg-opacity-25 border border-warning text-warning";
+          div.innerHTML = `<i class="bi bi-clock-history me-1"></i> ${res.mensaje}`;
+        }
+      } else {
+        div.className = "box-estado mt-3 bg-danger bg-opacity-25 border border-danger text-white";
+        div.innerHTML = `<i class="bi bi-x-circle-fill me-1 text-danger"></i> ${res.mensaje}`;
+      }
+    });
+  }
+
+  function cerrarAsistenciaDia() {
+    if (!confirm("¿Deseas cerrar la asistencia de hoy y poner FALTA (F) a todos los alumnos ausentes?")) return;
+
+    const div = document.getElementById("estado-escaneo");
+    div.className = "box-estado mt-3 bg-info bg-opacity-25 border border-info text-info";
+    div.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Procesando faltas...';
+
+    llamarAPI({ action: "marcarFaltas" }, function(res) {
+      if(res.success) {
+        alert(res.mensaje);
+        div.className = "box-estado mt-3 bg-secondary bg-opacity-25 border border-secondary text-secondary";
+        div.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Asistencia del día cerrada.';
+      } else {
+        alert("Error: " + res.mensaje);
+      }
+    });
+  }
+
+  // --- REPORTES Y CITACIONES ---
+  function cargarCitaciones() {
+    const cont = document.getElementById("repResultado");
+    cont.innerHTML = '<div class="text-center text-warning py-3"><div class="spinner-border spinner-border-sm me-2"></div>Auditando citaciones...</div>';
+
+    llamarAPI({ action: "obtenerCitaciones" }, function(res) {
+      if(!res.success) {
+        cont.innerHTML = `<div class="p-3 text-center text-secondary small bg-dark bg-opacity-25 rounded-3">${res.mensaje}</div>`;
+        return;
+      }
+
+      let html = `
+        <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Citaciones por 4+ Retrasos o Faltas</h6>
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.8rem;">
+            <thead>
+              <tr class="table-danger text-dark" style="font-size: 0.72rem;">
+                <th>REPORTE</th>
+                <th class="text-start">ESTUDIANTE</th>
+                <th>CURSO</th>
+                <th>MOTIVO</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      res.citaciones.forEach(c => {
+        html += `
+          <tr>
+            <td><small class="fw-bold">${c.nro}</small><br><span class="text-secondary" style="font-size: 0.7rem;">${c.fecha}</span></td>
+            <td class="text-start fw-bold text-truncate" style="max-width: 130px;">${c.estudiante}</td>
+            <td>${c.curso}</td>
+            <td><span class="badge bg-danger text-wrap" style="font-size: 0.72rem;">${c.motivo}</span></td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      cont.innerHTML = html;
+    });
+  }
+
+  function cargarReporteMensual() {
+    const curso = document.getElementById("repCurso").value;
+    const mes = document.getElementById("repMes").value;
+    cursoReporteActual = curso;
+    const cont = document.getElementById("repResultado");
+
+    cont.innerHTML = '<div class="text-center text-info py-3"><div class="spinner-border spinner-border-sm me-2"></div>Cargando reporte mensual...</div>';
+
+    llamarAPI({ action: "reporteMes", curso: curso, mes: mes }, function(res) {
+      if(!res.success) {
+        cont.innerHTML = `<div class="p-3 text-center text-warning small bg-warning bg-opacity-10 rounded-3">${res.mensaje}</div>`;
+        return;
+      }
+
+      alumnosReporteMemoria = res.alumnos;
+
+      let html = `
+        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+          <span class="fw-bold text-info small">${res.curso} — ${res.mesNombre}</span>
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary">${res.totalDiasClase} días hábiles</span>
+        </div>
+        <div class="table-responsive rounded-3 border border-secondary border-opacity-25">
+          <table class="table table-dark table-striped text-center align-middle mb-0" style="font-size: 0.85rem;">
+            <thead>
+              <tr class="table-secondary text-dark" style="font-size: 0.75rem;">
+                <th style="width: 10%;">N°</th>
+                <th class="text-start">ESTUDIANTE</th>
+                <th>P</th>
+                <th>T</th>
+                <th>F</th>
+                <th style="width: 20%;">CARNET</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      alumnosReporteMemoria.forEach((al, idx) => {
+        html += `
+          <tr>
+            <td class="text-secondary">${al.nro}</td>
+            <td class="text-start text-truncate" style="max-width: 130px;">
+              <span class="fw-bold text-white d-block">${al.nombreCompleto}</span>
+              <small class="text-secondary" style="font-size: 0.7rem;">% Asist: ${al.porcentaje}</small>
+            </td>
+            <td><span class="badge badge-p px-2 py-1">${al.p}</span></td>
+            <td><span class="badge badge-t px-2 py-1">${al.t}</span></td>
+            <td><span class="badge badge-f px-2 py-1">${al.f}</span></td>
+            <td>
+              <button class="btn-carnet-action py-1 px-2" onclick="clickBotonCarnetReporte(${idx})" title="Ver Carnet">
+                <i class="bi bi-person-vcard-fill"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      cont.innerHTML = html;
+    });
+  }
+
+  function clickBotonCarnetReporte(index) {
+    const alumno = alumnosReporteMemoria[index];
+    if (alumno) {
+      document.getElementById("modalNombre").innerText = alumno.nombreCompleto;
+      document.getElementById("modalCurso").innerText = cursoReporteActual;
+      document.getElementById("modalId").innerText = alumno.id;
+      document.getElementById("modalQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(alumno.id)}`;
+
+      const modalEl = document.getElementById('modalCredencial');
+      const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modalObj.show();
+    }
+  }
+
+  function guardarEstudiante() {
+    const datos = {
+      action: "guardarEstudiante",
+      id: document.getElementById("estId").value.trim(),
+      nombres: document.getElementById("estNombres").value.trim(),
+      apellidos: document.getElementById("estApellidos").value.trim(),
+      curso: document.getElementById("selectCurso").value
+    };
+
+    if(!datos.id || !datos.nombres || !datos.apellidos || !datos.curso) return alert("Por favor completa todos los campos");
+
+    const msg = document.getElementById("gestion-msg");
+    msg.innerHTML = '<span class="text-info small"><div class="spinner-border spinner-border-sm me-1"></div> Guardando...</span>';
+
+    llamarAPI(datos, function(res) {
+      if(res.success) {
+        msg.innerHTML = `<div class="alert alert-success border-0 small m-0 bg-success bg-opacity-25 text-success"><i class="bi bi-check-circle-fill me-1"></i> ${res.mensaje}</div>`;
+        document.getElementById("estId").value = "";
+        document.getElementById("estNombres").value = "";
+        document.getElementById("estApellidos").value = "";
+        document.getElementById("selectCurso").value = "";
+      } else {
+        msg.innerHTML = `<div class="alert alert-danger border-0 small m-0 bg-danger bg-opacity-25 text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> ${res.mensaje}</div>`;
+      }
+    });
+  }
+
+  function actualizarContrasena() {
+    const pass = document.getElementById("nuevaPass").value.trim();
+    if(pass.length < 4) return alert("Mínimo 4 caracteres");
+
+    llamarAPI({ action: "cambiarPass", usuario: usuarioActual, nuevaPass: pass }, function(res) {
+      const msg = document.getElementById("perfil-msg");
+      msg.innerHTML = `<div class="${res.success ? 'alert alert-success bg-success bg-opacity-25 text-success' : 'alert alert-danger bg-danger bg-opacity-25 text-danger'} border-0 small m-0">${res.mensaje}</div>`;
+      document.getElementById("nuevaPass").value = "";
+    });
+  }
+</script>
+
+</body>
+</html>
