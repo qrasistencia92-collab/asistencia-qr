@@ -47,7 +47,7 @@
       box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
     }
 
-    /* BARRAS DE NAVEGACIÓN INFERIORES SIN ICONOS */
+    /* BARRA INFERIOR DE NAVEGACIÓN (TOTALMENTE TIPOGRÁFICA) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -222,6 +222,15 @@
       filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.65));
     }
 
+    .seccion-banner {
+      background: rgba(14, 27, 56, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
     @media print {
       body * { visibility: hidden; }
       #carnet-credencial, #carnet-credencial * { visibility: visible; }
@@ -291,17 +300,17 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- 2. PANEL DEL REGENTE (CON BOTTOM NAV)     -->
+  <!-- 2. PANEL DEL REGENTE                       -->
   <!-- ========================================== -->
   <div id="vista-panel" style="display:none;">
     
-    <!-- Barra Superior -->
+    <!-- Barra Superior Limpia (Sin Saludos Genéricos) -->
     <div class="d-flex justify-content-between align-items-center mb-3 p-3 card-modern">
       <div class="d-flex align-items-center">
         <img src="logo.png" alt="Escudo" style="max-height: 40px; margin-right: 12px;">
         <div>
-          <h6 class="m-0 text-white fw-bold" id="saludoRegente">Panel del Regente</h6>
-          <small class="text-info fw-semibold" style="font-size: 0.72rem;">U.E. Paulo Freire</small>
+          <h6 class="m-0 text-white fw-bold">U.E. PAULO FREIRE</h6>
+          <small class="text-info fw-semibold" style="font-size: 0.72rem;">SISTEMA OFICIAL DE REGENCIA</small>
         </div>
       </div>
       <button class="btn btn-sm btn-outline-danger border-opacity-50 rounded-pill px-3 fw-bold" onclick="cerrarSesion()">SALIR</button>
@@ -310,10 +319,19 @@
     <!-- SECCIONES DEL REGENTE -->
     <div id="regente-tabs-content">
       
-      <!-- SECCIÓN 1: MENÚ INICIAL CON GRÁFICOS CIRCULARES -->
+      <!-- SECCIÓN 1: MENÚ INICIAL / DASHBOARD -->
       <div id="tab-regente-inicio" class="card card-modern p-3">
         
-        <!-- Reloj y Estado -->
+        <!-- ENCABEZADO INSTITUCIONAL CON LOGO Y MENSAJE DE ASISTENCIA -->
+        <div class="p-3 mb-3 text-center rounded-4 border border-info border-opacity-25" style="background: linear-gradient(135deg, rgba(29, 78, 216, 0.25), rgba(2, 132, 199, 0.15));">
+          <img src="logo.png" alt="Escudo Paulo Freire" style="max-height: 65px;" class="mb-2">
+          <h6 class="fw-bold text-white mb-1" style="letter-spacing: 0.5px;">CONTROL INSTITUCIONAL DE ASISTENCIA</h6>
+          <p class="text-secondary small m-0 fst-italic" style="font-size: 0.76rem;">
+            "La puntualidad y la constancia son la base de la excelencia académica. Registro diario de asistencia estudiantil."
+          </p>
+        </div>
+
+        <!-- Reloj y Estado del Horario -->
         <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <span id="reloj-vivo" class="fw-bold font-monospace text-light px-2" style="font-size: 0.95rem;">00:00:00</span>
           <div id="badge-horario" class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-1">
@@ -321,7 +339,7 @@
           </div>
         </div>
 
-        <div class="small fw-bold text-info mb-3 text-uppercase" style="letter-spacing: 0.5px;">Asistencia Global de la Unidad</div>
+        <div class="small fw-bold text-info mb-3 text-uppercase" style="letter-spacing: 0.5px;">Métricas Generales de la Unidad</div>
 
         <!-- GRÁFICOS CIRCULARES DINÁMICOS -->
         <div class="row g-2 mb-3 text-center">
@@ -357,13 +375,13 @@
           </div>
         </div>
 
-        <!-- Tarjetas Secundarias -->
+        <!-- Tarjetas de Información -->
         <div class="row g-2 mb-3">
           <div class="col-6">
             <div class="p-3 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 text-center">
               <div class="text-secondary small fw-semibold" style="font-size: 0.65rem;">ALUMNOS MATRICULADOS</div>
               <h4 class="fw-bold text-info my-1" id="dash-alumnos">0</h4>
-              <small class="text-secondary" style="font-size: 0.65rem;">Total en los 21 cursos</small>
+              <small class="text-secondary" style="font-size: 0.65rem;">En los 21 cursos</small>
             </div>
           </div>
           <div class="col-6">
@@ -388,8 +406,15 @@
 
       <!-- SECCIÓN 2: ESCÁNER QR -->
       <div id="tab-regente-escaner" class="card card-modern p-3 text-center" style="display:none;">
+        
+        <!-- Encabezado Creativo Escáner -->
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">TERMINAL DE REGISTRO EN TIEMPO REAL</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Validación óptica continua de credenciales estudiantiles oficiales.</div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="fw-bold text-info small text-uppercase">Escáner Continuo en Vivo</span>
+          <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-3 py-1">CÁMARA TRASERA ACTIVA</span>
           <button class="btn btn-sm btn-outline-secondary border-0 text-light p-0 fw-bold" id="btn-audio-mute" onclick="toggleMute()">
             [ SONIDO: ON ]
           </button>
@@ -410,8 +435,15 @@
 
       <!-- SECCIÓN 3: REPORTES Y CITACIONES -->
       <div id="tab-regente-reportes" class="card card-modern p-3" style="display:none;">
+        
+        <!-- Encabezado Creativo Reportes -->
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">CENTRO DE AUDITORÍA Y ESTADÍSTICA</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Supervisión mensual del compromiso académico y seguimiento de citaciones.</div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="fw-bold text-white small text-uppercase">Reportes por Curso</span>
+          <span class="fw-bold text-white small text-uppercase">Consulta por Curso</span>
           <button class="btn btn-sm btn-outline-warning border-opacity-50 rounded-pill px-3 fw-bold" onclick="cargarCitaciones()">
             CITACIONES
           </button>
@@ -473,6 +505,13 @@
 
       <!-- SECCIÓN 4: ALUMNOS (INSCRIBIR / BOTÓN DE CARNET SEPARADO) -->
       <div id="tab-regente-alumnos" class="card card-modern p-3" style="display:none;">
+        
+        <!-- Encabezado Creativo Alumnos -->
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">PADRÓN Y MATRÍCULA ESCOLAR</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Registro oficial, emisión de carnets PVC y administración de cursos.</div>
+        </div>
+
         <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25">
           <li class="nav-item">
             <button class="nav-link active rounded-2 text-white py-2 fw-bold" id="btnSubInscribir" onclick="mostrarSubGestion('inscribir')">
@@ -591,6 +630,12 @@
       <!-- SECCIÓN 5: AJUSTES (CONTRASEÑA + BUZÓN DE JUSTIFICACIONES) -->
       <div id="tab-regente-ajustes" class="card card-modern p-3" style="display:none;">
         
+        <!-- Encabezado Creativo Ajustes -->
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">SOPORTE Y GESTIÓN OPERATIVA</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Revisión de justificaciones médicas, horarios y credenciales del regente.</div>
+        </div>
+
         <!-- Buzón de Justificaciones -->
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary border-opacity-25">
           <span class="fw-bold text-info small text-uppercase">Buzón de Justificaciones</span>
@@ -656,6 +701,12 @@
       
       <!-- SUB-SECCIÓN 1: MI CARNET QR -->
       <div id="sec-est-carnet" class="card card-modern p-3 text-center">
+        
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">CREDENCIAL DIGITAL OFICIAL</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Válida para el escaneo diario de asistencia y control de ingreso escolar.</div>
+        </div>
+
         <div id="carnet-credencial" class="card shadow-lg text-dark border-0 overflow-hidden mx-auto my-2" style="max-width: 320px; border-radius: 20px; background: #ffffff;">
           <div class="p-3 text-center text-white" style="background: linear-gradient(135deg, #1d4ed8, #0284c7);">
             <img src="logo.png" alt="Escudo" style="max-height: 50px;" class="mb-1">
@@ -690,6 +741,12 @@
 
       <!-- SUB-SECCIÓN 2: HISTORIAL Y CÍRCULO PERSONAL -->
       <div id="sec-est-historial" class="card card-modern p-3" style="display:none;">
+        
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">RÉCORD Y HISTORIAL ESTUDIANTIL</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Monitorea tu porcentaje de asistencia y retrasos acumulados en la gestión.</div>
+        </div>
+
         <div id="est-alerta-citacion"></div>
 
         <!-- Círculo Personal del Alumno -->
@@ -745,8 +802,11 @@
 
       <!-- SUB-SECCIÓN 3: ENVIAR JUSTIFICACIÓN -->
       <div id="sec-est-justificar" class="card card-modern p-3" style="display:none;">
-        <div class="fw-bold text-white small mb-2 text-uppercase">Justificar Falta o Atraso</div>
-        <p class="text-secondary small mb-3">Envía tu justificativo para que el regente lo revise en su panel.</p>
+        
+        <div class="seccion-banner">
+          <div class="fw-bold text-info small text-uppercase" style="letter-spacing: 0.5px;">SOLICITUD DE JUSTIFICACIÓN</div>
+          <div class="text-secondary small" style="font-size: 0.72rem;">Trámite digital directo con Regencia para regularizar faltas justificadas.</div>
+        </div>
 
         <div class="mb-3">
           <label class="form-label text-secondary small fw-semibold">Fecha de la Falta:</label>
@@ -979,7 +1039,6 @@
     llamarAPI({ action: "login", usuario: user, password: pass }, function(res) {
       if(res.success) {
         usuarioActual = res.usuario;
-        document.getElementById("saludoRegente").innerText = "Hola, " + res.nombre;
         document.getElementById("vista-login").style.display = "none";
         document.getElementById("vista-panel").style.display = "block";
         cambiarSeccionRegente('inicio');
